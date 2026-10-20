@@ -13,3 +13,6 @@ data/chroma_db/
 # IDE
 .vscode/
 .idea/
+
+# Runtime answer cache (regenerated)
+data/processed/llm_cache.json
