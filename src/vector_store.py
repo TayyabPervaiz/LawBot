@@ -12,7 +12,10 @@ except ImportError:
         pass
 
 from sentence_transformers import SentenceTransformer
-from src.config import EMBEDDING_MODEL, CHROMA_DB_PATH, COLLECTION_NAME, TOP_K_RESULTS
+from src.config import (
+    EMBEDDING_MODEL, CHROMA_DB_PATH, COLLECTION_NAME, CANDIDATE_POOL_SIZE,
+    PROCESSED_DATA_DIR,
+)
 
 
 class LocalEmbeddingFunction(EmbeddingFunction):
@@ -123,20 +126,28 @@ def add_chunks(chunks: list[dict]) -> int:
     return len(chunks)
 
 
-def query(question: str, top_k: int = TOP_K_RESULTS) -> list[dict]:
+def query(question: str, top_k: int = 20, where: dict | None = None) -> list[dict]:
     """
     Query the vector store with a natural language question.
     Returns the most relevant legal text chunks.
 
     Args:
         question: The user's legal question in natural language.
-        top_k: Number of top results to return (default from config).
+        top_k: Number of top results to return. Phase 2A default is a large
+               CANDIDATE POOL (config.CANDIDATE_POOL_SIZE) because hybrid
+               fusion/reranking in src/retrieval.py needs a pool, not the
+               final answer set.
+        where: Optional ChromaDB metadata filter, e.g.
+               {"law_id": "peca_2016"} or {"category": "criminal"}.
+               Used by tests and debugging, not the default path
+               (revised plan Section 5.4 point 7).
 
     Returns:
-        List of dicts, each containing:
-            - "text" (str): The chunk text
-            - "metadata" (dict): The chunk metadata (law_title, section_number, etc.)
-            - "distance" (float): Similarity distance (lower = more similar)
+        List of dicts:
+            - "text": the chunk text
+            - "metadata": chunk metadata (law_id, law_title, section_number, ...)
+            - "distance": similarity distance (lower = more similar)
+            - "id": the chunk id
     """
     collection = get_or_create_collection()
 
@@ -144,20 +155,25 @@ def query(question: str, top_k: int = TOP_K_RESULTS) -> list[dict]:
         print("Warning: Collection is empty. Run the parser and indexing first.")
         return []
 
-    # ChromaDB will automatically embed the question using our LocalEmbeddingFunction
-    results = collection.query(
-        query_texts=[question],
-        n_results=min(top_k, collection.count())
-    )
+    kwargs: dict = {
+        "query_texts": [question],
+        "n_results": min(top_k, collection.count()),
+        "include": ["documents", "metadatas", "distances"],
+    }
+    if where:
+        kwargs["where"] = where
+
+    results = collection.query(**kwargs)
 
     # Reformat ChromaDB's nested list structure into a flat list of dicts
     formatted_results = []
     if results and results["documents"] and results["documents"][0]:
         for i in range(len(results["documents"][0])):
             formatted_results.append({
+                "id": results["ids"][0][i] if results.get("ids") else None,
                 "text": results["documents"][0][i],
                 "metadata": results["metadatas"][0][i] if results["metadatas"] else {},
-                "distance": results["distances"][0][i] if results["distances"] else None
+                "distance": results["distances"][0][i] if results["distances"] else None,
             })
 
     return formatted_results

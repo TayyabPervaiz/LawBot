@@ -1,22 +1,29 @@
 """
-Automated Benchmark Evaluation Suite for the Pakistan Law Bot.
+Stage-Aware Benchmark Evaluation Suite for the Pakistan Law Bot (Phase 2A).
 
-This is the quality gate — it measures:
-1. Citation Precision: Does the bot cite the correct sections for in-scope queries?
-2. Refusal Accuracy: Does the bot properly refuse out-of-scope queries?
-3. Content Compliance: Does the response contain/avoid required/forbidden strings?
-4. Disclaimer Presence: Does every response include the legal disclaimer?
+Measures, per revised plan Section 6:
+1. Stage-aware expected behavior: a question must be ANSWERED only if every
+   law in its `answered_by` is currently loaded (and it is not typed
+   out_of_scope); otherwise it must be REFUSED. Cross-contamination is
+   caught automatically: when a new law loads, old refusal questions flip
+   to answers with no dataset edits.
+2. Citation precision AND recall against `expected_citations`.
+3. Refusal quality: refused answers must not cite sections (that is
+   hallucination).
+4. Not-covered calibration (`type == "not_covered_by_text"`): the bot must
+   say the loaded provisions do not address the question.
+5. Grounding trace: citations whose section was never retrieved are listed
+   as unsupported.
 
-Design decisions:
-- Citation matching is fuzzy: "Section 15" matches "Section 15(1)(a)" and
-  "[Punjab Rented Premises Act, 2009 - Section 15]". This prevents false
-  negatives from formatting variations.
-- Refusal detection checks for scope-boundary keywords rather than exact strings,
-  because the LLM may phrase refusals differently each time.
-- The suite can run in two modes:
-  (a) Full mode (default): Calls the actual LLM via Groq API
-  (b) Scope-only mode (--scope-only): Tests only the pre-LLM scope detection
-      (no API key needed, instant, good for development)
+Verification discipline (revised plan Rule 5): questions whose
+`verified_by` is null are run but EXCLUDED from reported percentages,
+because their ground truth has not been checked by the owner against the
+official text.
+
+Modes:
+  python -m tests.evaluate --offline   # no LLM, no API key: stage logic +
+                                       # registry checks + dataset sanity
+  python -m tests.evaluate             # full run (needs Groq key + index)
 """
 
 import re
@@ -25,352 +32,327 @@ import json
 import time
 from pathlib import Path
 
-from src.config import PROCESSED_DATA_DIR
-
-
-# ---------------------------------------------------------------------------
-# Test Data Loading
-# ---------------------------------------------------------------------------
+import src.law_registry as registry
 
 BENCHMARK_PATH = Path(__file__).parent / "benchmark_dataset.json"
 
 
 def load_benchmark() -> list[dict]:
-    """Load the benchmark test cases from JSON."""
     with open(BENCHMARK_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 # ---------------------------------------------------------------------------
-# Evaluation Helpers
+# Checks
 # ---------------------------------------------------------------------------
 
-def check_citation_precision(answer: str, expected_sections: list[str]) -> dict:
+def check_citation_precision_recall(answer: str, expected_citations: list[dict]) -> dict:
     """
-    Check if the answer cites the expected statutory sections.
-
-    Uses fuzzy matching: "Section 15" matches "Section 15(1)", "Section 15(a)",
-    "[Act Name - Section 15]", etc.
-
-    Returns:
-        {
-            "passed": bool,
-            "expected": ["15", "6"],
-            "found": ["15"],
-            "missing": ["6"],
-        }
+    Precision: share of CITED sections that were expected.
+    Recall: share of EXPECTED sections that were cited.
+    Fuzzy matching ("Section 15" matches "Section 15(1)(a)").
     """
-    if not expected_sections:
-        return {"passed": True, "expected": [], "found": [], "missing": []}
+    if not expected_citations:
+        return {"precision": None, "recall": None, "expected": [], "cited": [], "missing": []}
 
-    found = []
-    missing = []
+    expected = [c["section"] for c in expected_citations]
+    cited_raw = re.findall(r"Section\s+(\d+[A-Za-z]?)", answer, re.IGNORECASE)
+    cited = sorted(set(cited_raw))
 
-    for section in expected_sections:
-        # Match "Section 15" anywhere, including "Section 15(1)(a)" and formatted citations
-        pattern = rf"Section\s+{re.escape(section)}\b"
-        if re.search(pattern, answer, re.IGNORECASE):
-            found.append(section)
-        else:
-            missing.append(section)
+    missing = [s for s in expected if s not in cited]
+    correct_citations = [s for s in cited if s in expected]
+
+    precision = round(len(correct_citations) / len(cited), 3) if cited else 0.0
+    recall = round((len(expected) - len(missing)) / len(expected), 3)
 
     return {
-        "passed": len(missing) == 0,
-        "expected": expected_sections,
-        "found": found,
+        "precision": precision,
+        "recall": recall,
+        "expected": expected,
+        "cited": cited,
         "missing": missing,
     }
 
 
-def check_refusal(answer: str, question_type: str) -> dict:
-    """
-    Check if out-of-scope questions are properly refused.
-
-    A proper refusal must:
-    - Mention that the question is outside scope
-    - NOT cite any statutory section (citing sections = hallucinating)
-
-    Returns:
-        {"passed": bool, "reason": str}
-    """
-    if question_type != "out_of_scope":
-        return {"passed": True, "reason": "N/A (in-scope question)"}
-
+def check_refusal(answer: str) -> dict:
+    """Out-of-scope answers must refuse and must not cite sections."""
     answer_lower = answer.lower()
-
-    # Check for refusal indicators
     refusal_indicators = [
         "outside" in answer_lower and "scope" in answer_lower,
-        "outside this scope" in answer_lower,
         "falls outside" in answer_lower,
         "not covered" in answer_lower,
-        "specialized in" in answer_lower and "tenancy" in answer_lower,
-        "specialized in" in answer_lower and "rent" in answer_lower,
+        "currently covers" in answer_lower and "consult" in answer_lower,
     ]
-
     is_refused = any(refusal_indicators)
-
-    # Check that no sections are cited (that would be hallucination)
     has_citation = bool(re.search(r"Section\s+\d+", answer, re.IGNORECASE))
 
     if is_refused and not has_citation:
         return {"passed": True, "reason": "Correctly refused without citing sections"}
-    elif is_refused and has_citation:
+    if is_refused and has_citation:
         return {"passed": False, "reason": "Refused BUT cited sections (partial hallucination)"}
-    elif not is_refused and not has_citation:
+    if not is_refused and not has_citation:
         return {"passed": False, "reason": "Did not refuse (no refusal language found)"}
-    else:
-        return {"passed": False, "reason": "Did not refuse AND cited sections (full hallucination)"}
+    return {"passed": False, "reason": "Did not refuse AND cited sections (full hallucination)"}
 
 
-def check_content_compliance(answer: str, must_contain: list[str], must_not_contain: list[str]) -> dict:
-    """
-    Check if the answer contains required strings and avoids forbidden strings.
-
-    Returns:
-        {"passed": bool, "missing": [...], "forbidden_found": [...]}
-    """
+def check_not_covered(answer: str) -> dict:
+    """not_covered_by_text answers must explicitly say the provisions are silent."""
     answer_lower = answer.lower()
+    ok = (
+        ("do not" in answer_lower and ("address" in answer_lower or "cover" in answer_lower))
+        or ("does not" in answer_lower and ("address" in answer_lower or "cover" in answer_lower))
+    )
+    return {"passed": ok, "reason": "Calibrated not-covered" if ok else "Did not declare the provisions silent"}
 
+
+def check_content_compliance(answer: str, must_contain: list, must_not_contain: list) -> dict:
+    answer_lower = answer.lower()
     missing = [s for s in must_contain if s.lower() not in answer_lower]
-    forbidden_found = [s for s in must_not_contain if s.lower() in answer_lower]
-
+    forbidden = [s for s in must_not_contain if s.lower() in answer_lower]
     return {
-        "passed": len(missing) == 0 and len(forbidden_found) == 0,
+        "passed": not missing and not forbidden,
         "missing": missing,
-        "forbidden_found": forbidden_found,
+        "forbidden_found": forbidden,
     }
 
 
 def check_disclaimer(answer: str) -> dict:
-    """
-    Check if the response includes a legal disclaimer.
-
-    Returns:
-        {"passed": bool, "reason": str}
-    """
     answer_lower = answer.lower()
-
     has_disclaimer = (
         "disclaimer" in answer_lower
         or ("legal information" in answer_lower and "legal advice" in answer_lower)
-        or ("not formal legal advice" in answer_lower)
-        or ("consult" in answer_lower and "advocate" in answer_lower)
     )
-
-    return {
-        "passed": has_disclaimer,
-        "reason": "Disclaimer present" if has_disclaimer else "No disclaimer found",
-    }
+    return {"passed": has_disclaimer, "reason": "Disclaimer present" if has_disclaimer else "No disclaimer found"}
 
 
 # ---------------------------------------------------------------------------
-# Scope-Only Evaluation (No API key needed)
+# Stage-aware expectation logic (revised plan Section 6.2)
 # ---------------------------------------------------------------------------
 
-def evaluate_scope_only():
+def expected_stage(question: dict, loaded: set[str]) -> dict:
     """
-    Test only the pre-LLM scope detection.
-    No API key required. Instant results. Good for development.
-    """
-    from src.generator import detect_scope
+    Decide what the bot is EXPECTED to do for this question at this stage.
 
+    Returns {"action": "answer"|"refuse", "must_refuse_locked": bool}
+    """
+    if question.get("type") == "out_of_scope" and not question.get("answered_by"):
+        # Foreign-jurisdiction style: no law can ever answer it.
+        return {"action": "refuse", "must_refuse_locked": True}
+    if question.get("type") == "out_of_scope":
+        # Refusable-now questions (FIR, Khula, WhatsApp): refuse until their
+        # laws are loaded, answer once they are.
+        if set(question.get("answered_by", [])) <= loaded:
+            return {"action": "answer", "must_refuse_locked": False}
+        return {"action": "refuse", "must_refuse_locked": True}
+    # in_scope / multi_law / not_covered_by_text
+    if set(question.get("answered_by", [])) <= loaded:
+        return {"action": "answer", "must_refuse_locked": False}
+    return {"action": "refuse", "must_refuse_locked": True}
+
+
+# ---------------------------------------------------------------------------
+# Offline evaluation (registry + dataset sanity, no API, no index)
+# ---------------------------------------------------------------------------
+
+def evaluate_offline() -> bool:
     benchmark = load_benchmark()
+    loaded = set(registry.loaded_law_ids())
 
     print("\n" + "=" * 70)
-    print("  SCOPE DETECTION EVALUATION (No API key required)")
+    print("  OFFLINE STAGE LOGIC EVALUATION (no API key required)")
+    print(f"  Loaded laws: {sorted(loaded) or 'NONE'}")
     print("=" * 70)
 
-    passed = 0
-    failed = 0
-
+    all_ok = True
     for test in benchmark:
-        expected_in_scope = test["type"] == "in_scope"
-        result = detect_scope(test["question"])
-        actual_in_scope = result["in_scope"]
+        stage = expected_stage(test, loaded)
+        # Sanity expectations we can enforce without the bot:
+        # 1) every answered_by must exist in the registry;
+        # 2) expected_citations' law_ids must exist;
+        # 3) stage action must be computed.
+        reg_ok = all(registry.get_law(l) is not None for l in test["answered_by"])
+        cite_ok = all(registry.get_law(c["law_id"]) is not None for c in test["expected_citations"])
+        citation_pending = test.get("verified_by") is None
 
-        ok = actual_in_scope == expected_in_scope
-        if ok:
-            passed += 1
-            status = "PASS"
-        else:
-            failed += 1
-            status = "FAIL"
+        row_ok = reg_ok and cite_ok
+        all_ok = all_ok and row_ok
+        status = "PASS" if row_ok else "FAIL"
 
-        topic = result["detected_topic"] or "-"
-        print(f"  {status} | Q{test['id']:2d} | "
-              f"expected={expected_in_scope!s:5s} got={actual_in_scope!s:5s} | "
-              f"topic={topic:20s} | {test['question']}")
+        print(
+            f"  {status} | {test['id']:7} | stage={stage['action']:6} | "
+            f"type={test['type']:20} | verified={'YES' if not citation_pending else 'no '} | "
+            f"{test['question'][:58]}"
+        )
+        if not row_ok:
+            if not reg_ok:
+                print(f"          unknown law_id in answered_by: {test['answered_by']}")
+            if not cite_ok:
+                print(f"          unknown law_id in expected_citations")
 
-    print(f"\n  Results: {passed}/{passed+failed} passed")
-    print(f"  Scope Detection Accuracy: {passed/(passed+failed)*100:.1f}%")
-
-    if failed == 0:
-        print("\n  [OK] All scope detection tests passed!")
-    else:
-        print(f"\n  [WARN] {failed} scope detection test(s) failed.")
-
-    return failed == 0
+    print(f"\n  Dataset structure: {'PASS' if all_ok else 'FAIL'}")
+    print(f"  Questions: {len(benchmark)} | owner-verified: "
+          f"{sum(1 for t in benchmark if t.get('verified_by'))}/{len(benchmark)}")
+    if sum(1 for t in benchmark if t.get('verified_by')) == 0:
+        print("  [WARN] No question is owner-verified yet — full-run percentages "
+              "will be reported EXCLUSIVELY as flagged-unverified until GATE 1.")
+    return all_ok
 
 
 # ---------------------------------------------------------------------------
-# Full Evaluation (Requires API key + indexed vector store)
+# Full evaluation (requires API key + indexed store)
 # ---------------------------------------------------------------------------
 
-def evaluate_full():
-    """
-    Run the complete evaluation: scope detection + retrieval + LLM generation.
-    Requires: Groq API key configured, vector store indexed.
-    """
+def evaluate_full() -> bool:
     from src.bot import ask
 
     benchmark = load_benchmark()
+    loaded = set(registry.loaded_law_ids())
 
     print("\n" + "=" * 70)
-    print("  FULL BENCHMARK EVALUATION")
-    print("  Testing scope detection + retrieval + LLM generation")
+    print("  FULL STAGE-AWARE BENCHMARK EVALUATION")
+    print(f"  Loaded laws: {sorted(loaded) or 'NONE'}")
     print("=" * 70)
 
     results = []
-    total_time = 0
+    n_api_calls = 0
 
     for test in benchmark:
-        print(f"\n  --- Test Q{test['id']}: {test['question']}")
-        print(f"      Type: {test['type']} | Expected sections: {test['expected_sections']}")
+        stage = expected_stage(test, loaded)
+        verified = test.get("verified_by") is not None
+
+        print(f"\n  --- {test['id']}: {test['question']}")
+        print(f"      stage={stage['action']} | verified={verified}")
 
         start = time.time()
         try:
             result = ask(test["question"])
             elapsed = time.time() - start
-            total_time += elapsed
-
+            n_api_calls += 1
             answer = result["answer"]
 
-            # Run all checks
-            citation_check = check_citation_precision(answer, test["expected_sections"])
-            refusal_check = check_refusal(answer, test["type"])
-            content_check = check_content_compliance(answer, test["must_contain"], test["must_not_contain"])
+            refusal_check = check_refusal(answer)
+            content_check = check_content_compliance(
+                answer, test.get("must_contain", []), test.get("must_not_contain", [])
+            )
             disclaimer_check = check_disclaimer(answer)
+            citation_check = check_citation_precision_recall(
+                answer, test.get("expected_citations", [])
+            )
+            not_covered_check = (
+                check_not_covered(answer)
+                if test["type"] == "not_covered_by_text"
+                else None
+            )
 
-            # Determine overall pass/fail
-            if test["type"] == "in_scope":
-                overall_pass = (
-                    citation_check["passed"]
+            if stage["action"] == "refuse":
+                overall = refusal_check["passed"] and content_check["passed"]
+            elif test["type"] == "not_covered_by_text":
+                overall = not_covered_check["passed"] and content_check["passed"]
+            else:
+                overall = (
+                    citation_check["recall"] is not None
+                    and citation_check["recall"] >= 1.0
                     and content_check["passed"]
                     and disclaimer_check["passed"]
                 )
-            else:
-                overall_pass = (
-                    refusal_check["passed"]
-                    and content_check["passed"]
-                )
+                # Grounding trace: unsupported citations are a failure even
+                # when recall is perfect.
+                if result.get("citations", {}).get("unsupported"):
+                    overall = False
 
             test_result = {
                 "id": test["id"],
                 "question": test["question"],
                 "type": test["type"],
-                "overall_pass": overall_pass,
+                "stage_action": stage["action"],
+                "verified": verified,
+                "overall_pass": overall,
                 "citation": citation_check,
                 "refusal": refusal_check,
                 "content": content_check,
                 "disclaimer": disclaimer_check,
+                "not_covered": not_covered_check,
+                "unsupported_citations": result.get("citations", {}).get("unsupported", []),
                 "time_seconds": round(elapsed, 2),
-                "answer_preview": answer[:200] + "..." if len(answer) > 200 else answer,
+                "answer_preview": (answer[:200] + "...") if len(answer) > 200 else answer,
             }
 
-            status = "PASS" if overall_pass else "FAIL"
-            print(f"      {status} ({elapsed:.1f}s)")
-
-            if not citation_check["passed"]:
-                print(f"        Citation: FAIL - missing sections {citation_check['missing']}")
-            if not refusal_check["passed"]:
-                print(f"        Refusal: FAIL - {refusal_check['reason']}")
-            if not content_check["passed"]:
-                if content_check["missing"]:
-                    print(f"        Content: FAIL - missing: {content_check['missing']}")
-                if content_check["forbidden_found"]:
-                    print(f"        Content: FAIL - forbidden found: {content_check['forbidden_found']}")
-            if not disclaimer_check["passed"]:
-                print(f"        Disclaimer: FAIL - {disclaimer_check['reason']}")
+            status = "PASS" if overall else "FAIL"
+            flagged = "" if verified else "  (UNVERIFIED — excluded from reported %)"
+            print(f"      {status}{flagged} ({elapsed:.1f}s)")
+            if not overall:
+                if stage["action"] == "answer" and citation_check["missing"]:
+                    print(f"        Citation: FAIL - missing {citation_check['missing']}")
+                if test_result["unsupported_citations"]:
+                    print(f"        Grounding: FAIL - unsupported citations "
+                          f"{test_result['unsupported_citations']}")
+                if not refusal_check["passed"]:
+                    print(f"        Refusal: FAIL - {refusal_check['reason']}")
+                if not content_check["passed"]:
+                    print(f"        Content: FAIL - {content_check}")
 
         except Exception as e:
             elapsed = time.time() - start
             print(f"      ERROR ({elapsed:.1f}s): {e}")
             test_result = {
-                "id": test["id"],
-                "question": test["question"],
-                "type": test["type"],
-                "overall_pass": False,
-                "error": str(e),
-                "time_seconds": round(elapsed, 2),
+                "id": test["id"], "question": test["question"],
+                "type": test["type"], "stage_action": stage["action"],
+                "verified": verified, "overall_pass": False,
+                "error": str(e), "time_seconds": round(elapsed, 2),
             }
 
         results.append(test_result)
+        time.sleep(2)  # free-tier politeness
 
-        if test["type"] == "in_scope":
-            time.sleep(5)
-
-    # --- Summary ---
+    # --- Summary (verified questions only, per plan Rule 5) ---
     print("\n" + "=" * 70)
     print("  EVALUATION SUMMARY")
     print("=" * 70)
 
-    in_scope_tests = [r for r in results if r["type"] == "in_scope"]
-    out_scope_tests = [r for r in results if r["type"] == "out_of_scope"]
+    scored = [r for r in results if r.get("verified")]
+    unverified = [r for r in results if not r.get("verified")]
 
-    in_scope_pass = sum(1 for r in in_scope_tests if r.get("overall_pass", False))
-    out_scope_pass = sum(1 for r in out_scope_tests if r.get("overall_pass", False))
-    total_pass = in_scope_pass + out_scope_pass
-    total_tests = len(results)
+    if scored:
+        passed = sum(1 for r in scored if r.get("overall_pass"))
+        print(f"  Verified questions:  {passed}/{len(scored)} passed ({passed/len(scored)*100:.0f}%)")
+    else:
+        print("  Verified questions:  NONE — no percentage is reported (plan Rule 5).")
+    print(f"  Unverified (run, excluded from %): {len(unverified)}")
+    for r in unverified:
+        mark = "PASS" if r.get("overall_pass") else "FAIL"
+        print(f"    - {r['id']} [{mark}] {r.get('question', '')[:60]}")
+    print(f"  LLM API calls this run: {n_api_calls} "
+          f"(cached answers are reused across runs)")
 
-    # Citation precision (in-scope only)
-    citation_correct = sum(
-        1 for r in in_scope_tests
-        if r.get("citation", {}).get("passed", False)
-    )
-
-    # Refusal accuracy (out-of-scope only)
-    refusal_correct = sum(
-        1 for r in out_scope_tests
-        if r.get("refusal", {}).get("passed", False)
-    )
-
-    print(f"\n  Overall:            {total_pass}/{total_tests} passed "
-          f"({total_pass/total_tests*100:.0f}%)")
-    print(f"  Citation Precision: {citation_correct}/{len(in_scope_tests)} "
-          f"({citation_correct/max(len(in_scope_tests),1)*100:.0f}%)")
-    print(f"  Refusal Accuracy:   {refusal_correct}/{len(out_scope_tests)} "
-          f"({refusal_correct/max(len(out_scope_tests),1)*100:.0f}%)")
-    print(f"  Total Time:         {total_time:.1f}s "
-          f"(avg {total_time/max(total_tests,1):.1f}s per question)")
-
-    # Save results
     results_path = Path(__file__).parent / "evaluation_results.json"
     with open(results_path, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
+        json.dump({
+            "generated_on": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "loaded_laws": sorted(loaded),
+            "n_verified": len(scored),
+            "n_unverified": len(unverified),
+            "results": results,
+        }, f, indent=2, ensure_ascii=False)
     print(f"\n  Detailed results saved to: {results_path}")
 
-    if total_pass == total_tests:
-        print("\n  [OK] ALL TESTS PASSED!")
-    else:
-        failed = [r for r in results if not r.get("overall_pass", False)]
-        print(f"\n  [WARN] {len(failed)} test(s) failed:")
-        for r in failed:
-            print(f"    - Q{r['id']}: {r['question']}")
-
-    return total_pass == total_tests
+    if scored and all(r.get("overall_pass") for r in scored):
+        print("\n  [OK] ALL VERIFIED TESTS PASSED")
+        return True
+    if not scored:
+        # No verified ground truth yet: a full run cannot pass the gate.
+        print("\n  [WARN] Gate cannot pass without owner-verified questions (GATE 1).")
+        return False
+    print("\n  [WARN] verified failures above")
+    return False
 
 
 # ---------------------------------------------------------------------------
-# CLI Entry Point
+# CLI
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-
-    if "--scope-only" in args:
-        success = evaluate_scope_only()
+    if "--offline" in sys.argv:
+        ok = evaluate_offline()
     else:
-        success = evaluate_full()
-
-    sys.exit(0 if success else 1)
+        ok = evaluate_full()
+    sys.exit(0 if ok else 1)

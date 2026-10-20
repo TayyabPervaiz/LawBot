@@ -1,62 +1,65 @@
 """
-Legal Section-Aware Parser for Pakistani Statutory Texts.
+Legal Section-Aware Parser for Pakistani Statutory Texts (Phase 2A).
 
-This is the FOUNDATION of the entire RAG pipeline. If sections are split
-incorrectly, every downstream answer will cite the wrong law.
+Reads every law file listed in src/law_registry.py that exists on disk,
+using each entry's own `section_pattern`, and writes a validation report
+for owner review BEFORE anything is indexed (revised plan Section 5.3).
 
-Design decisions:
-1. We parse by statutory "Section X." boundaries — NOT by character count.
-   Naive 500-char splitting severs subsections, provisos, and definitions
-   mid-sentence, which destroys legal meaning.
+Design decisions (unchanged from the single-law version that worked):
+1. Chunks are statutory sections, never character counts. Naive splitting
+   severs subsections, provisos, and definitions mid-sentence.
+2. Each chunk carries rich metadata (law_id, law title, section number and
+   title, chapter, jurisdiction) so answers can cite precisely and retrieval
+   can filter by law_id when testing.
+3. Oversized sections are split by subsection while keeping a context header
+   that names the parent section.
+4. Chapter headings are tracked as state so every section knows its chapter.
 
-2. Each chunk carries rich metadata (law title, section number, section title,
-   chapter) so the LLM can cite precisely: "[Act Name - Section X(y)]".
-
-3. Oversized sections (like Section 2 Definitions or Section 15 Eviction
-   grounds) are split by subsection while preserving a context header
-   so the LLM always knows which section a subsection belongs to.
-
-4. Chapter headings are tracked as state so each section knows its chapter.
+New in Phase 2A (revised plan Section 5.3):
+5. Configurable section pattern PER LAW from the registry.
+6. A law is parsed only if its file exists (registry "loaded" definition).
+7. A validation report is written to
+   data/processed/validation_report.txt: count vs expected, first/last
+   sections, ordering with duplicate/gap/out-of-order detection, chunk-size
+   warnings, and 20 randomly chosen sections printed in FULL for the owner
+   to compare word for word against the official PDF.
+8. If validation of a law fails hard (no sections found), the law is
+   skipped and reported — never silently indexed.
 """
 
 import re
 import json
+import random
 from pathlib import Path
-from src.config import RAW_DATA_DIR, PROCESSED_DATA_DIR
 
-
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
+from src.config import PROCESSED_DATA_DIR, VALIDATION_REPORT_PATH
+import src.law_registry as registry
 
 # Maximum chunk size in characters. Sections longer than this get split
-# by subsection. Chosen to be comfortably within embedding model limits
-# (all-MiniLM-L6-v2 handles ~256 tokens ≈ ~1200 chars) while keeping
-# enough context for the LLM.
+# by subsection (comfortably within embedding-model limits while keeping
+# enough context for the LLM).
 MAX_CHUNK_CHARS = 1500
 
-# Regex to detect the start of a statutory section.
-# Matches: "Section 1.", "Section 15.", "Section 2A.", etc.
-# Captures: group(1) = section number (e.g., "15", "2A")
-#           group(2) = section title (e.g., "Application for eviction.")
-SECTION_PATTERN = re.compile(
-    r"^Section\s+(\d+[A-Za-z]?)\.\s*(.*)",
-    re.MULTILINE
-)
-
-# Regex to detect chapter headings.
-# Matches: "CHAPTER I", "CHAPTER VII", "CHAPTER IV\nRENT TRIBUNAL"
+# Regex to detect chapter headings. Matches "CHAPTER I", "CHAPTER VII"
+# optionally followed by a title line.
 CHAPTER_PATTERN = re.compile(
-    r"^(CHAPTER\s+[IVXLCDM]+)\s*\n?(.*)",
-    re.MULTILINE
+    r"^(CHAPTER\s+[IVXLCDM]+|CHAPTER\s+\d+)\s*[\n\-—:]?\s*(.*)",
+    re.MULTILINE | re.IGNORECASE
 )
 
 # Regex to detect subsection boundaries for splitting oversized sections.
-# Matches: "(1) ...", "(2) ...", "(a) ...", "(b) ..." at the start of a line.
+# Matches "(1) ...", "(2) ...", "(a) ...", "(b) ..." at the start of a line.
 SUBSECTION_PATTERN = re.compile(
     r"^(\(\d+\)|\([a-z]\))\s+",
     re.MULTILINE
 )
+
+# Number of sections printed in full in the validation report for owner
+# spot-checking against the official PDF (revised plan Section 2.3 step 6).
+SPOT_CHECK_COUNT = 20
+
+# A parsed section shorter than this is suspicious (possible bad split).
+MIN_SECTION_CHARS = 30
 
 
 # ---------------------------------------------------------------------------
@@ -68,12 +71,12 @@ def extract_chapters(full_text: str) -> list[dict]:
     Extract all chapter headings and their positions from the full text.
 
     Returns a list of dicts sorted by position:
-        [{"chapter": "CHAPTER V: EVICTION", "start": 4521}, ...]
+        [{"chapter": "CHAPTER I: PRELIMINARY", "start": 4521}, ...]
     """
     chapters = []
     for match in CHAPTER_PATTERN.finditer(full_text):
-        chapter_num = match.group(1).strip()        # e.g., "CHAPTER V"
-        chapter_title = match.group(2).strip()       # e.g., "EVICTION"
+        chapter_num = match.group(1).strip()
+        chapter_title = match.group(2).strip()
         if chapter_title:
             chapter_label = f"{chapter_num}: {chapter_title}"
         else:
@@ -86,10 +89,7 @@ def extract_chapters(full_text: str) -> list[dict]:
 
 
 def get_chapter_for_position(chapters: list[dict], position: int) -> str:
-    """
-    Given a character position in the text, return the chapter it falls under.
-    Uses the last chapter heading that appears before this position.
-    """
+    """Return the chapter in force at a character position (UNKNOWN before any heading)."""
     current_chapter = "UNKNOWN"
     for ch in chapters:
         if ch["start"] <= position:
@@ -100,163 +100,57 @@ def get_chapter_for_position(chapters: list[dict], position: int) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Section Extraction
+# Subsection splitting and merging (unchanged logic, parametrized)
 # ---------------------------------------------------------------------------
 
-def extract_sections(full_text: str, law_title: str, chapters: list[dict]) -> list[dict]:
-    """
-    Extract all statutory sections from the full text.
-
-    Each section is bounded by the start of one "Section X." and the start
-    of the next "Section Y." (or end of file).
-
-    Returns a list of dicts:
-        [{
-            "section_number": "15",
-            "section_title": "Application for eviction",
-            "chapter": "CHAPTER V: EVICTION",
-            "law_title": "The Punjab Rented Premises Act, 2009",
-            "text": "Section 15. Application for eviction. (1) A landlord..."
-        }, ...]
-    """
-    # Find all section start positions
-    matches = list(SECTION_PATTERN.finditer(full_text))
-
-    if not matches:
-        print("WARNING: No sections found! Check that the text uses 'Section X.' format.")
-        return []
-
-    sections = []
-    for i, match in enumerate(matches):
-        section_number = match.group(1).strip()
-        section_title_raw = match.group(2).strip()
-
-        # Clean the section title: remove trailing period
-        section_title = section_title_raw.rstrip(".")
-
-        # Extract the full text of this section:
-        # From the start of this "Section X." to the start of the next "Section Y."
-        section_start = match.start()
-        if i + 1 < len(matches):
-            section_end = matches[i + 1].start()
-        else:
-            section_end = len(full_text)
-
-        section_text = full_text[section_start:section_end].strip()
-
-        # Determine which chapter this section belongs to
-        chapter = get_chapter_for_position(chapters, section_start)
-
-        sections.append({
-            "section_number": section_number,
-            "section_title": section_title,
-            "chapter": chapter,
-            "law_title": law_title,
-            "text": section_text,
-        })
-
-    return sections
+def _context_header(law: dict, section_number: str, section_title: str) -> str:
+    return f"[{law['title']} - Section {section_number}: {section_title}]\n\n"
 
 
-# ---------------------------------------------------------------------------
-# Subsection Splitting (for oversized sections)
-# ---------------------------------------------------------------------------
-
-def split_section_by_subsections(section: dict) -> list[dict]:
-    """
-    Split an oversized section into smaller chunks by subsection boundaries.
-
-    Each sub-chunk gets a context header prepended so the LLM always knows
-    which section and law the subsection belongs to.
-
-    Example context header:
-        "[The Punjab Rented Premises Act, 2009 - Section 15: Application for eviction]"
-
-    Strategy:
-    1. Find all subsection markers: (1), (2), (a), (b), etc.
-    2. Split text at those boundaries.
-    3. If the first part (before any subsection marker) is meaningful, keep it.
-    4. Prepend the context header to each sub-chunk.
-    """
+def split_section_by_subsections(law: dict, section: dict) -> list[dict]:
+    """Split an oversized section by subsection boundaries, keeping the parent header."""
     text = section["text"]
-    context_header = (
-        f"[{section['law_title']} - Section {section['section_number']}: "
-        f"{section['section_title']}]\n\n"
-    )
+    header = _context_header(law, section["section_number"], section["section_title"])
 
-    # Find all subsection boundary positions
     subsection_starts = [m.start() for m in SUBSECTION_PATTERN.finditer(text)]
-
     if not subsection_starts:
-        # No subsection markers found — return the section as-is
         return [section]
 
-    # Build sub-chunks
     sub_chunks = []
     boundaries = subsection_starts + [len(text)]
-
-    # Include any preamble text before the first subsection marker
     preamble = text[:boundaries[0]].strip()
 
     for i in range(len(boundaries) - 1):
         chunk_text = text[boundaries[i]:boundaries[i + 1]].strip()
         if not chunk_text:
             continue
-
-        # If this is the first sub-chunk and there's a preamble, prepend it
         if i == 0 and preamble:
             chunk_text = preamble + "\n" + chunk_text
-
-        # If still too long, we group consecutive clauses together
-        # For now, add context header and accept
-        full_chunk_text = context_header + chunk_text
-
         sub_chunks.append({
-            "section_number": section["section_number"],
-            "section_title": section["section_title"],
-            "chapter": section["chapter"],
-            "law_title": section["law_title"],
-            "text": full_chunk_text,
+            **section,
+            "text": header + chunk_text,
             "is_subsection": True,
             "subsection_index": i,
         })
-
     return sub_chunks if sub_chunks else [section]
 
 
-# ---------------------------------------------------------------------------
-# Chunk Assembly
-# ---------------------------------------------------------------------------
-
 def merge_small_consecutive_clauses(sub_chunks: list[dict], max_chars: int = MAX_CHUNK_CHARS) -> list[dict]:
-    """
-    Merge consecutive small sub-chunks into larger ones to avoid
-    producing many tiny chunks that lose context.
-
-    Example: clauses (a), (b), (c), (d) of Section 6 are each ~100 chars.
-    It's better to merge them into one chunk of ~400 chars.
-    """
+    """Merge consecutive small subsection-chunks of the same section into one chunk."""
     if not sub_chunks:
         return []
 
     merged = []
     current = sub_chunks[0].copy()
 
-    for i in range(1, len(sub_chunks)):
-        next_chunk = sub_chunks[i]
-        combined_length = len(current["text"]) + len(next_chunk["text"])
-
-        # Merge if both are subsections of the same section AND combined size fits
+    for next_chunk in sub_chunks[1:]:
+        combined = len(current["text"]) + len(next_chunk["text"])
         same_section = (
             current["section_number"] == next_chunk["section_number"]
             and current.get("is_subsection") and next_chunk.get("is_subsection")
         )
-
-        if same_section and combined_length <= max_chars:
-            # Merge: append next chunk's text (skip its context header since current already has one)
-            # Extract just the subsection text (after the context header)
+        if same_section and combined <= max_chars:
             next_text = next_chunk["text"]
-            # Find end of context header (it ends with "]\n\n")
             header_end = next_text.find("]\n\n")
             if header_end != -1:
                 next_text = next_text[header_end + 3:]
@@ -269,121 +163,142 @@ def merge_small_consecutive_clauses(sub_chunks: list[dict], max_chars: int = MAX
     return merged
 
 
-def build_chunks(sections: list[dict]) -> list[dict]:
-    """
-    Convert extracted sections into final chunks ready for embedding.
+def _finalize_chunk(law_id: str, chunk: dict) -> dict:
+    """Attach registry-backed metadata, a stable id, and the metadata dict."""
+    sec_num = chunk["section_number"]
+    sub_idx = chunk.get("subsection_index")
+    chunk_id = f"{law_id}_sec_{sec_num}" + (f"_sub_{sub_idx}" if sub_idx is not None else "")
 
-    For each section:
-    - If it fits within MAX_CHUNK_CHARS, keep it as one chunk.
-    - If it's oversized, split by subsections and merge small consecutive ones.
+    chunk["id"] = chunk_id
+    chunk["metadata"] = {
+        "law_id": law_id,
+        "law_title": chunk["law_title"],
+        "short_title": chunk["short_title"],
+        "jurisdiction": chunk["jurisdiction"],
+        "category": chunk["category"],
+        "section_number": sec_num,
+        "section_title": chunk["section_title"],
+        "chapter": chunk["chapter"],
+        "amended_up_to": chunk.get("amended_up_to"),
+    }
+    return chunk
 
-    Each final chunk gets a unique ID for ChromaDB.
-    """
+
+def build_chunks(law_id: str, law: dict, sections: list[dict]) -> list[dict]:
+    """Convert extracted sections into final chunks (split oversized, merge tiny)."""
     all_chunks = []
-
     for section in sections:
         if len(section["text"]) <= MAX_CHUNK_CHARS:
-            # Section fits in one chunk
-            all_chunks.append(section)
+            all_chunks.append(_finalize_chunk(law_id, dict(section)))
         else:
-            # Section is too long — split by subsections
-            sub_chunks = split_section_by_subsections(section)
-            # Merge tiny consecutive sub-chunks back together
+            sub_chunks = split_section_by_subsections(law, section)
             sub_chunks = merge_small_consecutive_clauses(sub_chunks)
-            all_chunks.extend(sub_chunks)
-
-    # Assign unique IDs
-    for chunk in all_chunks:
-        # Generate a stable, unique ID
-        law_slug = chunk["law_title"].lower().replace(" ", "_").replace(",", "")
-        sec_num = chunk["section_number"]
-        sub_idx = chunk.get("subsection_index", "")
-        if sub_idx != "":
-            chunk["id"] = f"{law_slug}_sec_{sec_num}_sub_{sub_idx}"
-        else:
-            chunk["id"] = f"{law_slug}_sec_{sec_num}"
-
-        # Build metadata dict (everything except 'text' and 'id')
-        chunk["metadata"] = {
-            "law_title": chunk["law_title"],
-            "section_number": chunk["section_number"],
-            "section_title": chunk["section_title"],
-            "chapter": chunk["chapter"],
-        }
-
+            all_chunks.extend(_finalize_chunk(law_id, sc) for sc in sub_chunks)
     return all_chunks
+
+
+# ---------------------------------------------------------------------------
+# Validation Report (revised plan Section 5.3 point 4)
+# ---------------------------------------------------------------------------
+
+def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[str]) -> list[str]:
+    """
+    Run ordering/count/size checks for one law.
+
+    Appends a human-readable report to `lines` and returns the law_ids of
+    FAILURES (empty list = pass).
+    """
+    failures = []
+    a = lines.append
+
+    a("")
+    a(f"{'=' * 70}")
+    a(f"LAW: {law['title']}  (law_id={law_id})")
+    a(f"File: {law['file']}")
+    a(f"{'=' * 70}")
+
+    if not sections:
+        a("RESULT: FAIL — no sections found with the registry pattern.")
+        a("  Check section_pattern against the real file, or the file is empty/garbled.")
+        return [f"{law_id}:no-sections"]
+
+    numbers = [s["section_number"] for s in sections]
+
+    def _num_key(n: str):
+        m = re.match(r"(\d+)([A-Za-z]?)", n or "")
+        if not m:
+            return (10 ** 9, "")
+        return (int(m.group(1)), m.group(2))
+
+    ordered = sorted(numbers, key=_num_key)
+    dupes = sorted({n for n in set(numbers) if numbers.count(n) > 1})
+    gaps = [
+        n for cur, nxt in zip(ordered, ordered[1:])
+        if _num_key(nxt)[0] - _num_key(cur)[0] > 1
+    ]
+    out_of_order = numbers != ordered
+
+    expected = law.get("expected_section_count")
+    count_ok = True
+    if expected is None:
+        a("RESULT: COUNT UNVERIFIABLE — owner has not set expected_section_count.")
+        a("  Owner action: count sections in the PDF and fill expected_section_count.")
+    elif len(numbers) != expected:
+        count_ok = False
+        a(f"RESULT: FAIL — found {len(numbers)} sections, expected {expected}.")
+        failures.append(f"{law_id}:count-mismatch")
+
+    a(f"Sections found: {len(numbers)}" + (f" (expected {expected})" if expected else ""))
+    a(f"First section: [{numbers[0]}] {sections[0]['section_title'][:60]}")
+    a(f"Last section:  [{numbers[-1]}] {sections[-1]['section_title'][:60]}")
+    if dupes:
+        a(f"DUPLICATE section numbers: {dupes}")
+        failures.append(f"{law_id}:duplicates")
+    if gaps:
+        a(f"GAPS (possible missing sections): {gaps}")
+        failures.append(f"{law_id}:gaps")
+    if out_of_order:
+        a("Sections are NOT in ascending order — suspicious pattern or source layout.")
+        failures.append(f"{law_id}:ordering")
+
+    short = [f"{s['section_number']}" for s in sections if len(s["text"]) < MIN_SECTION_CHARS]
+    if short:
+        a(f"Suspiciously short sections (possible bad split): {short}")
+
+    # Chunk-size statistics
+    sizes = [len(s["text"]) for s in sections]
+    a(f"Section text sizes: min={min(sizes)}, max={max(sizes)}, avg={sum(sizes) // len(sizes)}")
+
+    # Random full-text spot checks for the owner (revised plan 2.3 step 6)
+    count = min(SPOT_CHECK_COUNT, len(sections))
+    picks = random.sample(sections, count)
+    a("")
+    a(f"--- {count} RANDOM SECTIONS FOR OWNER WORD-FOR-WORD CHECK AGAINST THE PDF ---")
+    for s in picks:
+        a("")
+        a(f"### Section {s['section_number']} — {s['section_title']}")
+        a(s["text"])
+
+    status = "WARN/FAIL (see count result above)" if failures else "OK (ordering/duplicates clean)"
+    a("")
+    a(f"LAW RESULT: {status}")
+
+    return failures
 
 
 # ---------------------------------------------------------------------------
 # File I/O
 # ---------------------------------------------------------------------------
 
-def parse_law_file(file_path: Path, law_title: str) -> list[dict]:
-    """
-    Parse a single law text file into chunks.
-
-    Args:
-        file_path: Path to the .txt file containing the law text.
-        law_title: Official title of the law (e.g., "The Punjab Rented Premises Act, 2009").
-
-    Returns:
-        List of chunk dicts ready for vector store ingestion.
-    """
-    print(f"\n{'='*60}")
-    print(f"Parsing: {law_title}")
-    print(f"File:    {file_path}")
-    print(f"{'='*60}")
-
-    # Read the full text
-    text = file_path.read_text(encoding="utf-8")
-    print(f"  File size: {len(text):,} characters")
-
-    # Extract chapter structure
-    chapters = extract_chapters(text)
-    print(f"  Chapters found: {len(chapters)}")
-    for ch in chapters:
-        print(f"    - {ch['chapter']}")
-
-    # Extract sections
-    sections = extract_sections(text, law_title, chapters)
-    print(f"  Sections found: {len(sections)}")
-
-    # Build chunks (split oversized, merge tiny)
-    chunks = build_chunks(sections)
-    print(f"  Final chunks: {len(chunks)}")
-
-    # Report chunk sizes
-    sizes = [len(c["text"]) for c in chunks]
-    if sizes:
-        print(f"  Chunk sizes: min={min(sizes)}, max={max(sizes)}, avg={sum(sizes)//len(sizes)}")
-
-    # Report any oversized chunks that couldn't be split further
-    oversized = [c for c in chunks if len(c["text"]) > MAX_CHUNK_CHARS]
-    if oversized:
-        print(f"  WARNING: {len(oversized)} chunks exceed {MAX_CHUNK_CHARS} chars:")
-        for c in oversized:
-            print(f"    - Section {c['section_number']}: {len(c['text'])} chars")
-
-    return chunks
-
-
 def save_chunks(chunks: list[dict], output_path: Path) -> None:
-    """Save parsed chunks to a JSON file for inspection and downstream use."""
+    """Save parsed chunks to JSON for the vector-store indexer."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    # Save a clean version (without redundant keys in the top-level dict)
-    serializable = []
-    for chunk in chunks:
-        serializable.append({
-            "id": chunk["id"],
-            "text": chunk["text"],
-            "metadata": chunk["metadata"],
-        })
-
+    serializable = [
+        {"id": c["id"], "text": c["text"], "metadata": c["metadata"]}
+        for c in chunks
+    ]
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(serializable, f, indent=2, ensure_ascii=False)
-
-    print(f"\n  Saved {len(serializable)} chunks to: {output_path}")
 
 
 def load_chunks(input_path: Path) -> list[dict]:
@@ -393,48 +308,99 @@ def load_chunks(input_path: Path) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Main: Parse all law files in data/raw/
+# Main: parse every loaded law in the registry
 # ---------------------------------------------------------------------------
 
-# Registry of known law files and their official titles.
-# To add a new law, just add an entry here and drop the .txt file in data/raw/.
-LAW_REGISTRY = {
-    "tenancy_punjab/punjab_rented_premises_act_2009.txt": {
-        "title": "The Punjab Rented Premises Act, 2009",
-    },
-    # Future laws can be added here:
-    # "penal_code/pakistan_penal_code_1860.txt": {
-    #     "title": "The Pakistan Penal Code, 1860",
-    # },
-}
-
-
-def parse_all() -> list[dict]:
+def parse_all(persist: bool = True) -> tuple[list[dict], str]:
     """
-    Parse all registered law files and return combined chunks.
-    Also saves chunks to data/processed/chunks.json.
-    """
-    all_chunks = []
+    Parse every registry law whose file exists.
 
-    for relative_path, info in LAW_REGISTRY.items():
-        file_path = RAW_DATA_DIR.parent / relative_path
+    Returns (all_chunks, validation_report_text).
+    Does NOT index anything — indexing is a separate, owner-gated step.
+    """
+    report_lines: list[str] = ["LawBot parser validation report — generated by src/parser.py"]
+    all_chunks: list[dict] = []
+    hard_failures = 0
+
+    available_ids = registry.loaded_law_ids()
+    missing_ids = [lid for lid in registry.get_law_ids() if lid not in available_ids]
+    if not available_ids:
+        print("No law files found in data/raw/ — nothing to parse.")
+        print("Download laws first (revised plan Section 2).")
+
+    if missing_ids:
+        report_lines.append(
+            "\nRegistered but NOT loaded (file missing): "
+            + ", ".join(missing_ids)
+        )
+
+    for law_id in available_ids:
+        law = registry.get_law(law_id)
+        file_path = registry.law_file_path(law_id)
         if not file_path.exists():
-            print(f"\n  WARNING: File not found: {file_path}")
-            print(f"  Skipping {info['title']}")
             continue
 
-        chunks = parse_law_file(file_path, info["title"])
+        print(f"\n{'=' * 60}\nParsing: {law['title']}\nFile:    {file_path}\n{'=' * 60}")
+
+        text = file_path.read_text(encoding="utf-8")
+        print(f"  File size: {len(text):,} characters")
+
+        chapters = extract_chapters(text)
+        print(f"  Chapters found: {len(chapters)}")
+
+        sections = _extract_with_chapters(text, law, chapters)
+        if not sections:
+            print(f"  WARNING: No sections matched {law['section_pattern']!r} — skipping law.")
+            report_lines.extend([
+                "",
+                f"{'=' * 70}",
+                f"LAW: {law['title']}  (law_id={law_id})",
+                f"RESULT: FAIL — no sections found with pattern {law['section_pattern']!r}.",
+            ])
+            hard_failures += 1
+            continue
+
+        chunks = build_chunks(law_id, law, sections)
+        print(f"  Sections: {len(sections)} | Chunks: {len(chunks)}")
         all_chunks.extend(chunks)
 
-    # Save combined chunks
-    output_path = PROCESSED_DATA_DIR / "chunks.json"
-    save_chunks(all_chunks, output_path)
+        law_failures = validate_sections(law_id, law, sections, report_lines)
+        hard_failures += len(law_failures)
 
-    print(f"\n{'='*60}")
-    print(f"TOTAL: {len(all_chunks)} chunks from {len(LAW_REGISTRY)} law(s)")
-    print(f"{'='*60}")
+    report_text = "\n".join(report_lines)
+    if persist:
+        VALIDATION_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        VALIDATION_REPORT_PATH.write_text(report_text, encoding="utf-8")
+        print(f"\nValidation report written to: {VALIDATION_REPORT_PATH}")
 
-    return all_chunks
+    if persist:
+        save_chunks(all_chunks, PROCESSED_DATA_DIR / "chunks.json")
+        print(f"Saved {len(all_chunks)} chunks to {PROCESSED_DATA_DIR / 'chunks.json'}")
+
+    return all_chunks, report_text
+
+
+def _extract_with_chapters(text: str, law: dict, chapters: list[dict]) -> list[dict]:
+    """extract_sections but with chapter state properly wired (helper kept small)."""
+    pattern = re.compile(law["section_pattern"], re.MULTILINE)
+    matches = list(pattern.finditer(text))
+    sections = []
+
+    for i, match in enumerate(matches):
+        section_start = match.start()
+        section_end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        sections.append({
+            "section_number": match.group(1).strip(),
+            "section_title": match.group(2).strip().rstrip("."),
+            "chapter": get_chapter_for_position(chapters, section_start),
+            "law_title": law["title"],
+            "short_title": law["short_title"],
+            "jurisdiction": law["jurisdiction"],
+            "category": law["category"],
+            "amended_up_to": law.get("amended_up_to"),
+            "text": text[section_start:section_end].strip(),
+        })
+    return sections
 
 
 # ---------------------------------------------------------------------------
@@ -443,21 +409,19 @@ def parse_all() -> list[dict]:
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("LEGAL SECTION-AWARE PARSER")
+    print("LEGAL SECTION-AWARE PARSER (multi-law, registry-driven)")
     print("=" * 60)
 
-    chunks = parse_all()
+    chunks, report = parse_all(persist=True)
 
-    # Print a summary of each chunk for verification
     print("\n\nCHUNK SUMMARY:")
     print("-" * 60)
     for i, chunk in enumerate(chunks):
         meta = chunk["metadata"]
         print(
-            f"  [{i+1:2d}] Section {meta['section_number']:>3s} | "
-            f"{meta['chapter']:<30s} | "
-            f"{meta['section_title'][:40]:<40s} | "
-            f"{len(chunk['text']):>5d} chars"
+            f"  [{i + 1:3d}] {meta['law_id'][:24]:<24} | Sec {meta['section_number']:>4} | "
+            f"{meta['section_title'][:40]:<40} | {len(chunk['text']):>5d} chars"
         )
 
-    print(f"\n[OK] Parser complete. {len(chunks)} chunks ready for embedding.")
+    print(f"\n[OK] Parser complete. {len(chunks)} chunks ready.")
+    print("NOTE: Indexing is a separate, owner-gated step (revised plan GATE 2).")

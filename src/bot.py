@@ -21,6 +21,7 @@ import json
 from pathlib import Path
 
 from src.config import TOP_K_RESULTS, PROCESSED_DATA_DIR
+import src.law_registry as registry
 
 
 # ---------------------------------------------------------------------------
@@ -148,41 +149,65 @@ def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dic
             "source_sections": [],
         }
 
-    # Step 2: Retrieve relevant chunks
-    vs = _get_vector_store()
-    collection = vs.get_or_create_collection()
+    # Step 2: Hybrid retrieval across ALL loaded laws (revised plan 5.4)
+    if verbose:
+        from src import retrieval as retriever, vector_store as vs  # noqa: F401
+        _c = vs.get_or_create_collection()
+        if _c.count() == 0:
+            return {
+                "answer": (
+                    "The legal knowledge base is empty. Please run the indexing step first:\n"
+                    "  1. python -m src.parser\n"
+                    "  2. python -m src.bot --index"
+                ),
+                "in_scope": True,
+                "detected_topic": None,
+                "citations": {"has_citations": False, "citation_count": 0, "citations_found": []},
+                "source_sections": [],
+                "not_covered": False,
+            }
+        print(f"  [Retrieval] Hybrid search (vector + BM25, pool={retriever.config.CANDIDATE_POOL_SIZE})...")
 
-    if collection.count() == 0:
+    from src import retrieval as retrieval_module
+    retrieval_result = retrieval_module.search(question, top_k=top_k)
+    retrieved = retrieval_result["results"]
+
+    if verbose:
+        print(f"  [Retrieval] {len(retrieved)} candidate chunks after fusion/rerank:")
+        for i, r in enumerate(retrieved):
+            meta = r.get("metadata") or {}
+            print(f"    {i+1}. Sec {meta.get('section_number', '?')}: "
+                  f"{meta.get('section_title', '?')[:40]} "
+                  f"(fused: {r.get('fused_score', '?')})")
+
+    # Jurisdiction awareness (revised plan 5.4 point 6)
+    jnote = retrieval_module.jurisdiction_note(question)
+
+    # Step 3: Relevance threshold — below it, the loaded laws don't cover this
+    if retrieval_result["below_threshold"] or not retrieved:
+        loaded_line = registry.format_loaded_laws_for_refusal()
+        note = f"\n\n{jnote}" if jnote else ""
         return {
             "answer": (
-                "The legal knowledge base is empty. Please run the indexing step first:\n"
-                "  1. python -m src.parser\n"
-                "  2. python -m src.bot --index"
+                f"The laws currently loaded ({loaded_line}) do not explicitly "
+                "address this specific issue. Please consult a qualified "
+                "advocate for guidance precisely on your situation."
+                + note
             ),
             "in_scope": True,
             "detected_topic": None,
             "citations": {"has_citations": False, "citation_count": 0, "citations_found": []},
             "source_sections": [],
+            "not_covered": True,
         }
 
-    if verbose:
-        print(f"  [Retrieval] Querying vector store for top {top_k} chunks...")
-
-    retrieved = vs.query(question, top_k=top_k)
-
-    if verbose:
-        print(f"  [Retrieval] Found {len(retrieved)} relevant chunks:")
-        for i, r in enumerate(retrieved):
-            meta = r.get("metadata", {})
-            print(f"    {i+1}. Section {meta.get('section_number', '?')}: "
-                  f"{meta.get('section_title', '?')} "
-                  f"(distance: {r.get('distance', '?'):.4f})")
-
-    # Step 3: Generate answer
+    # Step 4: Generate answer
     if verbose:
         print(f"  [Generator] Calling LLM...")
 
     result = gen.generate_answer(question, retrieved)
+    if jnote and not result["answer"].startswith("Error:"):
+        result["answer"] = result["answer"] + f"\n\n{jnote}"
 
     if verbose:
         print(f"  [Generator] Citations found: {result['citations']['citations_found']}")

@@ -85,12 +85,17 @@ copy .env.example .env
 ### 3. Process Legal Data
 
 ```bash
-# Parse the law text into structured chunks
+# Parse the registered law files into validated chunks
+# (writes data/processed/chunks.json + data/processed/validation_report.txt
+#  — review the report BEFORE indexing)
 python -m src.parser
 
 # Build the vector search index
-python -m src.vector_store
+python -m src.bot --index
 ```
+
+> ⚠️ **Do not run `python -m src.vector_store` directly to index.** Its
+> `__main__` is a module self-test that resets the collection.
 
 ### 4. Run the Assistant
 
