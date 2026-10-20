@@ -1,0 +1,15 @@
+# Environment
+.env
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.venv/
+
+# ChromaDB local database
+data/chroma_db/
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,298 @@
+[
+  {
+    "id": 1,
+    "question": "Can my landlord evict me without notice?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "15"
+      ],
+      "found": [
+        "15"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 51.05,
+    "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding eviction procedures:\n\n**1. Eviction Requires a Formal Application to the Rent Tribunal**\nA landlord cannot simply ev..."
+  },
+  {
+    "id": 2,
+    "question": "Can my landlord increase rent whenever he wants?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "6",
+        "10"
+      ],
+      "found": [
+        "6",
+        "10"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 44.93,
+    "answer_preview": "No, your landlord cannot increase the rent whenever he wants. The law places specific restrictions on rent enhancement to protect tenants from arbitrary increases.\n\nHere are the specific legal provisi..."
+  },
+  {
+    "id": 3,
+    "question": "Does my landlord have to return my security deposit?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "6"
+      ],
+      "found": [
+        "6"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 7.49,
+    "answer_preview": "Yes, your landlord is legally required to return your security deposit, subject to specific conditions regarding lawful deductions.\n\nAccording to the Punjab Rented Premises Act, 2009:\n\n*   **Mandatory..."
+  },
+  {
+    "id": 4,
+    "question": "Is a verbal tenancy agreement valid in Punjab?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "5"
+      ],
+      "found": [
+        "5"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 8.84,
+    "answer_preview": "Based on the statutory provisions provided, a verbal tenancy agreement is **not valid** under the Punjab Rented Premises Act, 2009. The law explicitly requires that tenancy agreements be in writing an..."
+  },
+  {
+    "id": 5,
+    "question": "What are the grounds for eviction of a tenant?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "15"
+      ],
+      "found": [
+        "15"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 14.67,
+    "answer_preview": "Under the Punjab Rented Premises Act, 2009, a landlord must apply to the Rent Tribunal to evict a tenant. The Rent Tribunal may pass an order of eviction on one or more of the following specific groun..."
+  },
+  {
+    "id": 6,
+    "question": "Can the landlord shut off my electricity or water if I delay rent?",
+    "type": "in_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [
+        "13"
+      ],
+      "found": [
+        "13"
+      ],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "N/A (in-scope question)"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 42.85,
+    "answer_preview": "Based on the statutory provisions provided, here is the legal position regarding a landlord cutting off essential services like electricity or water due to rent delays:\n\n**1. Prohibition on Cutting Of..."
+  },
+  {
+    "id": 7,
+    "question": "How do I file an FIR for motorcycle theft?",
+    "type": "out_of_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [],
+      "found": [],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "Correctly refused without citing sections"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 0.0,
+    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Criminal** falls outside this scope.\n\nPlease consult an app..."
+  },
+  {
+    "id": 8,
+    "question": "What is the procedure for Khula under Pakistani law?",
+    "type": "out_of_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [],
+      "found": [],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "Correctly refused without citing sections"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 0.0,
+    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Family Law** falls outside this scope.\n\nPlease consult an a..."
+  },
+  {
+    "id": 9,
+    "question": "How to report harassment on WhatsApp to FIA?",
+    "type": "out_of_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [],
+      "found": [],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "Correctly refused without citing sections"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 0.0,
+    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Cybercrime** falls outside this scope.\n\nPlease consult an a..."
+  },
+  {
+    "id": 10,
+    "question": "Can my landlord kick me out in London?",
+    "type": "out_of_scope",
+    "overall_pass": true,
+    "citation": {
+      "passed": true,
+      "expected": [],
+      "found": [],
+      "missing": []
+    },
+    "refusal": {
+      "passed": true,
+      "reason": "Correctly refused without citing sections"
+    },
+    "content": {
+      "passed": true,
+      "missing": [],
+      "forbidden_found": []
+    },
+    "disclaimer": {
+      "passed": true,
+      "reason": "Disclaimer present"
+    },
+    "time_seconds": 0.0,
+    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Foreign Jurisdiction** falls outside this scope.\n\nPlease co..."
+  }
+]
