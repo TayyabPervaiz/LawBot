@@ -233,7 +233,7 @@ def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[
     ordered = sorted(numbers, key=_num_key)
     dupes = sorted({n for n in set(numbers) if numbers.count(n) > 1})
     gaps = [
-        n for cur, nxt in zip(ordered, ordered[1:])
+        nxt for cur, nxt in zip(ordered, ordered[1:])
         if _num_key(nxt)[0] - _num_key(cur)[0] > 1
     ]
     out_of_order = numbers != ordered

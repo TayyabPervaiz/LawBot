@@ -14,12 +14,82 @@ Section text sizes: min=122, max=1844, avg=443
 
 --- 20 RANDOM SECTIONS FOR OWNER WORD-FOR-WORD CHECK AGAINST THE PDF ---
 
+### Section 14 — Penalty for contravention
+Section 14. Penalty for contravention.
+Whoever contravenes any provision of Section 13 shall be punishable with imprisonment for a term which may extend to six months, or with fine which may extend to one hundred thousand rupees, or with both.
+
+CHAPTER V
+EVICTION
+
+### Section 13 — Prohibition of certain acts by landlord
+Section 13. Prohibition of certain acts by landlord.
+(1) No landlord shall:
+(a) without just cause, cut off or withhold any essential amenity or service enjoyed by the tenant, including water supply, electricity, sanitary services, lifts, or any other amenity;
+(b) lock up any portion of the rented premises;
+(c) remove any door, window or fitting from the rented premises;
+(d) interfere with the tenant's peaceful enjoyment of the rented premises.
+(2) If the landlord contravenes the provisions of subsection (1), the tenant may apply to the Rent Tribunal for restoration of such amenity or service, and the Rent Tribunal may pass such order as it deems fit.
+
+### Section 16 — Establishment of Rent Tribunals
+Section 16. Establishment of Rent Tribunals.
+(1) The Government may, by notification in the official Gazette, establish one or more Rent Tribunals for any area.
+(2) A Rent Tribunal shall consist of a person who is or has been a Civil Judge or has been an advocate for not less than ten years.
+
+### Section 17 — Power of Rent Tribunal
+Section 17. Power of Rent Tribunal.
+The Rent Tribunal shall have the powers of a civil court under the Code of Civil Procedure, 1908, for the purpose of taking evidence and enforcing the attendance of witnesses.
+
+### Section 11 — Determination of fair rent
+Section 11. Determination of fair rent.
+(1) The Rent Tribunal may, on application of the landlord or the tenant, determine the fair rent of the rented premises.
+(2) In determining the fair rent, the Rent Tribunal shall take into consideration:
+(a) the situation and locality of the rented premises;
+(b) the amenities provided;
+(c) the rent payable for similar premises in the locality;
+(d) the increase in the cost of construction and repairs;
+(e) such other factors as may be prescribed.
+
+### Section 22 — Jurisdiction of civil courts barred
+Section 22. Jurisdiction of civil courts barred.
+No civil court shall entertain any suit or proceeding in respect of any matter which a Rent Tribunal or the appellate authority is empowered to determine under this Act.
+
+### Section 21 — Registration fee
+Section 21. Registration fee.
+A tenancy agreement registered under this Act shall be subject to payment of such fee as may be prescribed.
+
 ### Section 19 — Execution of orders
 Section 19. Execution of orders.
 An order passed by the Rent Tribunal or the appellate authority shall be executed as a decree of a civil court.
 
 CHAPTER VII
 MISCELLANEOUS
+
+### Section 24 — Power to make rules
+Section 24. Power to make rules.
+(1) The Government may, by notification in the official Gazette, make rules for carrying out the purposes of this Act.
+(2) Without prejudice to the generality of the foregoing power, such rules may provide for:
+(a) the form of the tenancy agreement;
+(b) the procedure for registration of tenancy agreements;
+(c) the fees for registration;
+(d) the factors for determination of fair rent;
+(e) such other matters as may be prescribed under this Act.
+
+### Section 6 — Obligations of landlord
+Section 6. Obligations of landlord.
+(1) Every landlord shall:
+(a) keep the rented premises in tenantable condition;
+(b) maintain the essential services such as water supply, electricity, sanitation and such other services as may be prescribed;
+(c) not increase the rent during the period of the tenancy agreement except in accordance with the terms of the agreement;
+(d) refund the security deposit to the tenant at the time of determination of the tenancy after deduction, if any, lawfully due;
+(e) not unreasonably deny renewal of a tenancy agreement.
+
+### Section 3 — Scope of the Act
+Section 3. Scope of the Act.
+(1) This Act shall apply to all rented premises situated in the Punjab.
+(2) Nothing in this Act shall apply to:
+(a) any premises let or sub-let to the Government or to any local authority;
+(b) any premises belonging to a charitable institution and let to any person for use as a residence;
+(c) any premises whose monthly rent exceeds such amount as may be prescribed.
 
 ### Section 18 — Appeal
 Section 18. Appeal.
@@ -31,24 +101,34 @@ Section 9. Payment of rent through Rent Registrar.
 (1) Where the landlord refuses to accept rent or does not give a receipt of rent, the tenant may deposit the rent with the Rent Registrar.
 (2) The rent deposited under subsection (1) shall be deemed to have been paid to the landlord.
 
-### Section 6 — Obligations of landlord
-Section 6. Obligations of landlord.
-(1) Every landlord shall:
-(a) keep the rented premises in tenantable condition;
-(b) maintain the essential services such as water supply, electricity, sanitation and such other services as may be prescribed;
-(c) not increase the rent during the period of the tenancy agreement except in accordance with the terms of the agreement;
-(d) refund the security deposit to the tenant at the time of determination of the tenancy after deduction, if any, lawfully due;
-(e) not unreasonably deny renewal of a tenancy agreement.
+### Section 25 — Repeal and saving
+Section 25. Repeal and saving.
+(1) The Punjab Urban Rent Restriction Ordinance, 2007 is hereby repealed.
+(2) Notwithstanding such repeal, all proceedings pending under the repealed Ordinance shall be continued and disposed of under this Act.
 
-### Section 24 — Power to make rules
-Section 24. Power to make rules.
-(1) The Government may, by notification in the official Gazette, make rules for carrying out the purposes of this Act.
-(2) Without prejudice to the generality of the foregoing power, such rules may provide for:
-(a) the form of the tenancy agreement;
-(b) the procedure for registration of tenancy agreements;
-(c) the fees for registration;
-(d) the factors for determination of fair rent;
-(e) such other matters as may be prescribed under this Act.
+### Section 5 — Tenancy agreement
+Section 5. Tenancy agreement.
+(1) Every tenancy agreement shall be in writing and shall be registered with the Rent Registrar of the area within which the rented premises are situated.
+(2) The tenancy agreement shall specify:
+(a) the names and addresses of the landlord and the tenant;
+(b) a description of the rented premises;
+(c) the period of the tenancy;
+(d) the amount of the rent and the time and mode of its payment;
+(e) the amount of security deposit, if any;
+(f) the purpose for which the premises are let;
+(g) such other particulars as may be prescribed.
+(3) If the landlord and tenant fail to execute a tenancy agreement under subsection (1), either of them may apply to the Rent Registrar to register the tenancy.
+
+CHAPTER III
+OBLIGATIONS OF PARTIES
+
+### Section 10 — Enhancement of rent
+Section 10. Enhancement of rent.
+(1) The landlord shall not enhance the rent of the rented premises except in accordance with the terms of the tenancy agreement.
+(2) Where the tenancy agreement does not provide for enhancement of rent, the landlord may apply to the Rent Tribunal for fixation of fair rent.
+
+CHAPTER IV
+RENT TRIBUNAL
 
 ### Section 15 — Application for eviction
 Section 15. Application for eviction.
@@ -67,95 +147,24 @@ Section 15. Application for eviction.
 CHAPTER VI
 PROCEDURE
 
-### Section 21 — Registration fee
-Section 21. Registration fee.
-A tenancy agreement registered under this Act shall be subject to payment of such fee as may be prescribed.
-
-### Section 3 — Scope of the Act
-Section 3. Scope of the Act.
-(1) This Act shall apply to all rented premises situated in the Punjab.
-(2) Nothing in this Act shall apply to:
-(a) any premises let or sub-let to the Government or to any local authority;
-(b) any premises belonging to a charitable institution and let to any person for use as a residence;
-(c) any premises whose monthly rent exceeds such amount as may be prescribed.
-
-### Section 14 — Penalty for contravention
-Section 14. Penalty for contravention.
-Whoever contravenes any provision of Section 13 shall be punishable with imprisonment for a term which may extend to six months, or with fine which may extend to one hundred thousand rupees, or with both.
-
-CHAPTER V
-EVICTION
-
-### Section 10 — Enhancement of rent
-Section 10. Enhancement of rent.
-(1) The landlord shall not enhance the rent of the rented premises except in accordance with the terms of the tenancy agreement.
-(2) Where the tenancy agreement does not provide for enhancement of rent, the landlord may apply to the Rent Tribunal for fixation of fair rent.
-
-CHAPTER IV
-RENT TRIBUNAL
-
-### Section 4 — Restriction on letting
-Section 4. Restriction on letting.
-No landlord shall let or re-let any rented premises except in accordance with this Act.
-
-### Section 12 — Revision of fair rent
-Section 12. Revision of fair rent.
-The fair rent determined under Section 11 shall not be revised for a period of three years from the date on which it was last determined.
-
-### Section 17 — Power of Rent Tribunal
-Section 17. Power of Rent Tribunal.
-The Rent Tribunal shall have the powers of a civil court under the Code of Civil Procedure, 1908, for the purpose of taking evidence and enforcing the attendance of witnesses.
-
-### Section 5 — Tenancy agreement
-Section 5. Tenancy agreement.
-(1) Every tenancy agreement shall be in writing and shall be registered with the Rent Registrar of the area within which the rented premises are situated.
-(2) The tenancy agreement shall specify:
-(a) the names and addresses of the landlord and the tenant;
-(b) a description of the rented premises;
-(c) the period of the tenancy;
-(d) the amount of the rent and the time and mode of its payment;
-(e) the amount of security deposit, if any;
-(f) the purpose for which the premises are let;
-(g) such other particulars as may be prescribed.
-(3) If the landlord and tenant fail to execute a tenancy agreement under subsection (1), either of them may apply to the Rent Registrar to register the tenancy.
-
-CHAPTER III
-OBLIGATIONS OF PARTIES
-
-### Section 20 — Appointment of Rent Registrar
-Section 20. Appointment of Rent Registrar.
-(1) The Government may, by notification in the official Gazette, appoint a Rent Registrar for such area as may be specified.
-(2) The Rent Registrar shall maintain a register of all tenancy agreements in the prescribed form.
-
-### Section 11 — Determination of fair rent
-Section 11. Determination of fair rent.
-(1) The Rent Tribunal may, on application of the landlord or the tenant, determine the fair rent of the rented premises.
-(2) In determining the fair rent, the Rent Tribunal shall take into consideration:
-(a) the situation and locality of the rented premises;
-(b) the amenities provided;
-(c) the rent payable for similar premises in the locality;
-(d) the increase in the cost of construction and repairs;
-(e) such other factors as may be prescribed.
-
 ### Section 23 — Indemnity
 Section 23. Indemnity.
 No suit, prosecution, or other legal proceedings shall lie against any person for anything which is in good faith done or intended to be done under this Act.
 
-### Section 13 — Prohibition of certain acts by landlord
-Section 13. Prohibition of certain acts by landlord.
-(1) No landlord shall:
-(a) without just cause, cut off or withhold any essential amenity or service enjoyed by the tenant, including water supply, electricity, sanitary services, lifts, or any other amenity;
-(b) lock up any portion of the rented premises;
-(c) remove any door, window or fitting from the rented premises;
-(d) interfere with the tenant's peaceful enjoyment of the rented premises.
-(2) If the landlord contravenes the provisions of subsection (1), the tenant may apply to the Rent Tribunal for restoration of such amenity or service, and the Rent Tribunal may pass such order as it deems fit.
+### Section 7 — Obligations of tenant
+Section 7. Obligations of tenant.
+(1) Every tenant shall:
+(a) pay the rent within the time specified in the tenancy agreement;
+(b) use the rented premises only for the purpose for which they are let;
+(c) not sub-let the whole or any part of the rented premises without the written consent of the landlord;
+(d) keep the rented premises in good condition, fair wear and tear excepted;
+(e) not make any structural changes in the rented premises without the written consent of the landlord;
+(f) vacate the rented premises on the determination of the tenancy.
 
-### Section 8 — Receipt for rent
-Section 8. Receipt for rent.
-The landlord shall, on receipt of rent from the tenant, issue a receipt signed by him or his authorized agent.
-
-### Section 22 — Jurisdiction of civil courts barred
-Section 22. Jurisdiction of civil courts barred.
-No civil court shall entertain any suit or proceeding in respect of any matter which a Rent Tribunal or the appellate authority is empowered to determine under this Act.
+### Section 1 — Short title, extent and commencement
+Section 1. Short title, extent and commencement.
+(1) This Act may be called the Punjab Rented Premises Act, 2009.
+(2) It extends to the whole of the Punjab.
+(3) It shall come into force on such date as the Government may, by notification in the official Gazette, appoint.
 
 LAW RESULT: WARN/FAIL (see count result above)
