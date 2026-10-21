@@ -4,139 +4,2008 @@
     "question": "Can my landlord evict me without notice?",
     "language": "en",
     "type": "in_scope",
-    "answered_by": ["tenancy_punjab_2009"],
-    "expected_citations": [{"law_id": "tenancy_punjab_2009", "section": "15"}],
-    "must_contain": ["evict"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "15"
+      }
+    ],
+    "must_contain": [
+      "evict"
+    ],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Provisional citation from the UNVERIFIED audit-stage text; owner must re-map to the official Act (real Sec 15 = Grounds for eviction) after replacing data/raw (see data/processed/step0_tenancy_audit.md)."
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF. Real Sec 15 = 'Grounds for eviction'."
   },
   {
     "id": "TEN-002",
     "question": "Can my landlord increase rent whenever he wants?",
     "language": "en",
     "type": "in_scope",
-    "answered_by": ["tenancy_punjab_2009"],
-    "expected_citations": [{"law_id": "tenancy_punjab_2009", "section": "6"}],
-    "must_contain": ["agreement"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "5"
+      },
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "6"
+      }
+    ],
+    "must_contain": [
+      "agreement"
+    ],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Provisional; old dataset expected sections 6 & 10 of the fake text. Owner to re-map."
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF. Rent terms come from the registered agreement."
   },
   {
     "id": "TEN-003",
     "question": "Does my landlord have to return my security deposit?",
     "language": "en",
     "type": "in_scope",
-    "answered_by": ["tenancy_punjab_2009"],
-    "expected_citations": [{"law_id": "tenancy_punjab_2009", "section": "6"}],
-    "must_contain": ["deposit"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "6"
+      }
+    ],
+    "must_contain": [
+      "deposit"
+    ],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Provisional; owner to re-map to official text."
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF. Owner: confirm the official Act addresses deposit refund."
   },
   {
     "id": "TEN-004",
     "question": "Is a verbal tenancy agreement valid in Punjab?",
     "language": "en",
     "type": "in_scope",
-    "answered_by": ["tenancy_punjab_2009"],
-    "expected_citations": [{"law_id": "tenancy_punjab_2009", "section": "5"}],
-    "must_contain": ["writing"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "5"
+      }
+    ],
+    "must_contain": [
+      "writing"
+    ],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Provisional; owner to re-map to official text."
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF. Real Sec 5 = 'Agreement between landlord and tenant'."
   },
   {
     "id": "TEN-005",
     "question": "What are the grounds for eviction of a tenant?",
     "language": "en",
     "type": "in_scope",
-    "answered_by": ["tenancy_punjab_2009"],
-    "expected_citations": [{"law_id": "tenancy_punjab_2009", "section": "15"}],
-    "must_contain": ["evict"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "15"
+      }
+    ],
+    "must_contain": [
+      "evict"
+    ],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Provisional; real Sec 15 is 'Grounds for eviction' so this one is likely to survive verification."
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
   },
   {
     "id": "TEN-006",
     "question": "Can the landlord shut off my electricity or water if I delay rent?",
     "language": "en",
     "type": "not_covered_by_text",
-    "answered_by": ["tenancy_punjab_2009"],
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
     "expected_citations": [],
     "must_contain": [],
     "must_not_contain": [],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Old dataset cited fake Sec 13 for utilities cutoff. Whether the official Act covers this must be checked by the owner; until verified this is a not_covered_by_text calibration question."
+    "note": "Old dataset cited fake Sec 13 for utility cutoffs. Owner must check the official Act; until verified this stays a not_covered_by_text calibration question."
+  },
+  {
+    "id": "TEN-007",
+    "question": "How often and how am I supposed to pay rent?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "7"
+      }
+    ],
+    "must_contain": [
+      "rent"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-008",
+    "question": "I moved into this house years ago without a written contract — does old tenancy still count?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "8"
+      }
+    ],
+    "must_contain": [
+      "tenancy"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-009",
+    "question": "What happens if my landlord does not register our rental agreement?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "9"
+      }
+    ],
+    "must_contain": [
+      "register"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-010",
+    "question": "Can our rental agreement say things different from the printed Act?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "10"
+      }
+    ],
+    "must_contain": [
+      "agreement"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-011",
+    "question": "Am I allowed to sublet part of my rented shop to someone else?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "11"
+      }
+    ],
+    "must_contain": [
+      "sublet"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-012",
+    "question": "Who pays for the repairs — the landlord's duties?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "12"
+      }
+    ],
+    "must_contain": [
+      "landlord"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-013",
+    "question": "What are my duties as a tenant to keep the property usable?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "13"
+      }
+    ],
+    "must_contain": [
+      "tenant"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-014",
+    "question": "I paid for a water pump and league repairs myself. Can I get that money back from the landlord?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "14"
+      }
+    ],
+    "must_contain": [
+      "expense"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-015",
+    "question": "The landlord refuses repairs and I want to pay for them myself and deduct from rent — is that allowed?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "12"
+      },
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "14"
+      }
+    ],
+    "must_contain": [
+      "landlord"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-016",
+    "question": "Where do I apply to have my landlord evicted for subletting without permission?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "19"
+      },
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "15"
+      }
+    ],
+    "must_contain": [
+      "tribunal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-017",
+    "question": "I owe rent. Can I deposit it with the Rent Tribunal if the landlord will not accept it?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "20"
+      }
+    ],
+    "must_contain": [
+      "deposit"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-018",
+    "question": "What happens if the landlord does not appear in the eviction hearing?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "21"
+      }
+    ],
+    "must_contain": [
+      "appearance"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-019",
+    "question": "I missed the first hearing after an eviction application — can I still defend myself?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "22"
+      }
+    ],
+    "must_contain": [
+      "leave",
+      "contest"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-020",
+    "question": "Do I get time to file a written reply in a rent case?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "23"
+      }
+    ],
+    "must_contain": [
+      "reply"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-021",
+    "question": "Should I keep paying rent while the eviction case is going on?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "24"
+      }
+    ],
+    "must_contain": [
+      "rent"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-022",
+    "question": "How long should the Rent Tribunal take to decide an eviction application?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "27"
+      }
+    ],
+    "must_contain": [
+      "tribunal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-023",
+    "question": "Can I appeal the Rent Tribunal's eviction order?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "28"
+      }
+    ],
+    "must_contain": [
+      "appeal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-024",
+    "question": "Does the Rent Tribunal have the same powers as a civil court for evidence?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "26"
+      }
+    ],
+    "must_contain": [
+      "tribunal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-025",
+    "question": "The landlord sold the house in the middle of my tenancy — do I have to vacate for the new owner?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "30"
+      }
+    ],
+    "must_contain": [
+      "ownership"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-026",
+    "question": "How is a Rent Tribunal's decision enforced if the tenant refuses to vacate?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "31"
+      }
+    ],
+    "must_contain": [
+      "execution"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-027",
+    "question": "Who sets up the Rent Tribunal and who staffs it?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "16"
+      }
+    ],
+    "must_contain": [
+      "tribunal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-028",
+    "question": "What is the Rent Registrar and what does he do with my agreement?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "17"
+      }
+    ],
+    "must_contain": [
+      "registrar"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-029",
+    "question": "If a law conflicts with this tenancy Act, which wins?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "4"
+      }
+    ],
+    "must_contain": [
+      "override"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-030",
+    "question": "Are there any tenancies exempt from the Punjab Rented Premises Act, like government buildings?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "3"
+      }
+    ],
+    "must_contain": [
+      "exempt"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-031",
+    "question": "Who counts as a 'tenant' and what counts as 'rent' under this Act — what does the Act define?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "2"
+      }
+    ],
+    "must_contain": [
+      "definition"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-032",
+    "question": "Does the Act apply to commercial shops or only to living space?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "1"
+      },
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "2"
+      }
+    ],
+    "must_contain": [
+      "premises"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-033",
+    "question": "Do strict formal evidence rules apply in rent tribunal hearings?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "34"
+      }
+    ],
+    "must_contain": [
+      "evidence"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-034",
+    "question": "Who is authorized to make rules under this Act?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "33"
+      }
+    ],
+    "must_contain": [
+      "rules"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-035",
+    "question": "Can the tribunal order compensation against the losing party in a rent case?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "32"
+      }
+    ],
+    "must_contain": [
+      "indemnity"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-036",
+    "question": "What laws did this Act repeal when it started?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "36"
+      },
+      {
+        "law_id": "tenancy_punjab_2009",
+        "section": "35"
+      }
+    ],
+    "must_contain": [
+      "repeal"
+    ],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Provisional citation mapped from the audited genuine section list (step0_tenancy_audit.md); owner must verify against the official PDF."
+  },
+  {
+    "id": "TEN-037",
+    "question": "Do I have to pay property tax or who pays — is the tenant responsible for taxes on the house?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Likely outside the Act (municipal tax law). Owner to confirm."
+  },
+  {
+    "id": "TEN-038",
+    "question": "Can the landlord demand a year's rent in advance? Is advance rent beyond a month legal?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Advance caps usually sit in tenancy Rules, not the Act; owner to confirm."
+  },
+  {
+    "id": "TEN-039",
+    "question": "The landlord locked the gate and threw my stuff out — what do I do right now, same day?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Immediate-remedy/emergency guidance is not in the statute text; owner to confirm."
+  },
+  {
+    "id": "TEN-040",
+    "question": "Do I get tenant insurance for the rented flat?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Insurance law is out of the Act's scope."
+  },
+  {
+    "id": "TEN-041",
+    "question": "Are WhatsApp chats admissible as evidence in my rent case?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Evidence rules are referenced (Qanun-e-Shahadat Order) but not stated in the Act; owner to confirm whether the bot should refuse this."
+  },
+  {
+    "id": "TEN-042",
+    "question": "Can my landlord increase rent because of COVID or because the market rate went up?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Market-rate hikes are not statutory; depends on agreement. Owner to confirm wording."
+  },
+  {
+    "id": "TEN-043",
+    "question": "How much registration fee will the Rent Registrar charge me?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "tenancy_punjab_2009"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Fee amounts sit in Rules / notifications, not the Act. Owner to confirm."
+  },
+  {
+    "id": "TEN-044",
+    "question": "My landlord physically assaulted me during a rent dispute — what does the law say?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "tenancy_punjab_2009",
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (tenancy + criminal assault). Owner maps both citations after verification."
+  },
+  {
+    "id": "TEN-045",
+    "question": "My landlord keeps sending threatening WhatsApp messages to make me leave — is that a crime?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "tenancy_punjab_2009",
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (tenancy + cybercrime). Owner maps both citations after verification."
+  },
+  {
+    "id": "TEN-046",
+    "question": "Someone stole tools from my rented shop — where do the theft law and my tenancy rights meet?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "tenancy_punjab_2009",
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (tenancy + PPC theft). Owner maps both citations after verification."
+  },
+  {
+    "id": "PECA-001",
+    "question": "Someone hacked into my email and changed my password — is that an offence under PECA?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner maps citations from verified PECA text."
+  },
+  {
+    "id": "PECA-002",
+    "question": "A fake Facebook account is using my name and photos — what does the law do about impersonation?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-003",
+    "question": "I keep getting threatening late-night texts from an unknown number — what can I do legally?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-004",
+    "question": "Someone is harassing and abusing me in social media comments — is online harassment punishable?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-005",
+    "question": "I clicked a phishing link and lost bank details — is electronic fraud covered?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-006",
+    "question": "Someone copies my website content wholesale and republishes without permission — is that illegal?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-007",
+    "question": "My employer reads my personal email without asking — is that unauthorized access?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Nuanced (consent/employer rights): owner must verify against text before allowing."
+  },
+  {
+    "id": "PECA-008",
+    "question": "Someone circulates my private photos on WhatsApp groups — what does the law say?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Sensitive topic; owner should review bot wording carefully before verification."
+  },
+  {
+    "id": "PECA-009",
+    "question": "Where and how do I file a cybercrime complaint in Pakistan?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Procedural directions may exceed the bare Act; owner to confirm or mark not_covered."
+  },
+  {
+    "id": "PECA-010",
+    "question": "What happens to the spam SMS ads flooding my phone — is spamming illegal?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "PECA-011",
+    "question": "After I complained about cyber harassment, what happens next — how is the case investigated?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "peca_2016",
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (PECA offence + CrPC procedure). Owner maps after verification."
+  },
+  {
+    "id": "PECA-012",
+    "question": "A scammer defrauded me through a fake online ad and drained my card — fraud or cybercrime or both?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "peca_2016",
+      "ppc_1860",
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law triple (PECA + PPC fraud + consumer). Owner maps after verification."
+  },
+  {
+    "id": "FAM-001",
+    "question": "How do I get my nikah officially registered — whose job is the marriage registrar?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-002",
+    "question": "Is a second marriage without the first wife's permission valid?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Sensitive; owner verifies statutory wording only (no fatwa/interpretation)."
+  },
+  {
+    "id": "FAM-003",
+    "question": "My husband pronounced talaq — does it take effect immediately or after notice?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-004",
+    "question": "On what grounds can a wife get a judicial khula or dissolution of marriage?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "dmma_1939"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-005",
+    "question": "Can cruelty be a ground for divorce, and what counts?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "dmma_1939"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-006",
+    "question": "Am I entitled to maintenance? My husband refuses to give me money.",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-007",
+    "question": "Which court do I go to for a maintenance case and what can they order?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961",
+      "family_courts_1964"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Translate the accidental Chinese word: question text must be owner-checked."
+  },
+  {
+    "id": "FAM-008",
+    "question": "Who gets custody of a minor child after separation?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "family_courts_1964"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Custody practice leans on case law/Guardians & Wards Act — owner may need a not_covered fallback or an extra statute (plan Section 7 note)."
+  },
+  {
+    "id": "FAM-009",
+    "question": "Is the father bound to maintain the children after divorce?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-010",
+    "question": "How do I file a family case and what is the procedure before the Family Court?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "family_courts_1964"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-011",
+    "question": "Can the Family Court decide dower (haq mehr) payment disputes?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "family_courts_1964",
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-012",
+    "question": "As a widow, what share of my husband's property do I inherit?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "mflo_1961",
+      "family_courts_1964",
+      "dmma_1939"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Inheritance shares come from Muslim personal law + sui generis statutes (e.g., West Pakistan Muslim Personal Law/Shariat Act) — NOT loaded. Owner confirms handling: refuse or add law."
+  },
+  {
+    "id": "FAM-013",
+    "question": "Can I claim divorce by way of Khula by returning the dower?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "dmma_1939"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "FAM-014",
+    "question": "My husband's family says I must return everything from my dowry list — what law applies?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "mflo_1961",
+      "family_courts_1964"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Dowry recovery specifics may need the Dowry and Bridal Gifts (Restriction) Act, 1976 — not in the registry. Owner decides."
+  },
+  {
+    "id": "FAM-015",
+    "question": "How much meher should a couple set at marriage — is there a legal minimum?",
+    "language": "en",
+    "type": "not_covered_by_text",
+    "answered_by": [
+      "mflo_1961"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Dower amount is a private contract matter; statute may only require writing. Owner confirms."
+  },
+  {
+    "id": "CRIM-001",
+    "question": "How do I file an FIR and what must the police write?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-002",
+    "question": "The police refuse to register my FIR — what are my options under the law?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-003",
+    "question": "What are my rights when the police arrest me — can they arrest without a warrant?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-004",
+    "question": "What is bailable and non-bailable offence? Can I get bail as a right?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-005",
+    "question": "What is the punishment if someone breaks into my house and steals?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-006",
+    "question": "Someone beat me up in the street — what sections cover causing hurt?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-007",
+    "question": "A contractor took money for construction work and vanished — cheating or breach of trust?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-008",
+    "question": "My neighbour spread false statements about me to my employer — is that defamation?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-009",
+    "question": "What happens after an FIR is registered — investigation, challan, trial?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-010",
+    "question": "Can the police enter and search my house without a warrant?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "crpc_1898"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-011",
+    "question": "Is highway robbery punished differently from ordinary theft?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-012",
+    "question": "What is the punishment for killing someone intentionally (murder)?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Highest-stakes entry; the owner + a lawyer must verify the punishment wording exactly."
+  },
+  {
+    "id": "CRIM-013",
+    "question": "Difference between qatl-i-amd and culpable homicide?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-014",
+    "question": "A stranger grabbed my bag using a weapon — is that robbery or extortion?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CRIM-015",
+    "question": "My landlord forces me and my family to leave by constant threats — criminal intimidation?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Non-English character in text; owner rewrites the question in plain English."
+  },
+  {
+    "id": "CRIM-016",
+    "question": "My tenant refuses to pay rent AND damaged my property — eviction and criminal case both?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "tenancy_punjab_2009",
+      "ppc_1860"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (tenancy + PPC mischief). Owner maps after verification."
+  },
+  {
+    "id": "CRIM-017",
+    "question": "Someone blackmailed me threatening to leak my photos unless I pay — which laws apply?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "ppc_1860",
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (extortion + PECA). Owner maps after verification."
+  },
+  {
+    "id": "CRIM-018",
+    "question": "Where do I pay a traffic challan and what is the fine for speeding?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Traffic law (Motor Vehicle Ordinance 1965 / provincial rules) is not in the registry and not planned — always refuse."
+  },
+  {
+    "id": "CON-001",
+    "question": "My new phone stopped working in a week and the shop refuses a refund — what does consumer law say?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-002",
+    "question": "The shopkeeper charges more than the printed price — is that an unfair trade practice?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-003",
+    "question": "Where do I file a consumer complaint and is there a time limit?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-004",
+    "question": "An ad promised free delivery and then charged me — deceptive practice?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-005",
+    "question": "A travel agency took money for tickets and never issued them — how do I get a refund?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-006",
+    "question": "No receipt but a genuine defective product — can I still complain?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Evidence/practice nuance; owner verifies statute wording before allowing."
+  },
+  {
+    "id": "CON-007",
+    "question": "Is a mobile carrier free to change my package price mid-contract?",
+    "language": "en",
+    "type": "in_scope",
+    "answered_by": [
+      "punjab_consumer_2005"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
+  },
+  {
+    "id": "CON-008",
+    "question": "An online seller took my money and disappeared — fraud, cybercrime, or consumer complaint?",
+    "language": "en",
+    "type": "multi_law",
+    "answered_by": [
+      "punjab_consumer_2005",
+      "ppc_1860",
+      "peca_2016"
+    ],
+    "expected_citations": [],
+    "must_contain": [],
+    "must_not_contain": [],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Cross-law (consumer + PPC cheating + PECA). Owner maps after verification."
+  },
+  {
+    "id": "OUT-005",
+    "question": "Can my landlord kick me out in London?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Foreign jurisdiction: locked refusal at every stage."
+  },
+  {
+    "id": "OUT-006",
+    "question": "How do I apply for a USA green card?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Foreign jurisdiction: locked refusal at every stage."
+  },
+  {
+    "id": "OUT-007",
+    "question": "How do I register my company and pay FBR sales tax?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Tax/corporate law is not planned in the near stages (registry has no such category)."
   },
   {
     "id": "OUT-001",
     "question": "How do I file an FIR for motorcycle theft?",
     "language": "en",
     "type": "out_of_scope",
-    "answered_by": ["ppc_1860", "crpc_1898"],
+    "answered_by": [
+      "ppc_1860",
+      "crpc_1898"
+    ],
     "expected_citations": [],
-    "must_contain": ["outside", "scope"],
-    "must_not_contain": ["Section"],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Stage-aware: refusal now, PPC/CrPC answer later once 2D is loaded."
+    "note": "Stage-aware: refusal now; PPC/CrPC answer once 2D loads."
   },
   {
     "id": "OUT-002",
     "question": "What is the procedure for Khula under Pakistani law?",
     "language": "en",
     "type": "out_of_scope",
-    "answered_by": ["dmma_1939", "mflo_1961"],
+    "answered_by": [
+      "dmma_1939",
+      "mflo_1961"
+    ],
     "expected_citations": [],
-    "must_contain": ["outside", "scope"],
-    "must_not_contain": ["Section"],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Stage-aware: refusal now, DMMA/MFLO answer later."
+    "note": "Stage-aware: refusal now; family answer once 2C loads."
   },
   {
     "id": "OUT-003",
     "question": "How to report harassment on WhatsApp to FIA?",
     "language": "en",
     "type": "out_of_scope",
-    "answered_by": ["peca_2016"],
+    "answered_by": [
+      "peca_2016"
+    ],
     "expected_citations": [],
-    "must_contain": ["outside", "scope"],
-    "must_not_contain": ["Section"],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Stage-aware: refusal now, PECA answer later (pilot law)."
+    "note": "Stage-aware: refusal now; PECA answer once 2B loads."
   },
   {
     "id": "OUT-004",
-    "question": "Can my landlord kick me out in London?",
+    "question": "Can my landlord be forced out in London?",
     "language": "en",
     "type": "out_of_scope",
     "answered_by": [],
     "expected_citations": [],
-    "must_contain": ["outside", "scope"],
-    "must_not_contain": ["Section"],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Foreign jurisdiction: expected refusal at every stage."
+    "note": "Foreign jurisdiction: locked refusal. (Question rephrased; original from the first dataset.)"
   }
 ]
