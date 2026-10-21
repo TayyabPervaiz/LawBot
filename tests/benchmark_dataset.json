@@ -1310,7 +1310,7 @@
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Translate the accidental Chinese word: question text must be owner-checked."
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
   },
   {
     "id": "FAM-008",
@@ -1682,7 +1682,7 @@
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Non-English character in text; owner rewrites the question in plain English."
+    "note": "Owner: verify the question and map expected_citations sections from the verified official text before marking verified_by (plan Rule 5). This entry does NOT count toward reported accuracy until then."
   },
   {
     "id": "CRIM-016",
@@ -1868,63 +1868,6 @@
     "note": "Cross-law (consumer + PPC cheating + PECA). Owner maps after verification."
   },
   {
-    "id": "OUT-005",
-    "question": "Can my landlord kick me out in London?",
-    "language": "en",
-    "type": "out_of_scope",
-    "answered_by": [],
-    "expected_citations": [],
-    "must_contain": [
-      "outside",
-      "scope"
-    ],
-    "must_not_contain": [
-      "Section"
-    ],
-    "verified_by": null,
-    "verified_on": null,
-    "verification_source": null,
-    "note": "Foreign jurisdiction: locked refusal at every stage."
-  },
-  {
-    "id": "OUT-006",
-    "question": "How do I apply for a USA green card?",
-    "language": "en",
-    "type": "out_of_scope",
-    "answered_by": [],
-    "expected_citations": [],
-    "must_contain": [
-      "outside",
-      "scope"
-    ],
-    "must_not_contain": [
-      "Section"
-    ],
-    "verified_by": null,
-    "verified_on": null,
-    "verification_source": null,
-    "note": "Foreign jurisdiction: locked refusal at every stage."
-  },
-  {
-    "id": "OUT-007",
-    "question": "How do I register my company and pay FBR sales tax?",
-    "language": "en",
-    "type": "out_of_scope",
-    "answered_by": [],
-    "expected_citations": [],
-    "must_contain": [
-      "outside",
-      "scope"
-    ],
-    "must_not_contain": [
-      "Section"
-    ],
-    "verified_by": null,
-    "verified_on": null,
-    "verification_source": null,
-    "note": "Tax/corporate law is not planned in the near stages (registry has no such category)."
-  },
-  {
     "id": "OUT-001",
     "question": "How do I file an FIR for motorcycle theft?",
     "language": "en",
@@ -1991,7 +1934,7 @@
   },
   {
     "id": "OUT-004",
-    "question": "Can my landlord be forced out in London?",
+    "question": "Can my landlord kick me out in London?",
     "language": "en",
     "type": "out_of_scope",
     "answered_by": [],
@@ -2006,6 +1949,44 @@
     "verified_by": null,
     "verified_on": null,
     "verification_source": null,
-    "note": "Foreign jurisdiction: locked refusal. (Question rephrased; original from the first dataset.)"
+    "note": "Foreign jurisdiction: locked refusal at every stage."
+  },
+  {
+    "id": "OUT-005",
+    "question": "How do I apply for a USA green card?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Foreign jurisdiction: locked refusal at every stage."
+  },
+  {
+    "id": "OUT-006",
+    "question": "How do I register my company and pay FBR sales tax?",
+    "language": "en",
+    "type": "out_of_scope",
+    "answered_by": [],
+    "expected_citations": [],
+    "must_contain": [
+      "outside",
+      "scope"
+    ],
+    "must_not_contain": [
+      "Section"
+    ],
+    "verified_by": null,
+    "verified_on": null,
+    "verification_source": null,
+    "note": "Tax/corporate law is not planned in the near stages (registry has no such category)."
   }
 ]

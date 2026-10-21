@@ -265,9 +265,8 @@ entries += [
       "in_scope", [DMMA], note=PENDING_NOTE),
     q("FAM-006", "Am I entitled to maintenance? My husband refuses to give me money.",
       "in_scope", [MFLO], note=PENDING_NOTE),
-    q("FAM-007", "Which court do I go to for a维护 maintenance case and what can they order?",
-      "in_scope", [MFLO, FCA],
-      note="Translate the accidental Chinese word: question text must be owner-checked."),
+    q("FAM-007", "Which court do I go to for a maintenance case and what can they order?",
+      "in_scope", [MFLO, FCA], note=PENDING_NOTE),
     q("FAM-008", "Who gets custody of a minor child after separation?",
       "in_scope", [FCA],
       note="Custody practice leans on case law/Guardians & Wards Act — owner may need "
@@ -328,9 +327,8 @@ entries += [
       "in_scope", [PPC], note=PENDING_NOTE),
     q("CRIM-014", "A stranger grabbed my bag using a weapon — is that robbery or extortion?",
       "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-015", "My landlord 强迫 forces me to leave by threats — criminal intimidation?",
-      "in_scope", [PPC],
-      note="Non-English character in text; owner rewrites the question in plain English."),
+    q("CRIM-015", "My landlord forces me and my family to leave by constant threats — criminal intimidation?",
+      "in_scope", [PPC], note=PENDING_NOTE),
     MULTI("CRIM-016", "My tenant refuses to pay rent AND damaged my property — eviction and criminal case both?",
           [TEN, PPC], "Cross-law (tenancy + PPC mischief). Owner maps after verification."),
     MULTI("CRIM-017", "Someone blackmailed me threatening to leak my photos unless I pay — which laws apply?",
@@ -370,35 +368,22 @@ entries += [
 # ---------------------------------------------------------------------------
 
 entries += [
-    OUT_LOCKED("OUT-005", "Can my landlord kick me out in London?",
-               note="Foreign jurisdiction: locked refusal at every stage."),
-    OUT_LOCKED("OUT-006", "How do I apply for a USA green card?",
-               note="Foreign jurisdiction: locked refusal at every stage."),
-    OUT_LOCKED("OUT-007", "How do I register my company and pay FBR sales tax?",
-               note="Tax/corporate law is not planned in the near stages (registry has no such category)."),
-]
-
-# The original 4 out_of_scope entries already exist (OUT-001..OUT-004 in the
-# current dataset) — rebuild them from scratch here so the generator is the
-# single source of truth.
-entries += [
     STAGED_OUT("OUT-001", "How do I file an FIR for motorcycle theft?", [PPC, CRPC],
                "Stage-aware: refusal now; PPC/CrPC answer once 2D loads."),
     STAGED_OUT("OUT-002", "What is the procedure for Khula under Pakistani law?", [DMMA, MFLO],
                "Stage-aware: refusal now; family answer once 2C loads."),
     STAGED_OUT("OUT-003", "How to report harassment on WhatsApp to FIA?", [PECA],
                "Stage-aware: refusal now; PECA answer once 2B loads."),
-    OUT_LOCKED("OUT-004", "Can my landlord be forced out in London?",
-               note="Foreign jurisdiction: locked refusal. (Question rephrased; "
-                    "original from the first dataset.)"),
+    OUT_LOCKED("OUT-004", "Can my landlord kick me out in London?",
+               note="Foreign jurisdiction: locked refusal at every stage."),
 ]
 
-# De-dup: CRIM-015 mentioned a Chinese artifact; rename to plain English.
-for e in entries:
-    if e["id"] == "CRIM-015":
-        e["question"] = "My landlord forces me and my family to leave by constant threats — criminal intimidation?"
-    if e["id"] == "FAM-007":
-        e["question"] = "Which court do I go to for a maintenance case and what can they order?"
+entries += [
+    OUT_LOCKED("OUT-005", "How do I apply for a USA green card?",
+               note="Foreign jurisdiction: locked refusal at every stage."),
+    OUT_LOCKED("OUT-006", "How do I register my company and pay FBR sales tax?",
+               note="Tax/corporate law is not planned in the near stages (registry has no such category)."),
+]
 
 # Sanity checks before writing.
 ids = [e["id"] for e in entries]
