@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Instant, grounded statutory legal information for Pakistani citizens covering Tenancy, Criminal, Cybercrime, Family, and Consumer Protection laws.">
+  <meta name="keywords" content="Pakistan Law, PPC, CrPC, PECA, Tenancy Act, Family Courts, Consumer Protection, Pakistan Legal Assistant">
+  <meta name="author" content="Pakistan Law Bot">
+  <meta name="theme-color" content="#0b0f19">
+
+  <title>Pakistan Law Bot — AI Legal Information Assistant</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter & Noto Nastaliq Urdu -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app-layout" id="app-layout">
+    
+    <!-- Left Navigation / Law Drawer -->
+    <aside class="sidebar" id="sidebar" aria-label="Legal Coverage & Controls">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-crest" aria-hidden="true">🏛️</div>
+          <div class="brand-info">
+            <div class="brand-name">Pakistan Law Bot</div>
+            <div class="brand-tag">Statutory AI • Citizen Portal</div>
+          </div>
+        </div>
+        <button class="mobile-close-btn" id="sidebar-close-btn" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <!-- System Status Banner -->
+      <div class="status-card" id="status-card">
+        <div class="status-indicator">
+          <span class="status-dot pulse" id="status-dot"></span>
+          <span class="status-text" id="status-text">Connecting to Knowledge Base...</span>
+        </div>
+        <div class="status-meta" id="status-meta">
+          <span class="meta-item"><strong id="chunk-count">1,635</strong> Sections</span>
+          <span class="meta-divider">•</span>
+          <span class="meta-item"><strong id="law-count">8</strong> Acts Loaded</span>
+        </div>
+      </div>
+
+      <!-- Language Switcher Bar -->
+      <div class="language-selector" role="radiogroup" aria-label="Language selection">
+        <span class="lang-label">Language:</span>
+        <button class="lang-pill active" id="lang-en" data-lang="en" role="radio" aria-checked="true">English</button>
+        <button class="lang-pill" id="lang-ro" data-lang="ro" role="radio" aria-checked="false">Roman Urdu</button>
+        <button class="lang-pill" id="lang-ur" data-lang="ur" role="radio" aria-checked="false">اردو</button>
+      </div>
+
+      <!-- Covered Laws Section -->
+      <div class="coverage-section">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Active Statutory Coverage</h2>
+          <span class="badge-count" id="coverage-badge">8 Laws</span>
+        </div>
+        <div class="law-list" id="law-list">
+          <!-- Dynamically populated from /api/laws -->
+          <div class="law-skeleton"></div>
+          <div class="law-skeleton"></div>
+          <div class="law-skeleton"></div>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="sidebar-actions">
+        <button class="btn btn-secondary" id="clear-chat-btn" title="Clear chat history and start fresh topic">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+          Clear Conversation
+        </button>
+      </div>
+
+      <!-- Verified Provenance Notice -->
+      <div class="provenance-notice">
+        <div class="notice-icon">⚖️</div>
+        <div class="notice-text">
+          Strict statutory grounding. Answers are derived exclusively from verified gazette texts of Pakistani law.
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content / Chat Canvas -->
+    <main class="main-canvas" id="main-canvas">
+      
+      <!-- Top App Bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Open legal coverage menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="header-titles">
+            <h1 class="main-title">Pakistan Statutory Law Assistant</h1>
+            <span class="sub-title">Exact section citations &bull; Anti-hallucination guardrails</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="verified-badge" title="Indexed from Pakistan Code and Punjab Gazette official texts">
+            <span class="verified-icon">✓</span> Official Gazette Sources
+          </div>
+        </div>
+      </header>
+
+      <!-- Chat Stream Area -->
+      <div class="chat-container" id="chat-container" role="log" aria-live="polite">
+        
+        <!-- Welcome Hero View (hidden once messages start) -->
+        <div class="welcome-hero" id="welcome-hero">
+          <div class="hero-crest">🇵🇰</div>
+          <h2 class="hero-heading">How can I assist you with Pakistani law today?</h2>
+          <p class="hero-subtext">
+            Ask any question regarding Tenancy, Cybercrime, Family Law, Criminal Procedure, or Consumer Rights. Every factual statement is grounded in official statutory sections.
+          </p>
+
+          <!-- Suggested Starter Prompts -->
+          <div class="prompts-grid" id="prompts-grid">
+            <button class="prompt-card" data-query="Can my landlord evict me without prior notice under Punjab tenancy law?">
+              <span class="prompt-category">Tenancy &bull; Punjab</span>
+              <span class="prompt-text">Can my landlord evict me without prior notice?</span>
+            </button>
+            <button class="prompt-card" data-query="How do I file an FIR for theft, and what must the police record?">
+              <span class="prompt-category">Criminal &bull; CrPC / PPC</span>
+              <span class="prompt-text">How do I file an FIR for theft, and what must police record?</span>
+            </button>
+            <button class="prompt-card" data-query="What legal recourse exists if someone blackmails me with private photos online?">
+              <span class="prompt-category">Cybercrime &bull; PECA</span>
+              <span class="prompt-text">What recourse exists if someone blackmails me online with photos?</span>
+            </button>
+            <button class="prompt-card" data-query="On what legal grounds can a wife seek judicial dissolution of marriage (Khula)?">
+              <span class="prompt-category">Family Law</span>
+              <span class="prompt-text">On what legal grounds can a wife seek Khula or dissolution?</span>
+            </button>
+            <button class="prompt-card" data-query="What is the time limit and procedure to file a claim in the Consumer Court for a defective product?">
+              <span class="prompt-category">Consumer &bull; Punjab</span>
+              <span class="prompt-text">Time limit and procedure to file a Consumer Court complaint?</span>
+            </button>
+            <button class="prompt-card" data-query="Agar police meri FIR darj karne se inkar kare to kya qanooni rasta hai?">
+              <span class="prompt-category">Roman Urdu</span>
+              <span class="prompt-text">Agar police FIR darj karne se inkar kare to kya rasta hai?</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Message Stream -->
+        <div class="messages-stream" id="messages-stream"></div>
+      </div>
+
+      <!-- Bottom Chat Composer -->
+      <footer class="composer-container">
+        <form class="composer-form" id="chat-form">
+          <div class="input-wrapper">
+            <textarea
+              class="chat-input"
+              id="chat-input"
+              placeholder="Ask a legal question in English, Roman Urdu, or اردو... (e.g. Can landlord cutoff water supply?)"
+              rows="1"
+              required
+              aria-label="Legal question input"
+            ></textarea>
+            <button type="submit" class="send-btn" id="send-btn" aria-label="Send query">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </form>
+
+        <div class="composer-disclaimer">
+          ⚠️ <strong>Disclaimer:</strong> This tool provides statutory legal information, not legal advice. Consult a qualified advocate for case-specific representation.
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

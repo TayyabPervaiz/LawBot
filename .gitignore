@@ -16,3 +16,8 @@ data/chroma_db/
 
 # Runtime answer cache (regenerated)
 data/processed/llm_cache.json
+
+# Drafts and temporary artifacts
+data/old_unverified/
+data/raw_draft/
+data/processed/spotcheck_*.txt

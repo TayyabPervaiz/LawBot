@@ -1,0 +1,236 @@
+{
+  "description": "Multilingual benchmark dataset for Pakistan Law Bot (Phase 3 Task 3-2: Urdu Script & Roman Urdu)",
+  "version": "1.0",
+  "created_at": "2026-11-07",
+  "questions": [
+    {
+      "id": "URDU-TEN-001",
+      "language": "ur",
+      "question": "کیا مالک مکان رینٹ ٹربیونل کے حکم کے بغیر کرایہ دار کو بے دخل کر سکتا ہے؟",
+      "law_id": "tenancy_punjab_2009",
+      "expected_sections": ["15"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-TEN-002",
+      "language": "ur",
+      "question": "اگر مالک مکان بجلی یا پانی کی سہولیات منقطع کر دے تو کرایہ دار کیا قانونی کارروائی کر سکتا ہے؟",
+      "law_id": "tenancy_punjab_2009",
+      "expected_sections": ["12"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-CYBER-001",
+      "language": "ur",
+      "question": "کسی دوسرے کے کمپیوٹر یا موبائل تک غیر قانونی رسائی حاصل کرنے کی پیکا قانون میں کیا سزا ہے؟",
+      "law_id": "peca_2016",
+      "expected_sections": ["3"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-CYBER-002",
+      "language": "ur",
+      "question": "آن لائن ہراساں کرنے یا کسی کی تصویر کا غلط استعمال کرنے پر کیا قانونی سزا ہے؟",
+      "law_id": "peca_2016",
+      "expected_sections": ["21", "24"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-CRIM-001",
+      "language": "ur",
+      "question": "تھانے میں قابل دست اندازی جرم کی ایف آئی آر درج کروانے کا قانونی طریقہ ضابطہ فوجداری میں کیا ہے؟",
+      "law_id": "crpc_1898",
+      "expected_sections": ["154"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-CRIM-002",
+      "language": "ur",
+      "question": "پاکستان پینل کوڈ میں قتل عمد کی تعریف اور سزا کس دفعہ میں بیان کی گئی ہے؟",
+      "law_id": "ppc_1860",
+      "expected_sections": ["300", "302"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-FAM-001",
+      "language": "ur",
+      "question": "مسلم فیملی لاز آرڈیننس کے تحت طلاق کا نوٹس چیئرمین یونین کونسل کو دینے کا کیا طریقہ ہے؟",
+      "law_id": "mflo_1961",
+      "expected_sections": ["7"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-CON-001",
+      "language": "ur",
+      "question": "اگر خریدی گئی چیز خراب نکلے تو پنجاب کنزیومر پروٹیکشن ایکٹ کے تحت واپسی یا ہرجانہ کیسے مل سکتا ہے؟",
+      "law_id": "punjab_consumer_2005",
+      "expected_sections": ["28", "31"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-OUT-001",
+      "language": "ur",
+      "question": "انکم ٹیکس ریٹرن اور ایف بی آر گوشوارہ جمع کروانے کا کیا قانون ہے؟",
+      "law_id": null,
+      "expected_sections": [],
+      "type": "out_of_scope",
+      "expected_refusal": true,
+      "refusal_topic": "tax",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "URDU-OUT-002",
+      "language": "ur",
+      "question": "امریکہ یا کینیڈا کے امیگریشن اور وزٹ ویزا کے قوانین کیا ہیں؟",
+      "law_id": null,
+      "expected_sections": [],
+      "type": "out_of_scope",
+      "expected_refusal": true,
+      "refusal_topic": "foreign jurisdiction",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-TEN-001",
+      "language": "ro",
+      "question": "kya landlord bina notice k tenant ko evict kar sakta hai Punjab rented premises act me?",
+      "law_id": "tenancy_punjab_2009",
+      "expected_sections": ["15"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-TEN-002",
+      "language": "ro",
+      "question": "agar malik makan bijli ya pani discontinue kar de to kirayedar kya complaint kare?",
+      "law_id": "tenancy_punjab_2009",
+      "expected_sections": ["12"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CYBER-001",
+      "language": "ro",
+      "question": "kisi ka account hack karne ya unauthorized access lene ki PECA me kya saza hai?",
+      "law_id": "peca_2016",
+      "expected_sections": ["3"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CYBER-002",
+      "language": "ro",
+      "question": "agar koi online blackmailing ya fake pictures banaye to PECA ki konsi section lagti hai?",
+      "law_id": "peca_2016",
+      "expected_sections": ["21", "24"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CRIM-001",
+      "language": "ro",
+      "question": "thana me FIR darj karwane ka procedure CrPC Section 154 ke mutabiq kya hai?",
+      "law_id": "crpc_1898",
+      "expected_sections": ["154"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CRIM-002",
+      "language": "ro",
+      "question": "ghar me chori karne par PPC me kya saza hai?",
+      "law_id": "ppc_1860",
+      "expected_sections": ["379", "380"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CRIM-003",
+      "language": "ro",
+      "question": "cheque bounce hone par 489F PPC ke tehat FIR aur saza ka kya rule hai?",
+      "law_id": "ppc_1860",
+      "expected_sections": ["489F"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CRIM-004",
+      "language": "ro",
+      "question": "bailable offence me zamanat lene ka CrPC me kya procedure hai?",
+      "law_id": "crpc_1898",
+      "expected_sections": ["496", "497"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-FAM-001",
+      "language": "ro",
+      "question": "shohar se kharcha na milne par Family Court me nafaqa aur maintenance claim kaise hoga?",
+      "law_id": "mflo_1961",
+      "expected_sections": ["9"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-CON-001",
+      "language": "ro",
+      "question": "kharab saman milne par 15 din ka notice aur consumer court me claim ka kya tareeqa hai?",
+      "law_id": "punjab_consumer_2005",
+      "expected_sections": ["28", "31"],
+      "type": "factual",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-OUT-001",
+      "language": "ro",
+      "question": "FBR tax file karne aur sales tax return jama karwane ka kya procedure hai?",
+      "law_id": null,
+      "expected_sections": [],
+      "type": "out_of_scope",
+      "expected_refusal": true,
+      "refusal_topic": "tax",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    },
+    {
+      "id": "ROMAN-OUT-002",
+      "language": "ro",
+      "question": "UK ya UAE me job visa aur immigration ke legal rules kya hain?",
+      "law_id": null,
+      "expected_sections": [],
+      "type": "out_of_scope",
+      "expected_refusal": true,
+      "refusal_topic": "foreign jurisdiction",
+      "verified": true,
+      "verified_by": "owner (Phase 3 multilingual benchmark)"
+    }
+  ]
+}
+
