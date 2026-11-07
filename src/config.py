@@ -43,12 +43,18 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "paraphrase-multilingual-MiniLM-L
 # Get your free API key at: https://console.groq.com/keys
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
+# The LLM provider (revised plan Section 5.7: config-driven, not hardcoded).
+# "groq" is the only provider wired today; src/generator.py still constructs
+# its Groq client directly — the provider dispatch refactor is Phase 2A-C3+
+# work and deliberately not part of Steps 1-4.
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
+
 # The LLM model used via Groq's free tier (matches README; fixable via .env)
 LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
 
 # Version tag included in the LLM answer-cache key. Bump this whenever the
 # system prompt or generation logic changes so stale cached answers are not reused.
-PROMPT_VERSION = "2A-1"
+PROMPT_VERSION = "2E-2"
 
 # === ChromaDB Settings ===
 # One collection holds ALL laws; each chunk carries law_id / category / jurisdiction
@@ -58,25 +64,21 @@ COLLECTION_NAME = "pakistan_laws"
 # === RAG / Retrieval Settings (revised plan Section 5.4) ===
 # Candidate pool pulled from the vector store before fusion/reranking.
 # Larger than TOP_K because hybrid fusion needs a pool to rank.
-CANDIDATE_POOL_SIZE = 20
+CANDIDATE_POOL_SIZE = int(os.getenv("CANDIDATE_POOL_SIZE", "50"))
 
-# How many chunks finally reach the LLM.
-TOP_K_RESULTS = 5
+# How many chunks finally reach the LLM (clamped 1..20; 8 stays comfortably within free-tier ITPM limits).
+TOP_K_RESULTS = int(os.getenv("TOP_K_RESULTS", "8"))
 
-# Reciprocal Rank Fusion constant (standard 60).
-RRF_K = 60
-
-# Weight of the vector-search score vs BM25 score in the hybrid combination
-# (0..1). Tuned at GATE 1.
-HYBRID_VECTOR_WEIGHT = float(os.getenv("HYBRID_VECTOR_WEIGHT", "0.6"))
+# Reciprocal Rank Fusion constant (3 balances semantic vectors while elevating top keyword hits).
+RRF_K = int(os.getenv("RRF_K", "3"))
 
 # Soft keyword hint boost factor. Registry hint_keywords add up to this much
 # relative boost and NEVER exclude a law from search. Tuned at GATE 1.
 HINT_BOOST = float(os.getenv("HINT_BOOST", "0.05"))
 
-# Retrieval relevance threshold (top fused score below this => the bot says
-# the loaded laws do not cover the question). Tuned at GATE 1.
-RETRIEVAL_MIN_SCORE = float(os.getenv("RETRIEVAL_MIN_SCORE", "0.35"))
+# Retrieval relevance threshold (top raw fused score below this => the bot says
+# the loaded laws do not cover the question). Tuned at Wave 6/7 GATE 1.
+RETRIEVAL_MIN_SCORE = float(os.getenv("RETRIEVAL_MIN_SCORE", "0.06"))
 
 # Optional local cross-encoder reranker (revised plan Section 5.4 point 2).
 # Set RERANK_MODEL (e.g. "cross-encoder/ms-marco-MiniLM-L-6-v2") in .env to
@@ -90,5 +92,6 @@ LLM_CACHE_ENABLED = os.getenv("LLM_CACHE", "1") != "0"
 LLM_CACHE_PATH = PROCESSED_DATA_DIR / "llm_cache.json"
 
 # === LLM call settings ===
-MAX_TOKENS = 1024
+# 500 tokens fits comfortably within Groq free-tier OTPM limits (1000 tokens)
+MAX_TOKENS = 500
 TEMPERATURE = 0.0

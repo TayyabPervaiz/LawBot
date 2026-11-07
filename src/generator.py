@@ -21,10 +21,12 @@ import re
 import time
 import hashlib
 import json
+import threading
 
 from groq import Groq
 from src import config
 import src.law_registry as registry
+from src.citations import parse_citations, validate_citations_grounding, strip_or_footnote_unsupported
 
 
 # ---------------------------------------------------------------------------
@@ -49,6 +51,7 @@ Example: "The landlord must file an application before the Rent Tribunal to evic
 
 If you cannot cite a specific section for a claim, DO NOT make that claim.
 When several Acts appear in the context, cite each fact to its OWN Act. Never merge provisions from different Acts into one statement.
+You may ONLY cite section numbers that are explicitly provided in the 'Section X:' headers of the statutory provisions below. Never cite section numbers that are not provided in the context below.
 
 ### RULE 2 — ZERO GUESSING / ANTI-HALLUCINATION
 You may ONLY state legal information that is EXPLICITLY written in the statutory provisions provided below.
@@ -70,6 +73,12 @@ You MUST end EVERY response with a short disclaimer clarifying that this is lega
 - Use bullet points or numbered steps when listing multiple points.
 - Always specify the legal grounds and the relevant section numbers.
 - Be concise but thorough — cover all relevant provisions from the retrieved text.
+
+### RULE 6 — LANGUAGE OF RESPONSE
+- If the user's question is in Urdu (اردو), answer in fluent, formal Urdu while preserving statutory citations formatted as `[The Pakistan Penal Code, 1860 - Section 302]`.
+- If the user's question is in Roman Urdu, answer in clear Roman Urdu while preserving statutory citations formatted as `[The Pakistan Penal Code, 1860 - Section 302]`.
+- If the user's question is in English, answer in English.
+- Always preserve statutory citation precision regardless of the language used.
 
 ## STATUTORY PROVISIONS FOR THIS QUERY:
 {context}
@@ -129,12 +138,16 @@ OUT_OF_SCOPE_PATTERNS: dict[str, list[str]] = {
     # No tax law is planned in the near stages — always refuses (no category).
     "tax": [
         r"\bFBR\b", r"\bincome\s+tax\b", r"\bsales\s+tax\b", r"\btax\s+return\b",
-        r"\bNTN\b",
+        r"\bNTN\b", r"\bٹیکس\b", r"\bانکم\s*ٹیکس\b", r"\bسیلز\s*ٹیکس\b",
+        r"\bایف\s*بی\s*آر\b", r"\bگوشوارہ\b", r"\btax\b", r"\btax\s*file\b",
     ],
     "foreign jurisdiction": [
         r"\bLondon\b", r"\bUK\b", r"\bUSA\b", r"\bUS\s+law\b", r"\bCanada\b",
         r"\bAustralia\b", r"\bIndia\b", r"\bDubai\b", r"\bUAE\b",
         r"\bSaudi\b", r"\bAmerican\b", r"\bBritish\b", r"\bEuropean\b",
+        r"\bامریکہ\b", r"\bبرطانیہ\b", r"\bانڈیا\b", r"\bبھارت\b",
+        r"\bدبئی\b", r"\bسعودی\b", r"\bکینیڈا\b", r"\bآسٹریلیا\b",
+        r"\bamreeka\b", r"\bbartania\b", r"\bhindustan\b", r"\bbahar\s+ka\s+mulk\b",
     ],
 }
 
@@ -159,16 +172,26 @@ def detect_scope(question: str) -> dict:
     question_lower = question.lower()
     loaded_categories = registry.loaded_categories()
 
+    # Plan Wave 1-C: Scan all patterns first so foreign jurisdiction and tax
+    # always trigger a refusal, even if a loaded keyword (e.g. FIR) also matches.
+    matched_topics: list[str] = []
     for topic, patterns in OUT_OF_SCOPE_PATTERNS.items():
         for pattern in patterns:
             if re.search(pattern, question, re.IGNORECASE):
-                if topic == "foreign jurisdiction":
-                    return {"in_scope": False, "detected_topic": topic}
-                category = TOPIC_TO_CATEGORY.get(topic)
-                if category is None or category not in loaded_categories:
-                    return {"in_scope": False, "detected_topic": topic}
-                # Topic law is loaded → let retrieval and the threshold decide.
-                return {"in_scope": True, "detected_topic": None}
+                if topic not in matched_topics:
+                    matched_topics.append(topic)
+                break
+
+    if "foreign jurisdiction" in matched_topics:
+        return {"in_scope": False, "detected_topic": "foreign jurisdiction"}
+
+    if "tax" in matched_topics:
+        return {"in_scope": False, "detected_topic": "tax"}
+
+    for topic in matched_topics:
+        category = TOPIC_TO_CATEGORY.get(topic)
+        if category is None or category not in loaded_categories:
+            return {"in_scope": False, "detected_topic": topic}
 
     return {"in_scope": True, "detected_topic": None}
 
@@ -192,12 +215,13 @@ def build_refusal_response(detected_topic: str, question: str) -> str:
 # Context Formatting
 # ---------------------------------------------------------------------------
 
-def format_context(retrieved_chunks: list[dict]) -> str:
-    """Format retrieved chunks with clear per-provision headers."""
+def format_context(retrieved_chunks: list[dict], max_chars: int = 14000) -> str:
+    """Format retrieved chunks with clear per-provision headers, capped at max_chars for ITPM safety."""
     if not retrieved_chunks:
         return "[NO RELEVANT PROVISIONS FOUND IN THE DATABASE]"
 
     context_parts = []
+    total_len = 0
     for i, chunk in enumerate(retrieved_chunks, 1):
         metadata = chunk.get("metadata") or {}
         law_title = metadata.get("law_title", "Unknown law")
@@ -212,7 +236,12 @@ def format_context(retrieved_chunks: list[dict]) -> str:
             f"Section {section_num}: {section_title}\n"
             f"---\n"
         )
-        context_parts.append(header + (chunk.get("text") or ""))
+        chunk_body = chunk.get("text") or ""
+        part = header + chunk_body
+        if context_parts and (total_len + len(part) > max_chars):
+            break
+        context_parts.append(part)
+        total_len += len(part)
 
     return "\n\n".join(context_parts)
 
@@ -221,11 +250,22 @@ def format_context(retrieved_chunks: list[dict]) -> str:
 # LLM Answer Cache (deterministic answers — revised plan Section 6.4)
 # ---------------------------------------------------------------------------
 
-def _cache_key(question: str, context: str) -> str:
+def _cache_key(question: str, context: str, conversation_history: list[dict] | None = None) -> str:
+    hist_str = "|".join(f"{m.get('role')}:{m.get('content')}" for m in (conversation_history or []))
+    tmpl_hash = hashlib.sha256(SYSTEM_PROMPT_TEMPLATE.encode("utf-8")).hexdigest()[:12]
     payload = "|".join([
-        config.PROMPT_VERSION, config.LLM_MODEL, question, __import__("hashlib").sha256(context.encode("utf-8")).hexdigest()
+        config.PROMPT_VERSION,
+        tmpl_hash,
+        config.LLM_MODEL,
+        question,
+        hashlib.sha256(context.encode("utf-8")).hexdigest(),
+        hashlib.sha256(hist_str.encode("utf-8")).hexdigest() if hist_str else "",
     ])
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+_cache_lock = threading.Lock()
+MAX_CACHE_SIZE = 500
 
 
 def _load_cache() -> dict:
@@ -246,15 +286,57 @@ def _save_cache(cache: dict) -> None:
         json.dump(cache, f, indent=2, ensure_ascii=False)
 
 
+def _get_cached_answer(key: str) -> str | None:
+    """Thread-safe cache lookup (Wave 3-I)."""
+    if not config.LLM_CACHE_ENABLED:
+        return None
+    with _cache_lock:
+        cache = _load_cache()
+        return cache.get(key)
+
+
+def _store_cached_answer(key: str, answer: str) -> None:
+    """
+    Thread-safe cache store with FIFO size cap (500 items).
+    Wave 3-I: Never caches strings starting with 'Error:'.
+    """
+    if not config.LLM_CACHE_ENABLED:
+        return
+    if not answer or answer.strip().startswith("Error:"):
+        return
+
+    with _cache_lock:
+        cache = _load_cache()
+        if len(cache) >= MAX_CACHE_SIZE and key not in cache:
+            # Drop oldest entry (FIFO)
+            try:
+                oldest_key = next(iter(cache))
+                del cache[oldest_key]
+            except (StopIteration, KeyError):
+                pass
+        cache[key] = answer
+        _save_cache(cache)
+
+
 # ---------------------------------------------------------------------------
 # LLM Call
 # ---------------------------------------------------------------------------
 
-def call_llm(question: str, context: str, retrieved_chunks: list[dict]) -> str:
+def call_llm(
+    question: str,
+    context: str,
+    retrieved_chunks: list[dict],
+    conversation_history: list[dict] | None = None,
+) -> str:
     """
-    Call the Groq LLM with the dynamic system prompt, with answer caching
-    and retry-with-backoff for rate limits.
+    Call the Groq LLM with the dynamic system prompt, with answer caching,
+    conversation history context, and retry-with-backoff for rate limits.
     """
+    if config.LLM_PROVIDER.lower() != "groq":
+        raise ValueError(
+            f"Unsupported LLM_PROVIDER '{config.LLM_PROVIDER}'. Only 'groq' is supported."
+        )
+
     if not config.GROQ_API_KEY or config.GROQ_API_KEY == "your_groq_api_key_here":
         raise RuntimeError(
             "Groq API key not configured. "
@@ -262,15 +344,24 @@ def call_llm(question: str, context: str, retrieved_chunks: list[dict]) -> str:
             "and add it to your .env file as GROQ_API_KEY=your_key"
         )
 
-    key = _cache_key(question, context)
-    cache = _load_cache()
-    if key in cache:
-        return cache[key]
+    key = _cache_key(question, context, conversation_history)
+    cached = _get_cached_answer(key)
+    if cached is not None:
+        return cached
 
     full_system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
         laws_in_context=_laws_in_context(retrieved_chunks),
         context=context,
     )
+
+    messages = [{"role": "system", "content": full_system_prompt}]
+    if conversation_history:
+        for turn in conversation_history[-4:]:
+            role = turn.get("role")
+            content = turn.get("content")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": question})
 
     client = Groq(api_key=config.GROQ_API_KEY)
 
@@ -279,16 +370,12 @@ def call_llm(question: str, context: str, retrieved_chunks: list[dict]) -> str:
         try:
             response = client.chat.completions.create(
                 model=config.LLM_MODEL,
-                messages=[
-                    {"role": "system", "content": full_system_prompt},
-                    {"role": "user", "content": question},
-                ],
+                messages=messages,
                 temperature=config.TEMPERATURE,
                 max_tokens=config.MAX_TOKENS,
             )
             answer = response.choices[0].message.content
-            cache[key] = answer
-            _save_cache(cache)
+            _store_cached_answer(key, answer)
             return answer
 
         except Exception as e:
@@ -299,8 +386,13 @@ def call_llm(question: str, context: str, retrieved_chunks: list[dict]) -> str:
                 ) from e
             if "429" in error_msg or "rate" in error_msg.lower():
                 if attempt < max_retries - 1:
-                    match = re.search(r"try again in (\d+(\.\d+)?)s", error_msg)
-                    wait_time = float(match.group(1)) + 1.5 if match else (2 ** attempt) * 6
+                    m_min = re.search(r"try again in (\d+)m(\d+(\.\d+)?)s", error_msg)
+                    if m_min:
+                        wait_time = float(m_min.group(1)) * 60 + float(m_min.group(2)) + 2.0
+                    else:
+                        match = re.search(r"try again in (\d+(\.\d+)?)s", error_msg)
+                        wait_time = float(match.group(1)) + 2.0 if match else (2 ** attempt) * 12
+                    print(f"  [Rate Limit] {error_msg}")
                     print(f"  [Rate Limit] Waiting {wait_time:.1f}s (attempt {attempt + 1}/{max_retries})...")
                     time.sleep(wait_time)
                     continue
@@ -329,36 +421,40 @@ def ensure_disclaimer(response: str, retrieved_chunks: list[dict]) -> str:
     return response + build_disclaimer(retrieved_chunks)
 
 
-def validate_citations(response: str) -> dict:
+def validate_citations(response: str, retrieved_chunks: list[dict] | None = None) -> dict:
     """
-    Check whether the response contains proper statutory citations.
-
-    Also verifies citations trace to RETRIEVED chunks (Phase 2A grounding
-    support): any [Act - Section X] whose section was never retrieved is
-    flagged as unsupported. Returns:
-        {
-            "has_citations": bool, "citation_count": int,
-            "citations_found": [...],
-            "supported": [...], "unsupported": [...],
-        }
+    Check whether the response contains proper statutory citations,
+    and verify grounding against retrieved chunk metadata (Wave 2-D).
     """
-    citation_pattern = re.compile(
-        r"Section\s+(\d+[A-Za-z]?)(?:\s*\([^)]*\))*",
-        re.IGNORECASE,
+    parsed = parse_citations(response)
+    unique_sections = sorted(
+        {c["section"] for c in parsed},
+        key=lambda x: (int(re.match(r"\d+", x).group()) if re.match(r"\d+", x) else 999999, x),
     )
-    matches = citation_pattern.findall(response)
-    unique_sections = sorted(set(matches), key=lambda x: (
-        int(re.match(r"\d+", x).group()), x
-    ))
+
+    supported: list[str] = []
+    unsupported: list[str] = []
+    unsupported_cites: list[dict] = []
+
+    if retrieved_chunks is not None:
+        grounding = validate_citations_grounding(parsed, retrieved_chunks)
+        supported = sorted(
+            {c["section"] for c in grounding["supported"]},
+            key=lambda x: (int(re.match(r"\d+", x).group()) if re.match(r"\d+", x) else 999999, x),
+        )
+        unsupported = sorted(
+            {c["section"] for c in grounding["unsupported"]},
+            key=lambda x: (int(re.match(r"\d+", x).group()) if re.match(r"\d+", x) else 999999, x),
+        )
+        unsupported_cites = grounding["unsupported"]
 
     return {
         "has_citations": len(unique_sections) > 0,
         "citation_count": len(unique_sections),
         "citations_found": unique_sections,
-        # supported/unsupported are filled in by generate_answer, which knows
-        # the retrieved sections.
-        "supported": [],
-        "unsupported": [],
+        "supported": supported,
+        "unsupported": unsupported,
+        "unsupported_cites": unsupported_cites,
     }
 
 
@@ -366,7 +462,11 @@ def validate_citations(response: str) -> dict:
 # Main Generate Function — The Public API
 # ---------------------------------------------------------------------------
 
-def generate_answer(question: str, retrieved_chunks: list[dict]) -> dict:
+def generate_answer(
+    question: str,
+    retrieved_chunks: list[dict],
+    conversation_history: list[dict] | None = None,
+) -> dict:
     """
     Generate a grounded legal answer with citations and guardrails.
 
@@ -397,7 +497,7 @@ def generate_answer(question: str, retrieved_chunks: list[dict]) -> dict:
 
     # Step 3: call the LLM (cached, retried)
     try:
-        raw_answer = call_llm(question, context, retrieved_chunks)
+        raw_answer = call_llm(question, context, retrieved_chunks, conversation_history=conversation_history)
     except RuntimeError as e:
         return {
             "answer": f"Error: {str(e)}",
@@ -412,13 +512,12 @@ def generate_answer(question: str, retrieved_chunks: list[dict]) -> dict:
     # Step 4: enforce the dynamic disclaimer
     answer = ensure_disclaimer(raw_answer, retrieved_chunks)
 
-    # Step 5: citation validation + retrieved-section grounding trace
-    citations = validate_citations(answer)
-    retrieved_set = set(source_sections)
-    supported = [s for s in citations["citations_found"] if s in retrieved_set]
-    unsupported = [s for s in citations["citations_found"] if s not in retrieved_set]
-    citations["supported"] = supported
-    citations["unsupported"] = unsupported
+    # Step 5: citation validation + retrieved-section grounding trace (Wave 2-D)
+    citations = validate_citations(answer, retrieved_chunks)
+
+    # Step 6: If unsupported citations are present, do not leave them in user-visible answer
+    if citations["unsupported_cites"]:
+        answer = strip_or_footnote_unsupported(answer, citations["unsupported_cites"])
 
     return {
         "answer": answer,

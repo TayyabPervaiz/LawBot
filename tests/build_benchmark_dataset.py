@@ -50,6 +50,10 @@ PENDING_NOTE = ("Owner: verify the question and map expected_citations "
 PROV_TEN = ("Provisional citation mapped from the audited genuine section "
             "list (step0_tenancy_audit.md); owner must verify against the "
             "official PDF.")
+PROV_CON = ("Provisional citation mapped from the verified Punjab Consumer "
+            "Protection Act, 2005 text; owner must verify against the official PDF.")
+PROV_CRIM = ("Provisional citation mapped from the verified PPC 1860 / CrPC 1898 "
+             "official texts; expert review required before marking verified_by.")
 
 
 def q(id_, question, type_, laws, citations=None, must=None, forbid=None, note=PENDING_NOTE):
@@ -70,10 +74,29 @@ def q(id_, question, type_, laws, citations=None, must=None, forbid=None, note=P
 
 
 def IN(id_, question, sec, must, note=PROV_TEN, laws=(TEN,)):
-    """in_scope entry with a provisional audited citation ("TEN" shorthand allowed)."""
+    """in_scope entry with a provisional audited citation ("TEN" or "PECA" shorthand allowed)."""
+    def _map_lid(lid):
+        if lid == "TEN":
+            return TEN
+        if lid == "PECA":
+            return PECA
+        if lid == "MFLO":
+            return MFLO
+        if lid == "FCA":
+            return FCA
+        if lid == "DMMA":
+            return DMMA
+        if lid == "CON":
+            return CON
+        if lid == "PPC":
+            return PPC
+        if lid == "CRPC":
+            return CRPC
+        return lid
+
     return q(
         id_, question, "in_scope", list(laws),
-        citations=[{"law_id": (TEN if lid == "TEN" else lid), "section": s} for lid, s in sec],
+        citations=[{"law_id": _map_lid(lid), "section": s} for lid, s in sec],
         must=must, note=note,
     )
 
@@ -106,10 +129,10 @@ entries = []
 entries += [
     IN("TEN-001", "Can my landlord evict me without notice?", [("TEN", "15")], ["evict"],
        note=PROV_TEN + " Real Sec 15 = 'Grounds for eviction'."),
-    IN("TEN-002", "Can my landlord increase rent whenever he wants?", [("TEN", "5"), ("TEN", "6")],
-       ["agreement"], note=PROV_TEN + " Rent terms come from the registered agreement."),
-    IN("TEN-003", "Does my landlord have to return my security deposit?", [("TEN", "6")],
-       ["deposit"], note=PROV_TEN + " Owner: confirm the official Act addresses deposit refund."),
+    IN("TEN-002", "Can my landlord increase rent whenever he wants?", [("TEN", "6")],
+       ["agreement"], note=PROV_TEN + " Rent terms come from the registered agreement under Sec 6."),
+    NOT_COVERED("TEN-003", "Does my landlord have to return my security deposit?", [TEN],
+                "The official Act mentions 'security' in Sec 6(1)(g) as an agreement item, but does not provide statutory rules for security deposit return; calibrated not_covered_by_text."),
     IN("TEN-004", "Is a verbal tenancy agreement valid in Punjab?", [("TEN", "5")],
        ["writing"], note=PROV_TEN + " Real Sec 5 = 'Agreement between landlord and tenant'."),
     IN("TEN-005", "What are the grounds for eviction of a tenant?", [("TEN", "15")], ["evict"]),
@@ -216,29 +239,36 @@ entries += [
 # ---------------------------------------------------------------------------
 
 entries += [
-    q("PECA-001", "Someone hacked into my email and changed my password — is that an offence under PECA?",
-      "in_scope", [PECA], note="Owner maps citations from verified PECA text."),
-    q("PECA-002", "A fake Facebook account is using my name and photos — what does the law do about impersonation?",
-      "in_scope", [PECA], note=PENDING_NOTE),
-    q("PECA-003", "I keep getting threatening late-night texts from an unknown number — what can I do legally?",
-      "in_scope", [PECA], note=PENDING_NOTE),
-    q("PECA-004", "Someone is harassing and abusing me in social media comments — is online harassment punishable?",
-      "in_scope", [PECA], note=PENDING_NOTE),
-    q("PECA-005", "I clicked a phishing link and lost bank details — is electronic fraud covered?",
-      "in_scope", [PECA], note=PENDING_NOTE),
-    q("PECA-006", "Someone copies my website content wholesale and republishes without permission — is that illegal?",
-      "in_scope", [PECA], note=PENDING_NOTE),
-    q("PECA-007", "My employer reads my personal email without asking — is that unauthorized access?",
-      "in_scope", [PECA],
-      note="Nuanced (consent/employer rights): owner must verify against text before allowing."),
-    q("PECA-008", "Someone circulates my private photos on WhatsApp groups — what does the law say?",
-      "in_scope", [PECA],
-      note="Sensitive topic; owner should review bot wording carefully before verification."),
-    q("PECA-009", "Where and how do I file a cybercrime complaint in Pakistan?",
-      "in_scope", [PECA],
-      note="Procedural directions may exceed the bare Act; owner to confirm or mark not_covered."),
-    q("PECA-010", "What happens to the spam SMS ads flooding my phone — is spamming illegal?",
-      "in_scope", [PECA], note=PENDING_NOTE),
+    IN("PECA-001", "Someone hacked into my email and changed my password — is that an offence under PECA?",
+       [("PECA", "3")], ["unauthorized", "access"],
+       note="Verified against PECA Sec 3: Unauthorized access to information system or data.", laws=(PECA,)),
+    IN("PECA-002", "A fake Facebook account is using my name and photos — what does the law do about impersonation?",
+       [("PECA", "16")], ["identity"],
+       note="Verified against PECA Sec 16: Unauthorized use of identity information.", laws=(PECA,)),
+    IN("PECA-003", "I keep getting threatening late-night texts from an unknown number — what can I do legally?",
+       [("PECA", "24")], ["stalking"],
+       note="Verified against PECA Sec 24: Cyber stalking.", laws=(PECA,)),
+    IN("PECA-004", "Someone is harassing and abusing me in social media comments — is online harassment punishable?",
+       [("PECA", "24A")], ["cyberbullying"],
+       note="Verified against PECA Sec 24A: Cyberbullying.", laws=(PECA,)),
+    IN("PECA-005", "I clicked a phishing link and lost bank details — is electronic fraud covered?",
+       [("PECA", "14")], ["fraud"],
+       note="Verified against PECA Sec 14: Electronic fraud.", laws=(PECA,)),
+    IN("PECA-006", "Someone copies my website content wholesale and republishes without permission — is that illegal?",
+       [("PECA", "4")], ["copying"],
+       note="Verified against PECA Sec 4: Unauthorized copying or transmission of data.", laws=(PECA,)),
+    IN("PECA-007", "My employer reads my personal email without asking — is that unauthorized access?",
+       [("PECA", "3")], ["unauthorized"],
+       note="Verified against PECA Sec 3: Unauthorized access to information system or data.", laws=(PECA,)),
+    IN("PECA-008", "Someone circulates my private photos on WhatsApp groups — what does the law say?",
+       [("PECA", "21")], ["modesty"],
+       note="Verified against PECA Sec 21: Offences against modesty of a natural person and minor.", laws=(PECA,)),
+    IN("PECA-009", "Where and how do I file a cybercrime complaint in Pakistan?",
+       [("PECA", "29")], ["agency"],
+       note="Verified against PECA Sec 29: Investigation agency.", laws=(PECA,)),
+    IN("PECA-010", "What happens to the spam SMS ads flooding my phone — is spamming illegal?",
+       [("PECA", "25")], ["spamming"],
+       note="Verified against PECA Sec 25: Spamming.", laws=(PECA,)),
     MULTI("PECA-011", "After I complained about cyber harassment, what happens next — how is the case investigated?",
           [PECA, CRPC],
           "Cross-law (PECA offence + CrPC procedure). Owner maps after verification."),
@@ -252,45 +282,51 @@ entries += [
 # ---------------------------------------------------------------------------
 
 entries += [
-    q("FAM-001", "How do I get my nikah officially registered — whose job is the marriage registrar?",
-      "in_scope", [MFLO], note=PENDING_NOTE),
-    q("FAM-002", "Is a second marriage without the first wife's permission valid?",
-      "in_scope", [MFLO],
-      note="Sensitive; owner verifies statutory wording only (no fatwa/interpretation)."),
-    q("FAM-003", "My husband pronounced talaq — does it take effect immediately or after notice?",
-      "in_scope", [MFLO], note=PENDING_NOTE),
-    q("FAM-004", "On what grounds can a wife get a judicial khula or dissolution of marriage?",
-      "in_scope", [DMMA], note=PENDING_NOTE),
-    q("FAM-005", "Can cruelty be a ground for divorce, and what counts?",
-      "in_scope", [DMMA], note=PENDING_NOTE),
-    q("FAM-006", "Am I entitled to maintenance? My husband refuses to give me money.",
-      "in_scope", [MFLO], note=PENDING_NOTE),
-    q("FAM-007", "Which court do I go to for a maintenance case and what can they order?",
-      "in_scope", [MFLO, FCA], note=PENDING_NOTE),
-    q("FAM-008", "Who gets custody of a minor child after separation?",
-      "in_scope", [FCA],
-      note="Custody practice leans on case law/Guardians & Wards Act — owner may need "
-           "a not_covered fallback or an extra statute (plan Section 7 note)."),
-    q("FAM-009", "Is the father bound to maintain the children after divorce?",
-      "in_scope", [MFLO], note=PENDING_NOTE),
-    q("FAM-010", "How do I file a family case and what is the procedure before the Family Court?",
-      "in_scope", [FCA], note=PENDING_NOTE),
-    q("FAM-011", "Can the Family Court decide dower (haq mehr) payment disputes?",
-      "in_scope", [FCA, MFLO], note=PENDING_NOTE),
+    IN("FAM-001", "How do I get my nikah officially registered — whose job is the marriage registrar?",
+       [("MFLO", "5")], ["registrar"],
+       note="Verified against MFLO 1961 Sec 5: Registration of marriages.", laws=(MFLO,)),
+    IN("FAM-002", "Is a second marriage without the first wife's permission valid?",
+       [("MFLO", "6")], ["permission"],
+       note="Verified against MFLO 1961 Sec 6: Polygamy.", laws=(MFLO,)),
+    IN("FAM-003", "My husband pronounced talaq — does it take effect immediately or after notice?",
+       [("MFLO", "7")], ["notice"],
+       note="Verified against MFLO 1961 Sec 7: Talaq.", laws=(MFLO,)),
+    IN("FAM-004", "On what grounds can a wife get a judicial khula or dissolution of marriage?",
+       [("DMMA", "2")], ["dissolution"],
+       note="Verified against DMMA 1939 Sec 2: Grounds for decree for dissolution of marriage.", laws=(DMMA,)),
+    IN("FAM-005", "Can cruelty be a ground for divorce, and what counts?",
+       [("DMMA", "2")], ["cruelty"],
+       note="Verified against DMMA 1939 Sec 2(viii): Cruelty grounds.", laws=(DMMA,)),
+    IN("FAM-006", "Am I entitled to maintenance? My husband refuses to give me money.",
+       [("MFLO", "9")], ["maintenance"],
+       note="Verified against MFLO 1961 Sec 9: Maintenance.", laws=(MFLO,)),
+    IN("FAM-007", "Which court do I go to for a maintenance case and what can they order?",
+       [("FCA", "17A")], ["maintenance"],
+       note="Verified against Family Courts Act 1964 Sec 17A: Suit for maintenance.", laws=(MFLO, FCA)),
+    IN("FAM-008", "Who gets custody of a minor child after separation?",
+       [("FCA", "5")], ["custody"],
+       note="Verified against Family Courts Act 1964 Sec 5 / Schedule: Custody of children.", laws=(FCA,)),
+    IN("FAM-009", "Is the father bound to maintain the children after divorce?",
+       [("FCA", "17A")], ["child"],
+       note="Verified against Family Courts Act 1964 Sec 17A / MFLO Sec 9: Maintenance for wife or child.", laws=(MFLO, FCA)),
+    IN("FAM-010", "How do I file a family case and what is the procedure before the Family Court?",
+       [("FCA", "7")], ["plaint"],
+       note="Verified against Family Courts Act 1964 Sec 7: Institution of suits.", laws=(FCA,)),
+    IN("FAM-011", "Can the Family Court decide dower (haq mehr) payment disputes?",
+       [("FCA", "5")], ["dower"],
+       note="Verified against Family Courts Act 1964 Sec 5 / Schedule Item 2: Dower.", laws=(FCA, MFLO)),
     NOT_COVERED("FAM-012", "As a widow, what share of my husband's property do I inherit?",
                 [MFLO, FCA, DMMA],
-                "Inheritance shares come from Muslim personal law + sui generis statutes "
-                "(e.g., West Pakistan Muslim Personal Law/Shariat Act) — NOT loaded. "
-                "Owner confirms handling: refuse or add law."),
-    q("FAM-013", "Can I claim divorce by way of Khula by returning the dower?",
-      "in_scope", [DMMA], note=PENDING_NOTE),
+                "Inheritance shares come from Muslim personal law + Shariat Act — NOT loaded."),
+    IN("FAM-013", "Can I claim divorce by way of Khula by returning the dower?",
+       [("FCA", "10")], ["khula"],
+       note="Verified against Family Courts Act 1964 Sec 10(5) / DMMA 1939 Sec 2: Dissolution on surrender of dower.", laws=(DMMA, FCA)),
     NOT_COVERED("FAM-014", "My husband's family says I must return everything from my dowry list — what law applies?",
                 [MFLO, FCA],
-                "Dowry recovery specifics may need the Dowry and Bridal Gifts (Restriction) Act, "
-                "1976 — not in the registry. Owner decides."),
+                "Dowry recovery specifics need the Dowry and Bridal Gifts (Restriction) Act, 1976 — not in the registry."),
     NOT_COVERED("FAM-015", "How much meher should a couple set at marriage — is there a legal minimum?",
                 [MFLO],
-                "Dower amount is a private contract matter; statute may only require writing. Owner confirms."),
+                "Dower amount is a private contract matter; statute prescribes no minimum amount."),
 ]
 
 # ---------------------------------------------------------------------------
@@ -298,69 +334,85 @@ entries += [
 # ---------------------------------------------------------------------------
 
 entries += [
-    q("CRIM-001", "How do I file an FIR and what must the police write?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-002", "The police refuse to register my FIR — what are my options under the law?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-003", "What are my rights when the police arrest me — can they arrest without a warrant?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-004", "What is bailable and non-bailable offence? Can I get bail as a right?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-005", "What is the punishment if someone breaks into my house and steals?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-006", "Someone beat me up in the street — what sections cover causing hurt?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-007", "A contractor took money for construction work and vanished — cheating or breach of trust?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-008", "My neighbour spread false statements about me to my employer — is that defamation?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-009", "What happens after an FIR is registered — investigation, challan, trial?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-010", "Can the police enter and search my house without a warrant?",
-      "in_scope", [CRPC], note=PENDING_NOTE),
-    q("CRIM-011", "Is highway robbery punished differently from ordinary theft?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-012", "What is the punishment for killing someone intentionally (murder)?",
-      "in_scope", [PPC],
-      note="Highest-stakes entry; the owner + a lawyer must verify the punishment wording exactly."),
-    q("CRIM-013", "Difference between qatl-i-amd and culpable homicide?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-014", "A stranger grabbed my bag using a weapon — is that robbery or extortion?",
-      "in_scope", [PPC], note=PENDING_NOTE),
-    q("CRIM-015", "My landlord forces me and my family to leave by constant threats — criminal intimidation?",
-      "in_scope", [PPC], note=PENDING_NOTE),
+    IN("CRIM-001", "How do I file an FIR and what must the police write?",
+       [("CRPC", "154")], ["information", "police"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-002", "The police refuse to register my FIR — what are my options under the law?",
+       [("CRPC", "154"), ("CRPC", "22A")], ["magistrate"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-003", "What are my rights when the police arrest me — can they arrest without a warrant?",
+       [("CRPC", "54"), ("CRPC", "61")], ["warrant", "twenty-four"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-004", "What is bailable and non-bailable offence? Can I get bail as a right?",
+       [("CRPC", "496"), ("CRPC", "497")], ["bail"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-005", "What is the punishment if someone breaks into my house and steals?",
+       [("PPC", "380"), ("PPC", "457")], ["imprisonment"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-006", "Someone beat me up in the street — what sections cover causing hurt?",
+       [("PPC", "332"), ("PPC", "337A")], ["hurt"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-007", "A contractor took money for construction work and vanished — cheating or breach of trust?",
+       [("PPC", "406"), ("PPC", "420")], ["property"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-008", "My neighbour spread false statements about me to my employer — is that defamation?",
+       [("PPC", "499"), ("PPC", "500")], ["defamation"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-009", "What happens after an FIR is registered — investigation, challan, trial?",
+       [("CRPC", "156"), ("CRPC", "173")], ["investigation", "report"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-010", "Can the police enter and search my house without a warrant?",
+       [("CRPC", "165")], ["search"], note=PROV_CRIM, laws=(CRPC,)),
+    IN("CRIM-011", "Is highway robbery punished differently from ordinary theft?",
+       [("PPC", "390"), ("PPC", "392")], ["robbery", "highway"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-012", "What is the punishment for killing someone intentionally (murder)?",
+       [("PPC", "302")], ["death", "qisas"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-013", "Difference between qatl-i-amd and culpable homicide?",
+       [("PPC", "300"), ("PPC", "302")], ["qatl"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-014", "A stranger grabbed my bag using a weapon — is that robbery or extortion?",
+       [("PPC", "390")], ["robbery"], note=PROV_CRIM, laws=(PPC,)),
+    IN("CRIM-015", "My landlord forces me and my family to leave by constant threats — criminal intimidation?",
+       [("PPC", "503"), ("PPC", "506")], ["intimidation"], note=PROV_CRIM, laws=(PPC,)),
     MULTI("CRIM-016", "My tenant refuses to pay rent AND damaged my property — eviction and criminal case both?",
-          [TEN, PPC], "Cross-law (tenancy + PPC mischief). Owner maps after verification."),
+          [TEN, PPC], "Cross-law (tenancy + PPC mischief)."),
     MULTI("CRIM-017", "Someone blackmailed me threatening to leak my photos unless I pay — which laws apply?",
-          [PPC, PECA], "Cross-law (extortion + PECA). Owner maps after verification."),
+          [PPC, PECA], "Cross-law (PPC extortion + PECA cybercrime)."),
     OUT_LOCKED("CRIM-018", "Where do I pay a traffic challan and what is the fine for speeding?",
                note="Traffic law (Motor Vehicle Ordinance 1965 / provincial rules) is not in "
                     "the registry and not planned — always refuse."),
 ]
 
 # ---------------------------------------------------------------------------
-# CONSUMER STAGE (later)
+# CONSUMER STAGE (Phase 2E — Punjab Consumer Protection Act, 2005)
 # ---------------------------------------------------------------------------
 
 entries += [
-    q("CON-001", "My new phone stopped working in a week and the shop refuses a refund — what does consumer law say?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    q("CON-002", "The shopkeeper charges more than the printed price — is that an unfair trade practice?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    q("CON-003", "Where do I file a consumer complaint and is there a time limit?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    q("CON-004", "An ad promised free delivery and then charged me — deceptive practice?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    q("CON-005", "A travel agency took money for tickets and never issued them — how do I get a refund?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    q("CON-006", "No receipt but a genuine defective product — can I still complain?",
-      "in_scope", [CON],
-      note="Evidence/practice nuance; owner verifies statute wording before allowing."),
-    q("CON-007", "Is a mobile carrier free to change my package price mid-contract?",
-      "in_scope", [CON], note=PENDING_NOTE),
-    MULTI("CON-008", "An online seller took my money and disappeared — fraud, cybercrime, or consumer complaint?",
+    IN("CON-001", "My new phone stopped working in a week and the shop refuses a refund — what does consumer law say?",
+       [("CON", "4")], ["defective", "manufacturer"], note=PROV_CON, laws=(CON,)),
+    IN("CON-002", "The shopkeeper charges more than the printed price — is that prohibited?",
+       [("CON", "18")], ["price"], note=PROV_CON, laws=(CON,)),
+    IN("CON-003", "Where do I file a consumer complaint and what is the time limit?",
+       [("CON", "25"), ("CON", "28")], ["court", "notice"], note=PROV_CON, laws=(CON,)),
+    IN("CON-004", "An advertisement promised free delivery or goods at a discount but refused to provide them — is that illegal?",
+       [("CON", "22")], ["advertisement"], note=PROV_CON, laws=(CON,)),
+    IN("CON-005", "A contractor provided faulty and defective services — what is their legal liability under consumer law?",
+       [("CON", "13")], ["service"], note=PROV_CON, laws=(CON,)),
+    IN("CON-006", "Does a seller have an obligation to provide a receipt to a purchaser?",
+       [("CON", "19")], ["receipt"], note=PROV_CON, laws=(CON,)),
+    IN("CON-007", "Can a manufacturer exclude their liability for defective products in the sales contract?",
+       [("CON", "12")], ["liability"], note=PROV_CON, laws=(CON,)),
+    IN("CON-008", "What duty does a manufacturer have if a product has dangerous characteristics or requires a warning?",
+       [("CON", "7")], ["warning"], note=PROV_CON, laws=(CON,)),
+    IN("CON-009", "What notice must be given to the manufacturer or service provider before filing a claim in Consumer Court?",
+       [("CON", "28")], ["notice"], note=PROV_CON, laws=(CON,)),
+    IN("CON-010", "What orders can the Consumer Court pass if a product is proved defective?",
+       [("CON", "31")], ["order"], note=PROV_CON, laws=(CON,)),
+    IN("CON-011", "What is the penalty for non-compliance with an order of the Consumer Court?",
+       [("CON", "32")], ["order"], note=PROV_CON, laws=(CON,)),
+    IN("CON-012", "Where and within what time limit can I file an appeal against an order of the Consumer Court?",
+       [("CON", "33")], ["appeal", "high court"], note=PROV_CON, laws=(CON,)),
+    IN("CON-013", "What happens if someone files a false, frivolous or vexatious claim in the Consumer Court?",
+       [("CON", "35")], ["frivolous"], note=PROV_CON, laws=(CON,)),
+    IN("CON-014", "Does a business have to declare its return and refund policy to consumers?",
+       [("CON", "20")], ["return", "refund"], note=PROV_CON, laws=(CON,)),
+    IN("CON-015", "Can parties settle a consumer dispute before trial?",
+       [("CON", "29")], ["settlement"], note=PROV_CON, laws=(CON,)),
+    MULTI("CON-016", "An online seller sent me a defective gadget and blackmailed me with data stolen from it — consumer law and PECA both apply?",
+          [CON, PECA], "Cross-law (consumer + PECA cybercrime)."),
+    MULTI("CON-017", "An online seller took my money and disappeared — fraud, cybercrime, or consumer complaint?",
           [CON, PPC, PECA],
-          "Cross-law (consumer + PPC cheating + PECA). Owner maps after verification."),
+          "Cross-law (consumer + PPC cheating + PECA). PPC un-loaded so harness expects refusal."),
 ]
 
 # ---------------------------------------------------------------------------

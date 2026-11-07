@@ -17,7 +17,9 @@ Design decisions:
 """
 
 import sys
+import re
 import json
+import hashlib
 from pathlib import Path
 
 from src.config import TOP_K_RESULTS, PROCESSED_DATA_DIR
@@ -66,6 +68,7 @@ def build_index(force: bool = False) -> int:
     """
     vs = _get_vector_store()
     chunks_path = PROCESSED_DATA_DIR / "chunks.json"
+    state_path = PROCESSED_DATA_DIR / "index_state.json"
 
     if not chunks_path.exists():
         print(f"ERROR: Chunks file not found at {chunks_path}")
@@ -80,6 +83,7 @@ def build_index(force: bool = False) -> int:
         print("ERROR: Chunks file is empty. Re-run the parser.")
         return 0
 
+    chunks_hash = hashlib.sha256(chunks_path.read_bytes()).hexdigest()
     print(f"Loaded {len(chunks)} chunks from {chunks_path}")
 
     # Reset if forced
@@ -87,16 +91,51 @@ def build_index(force: bool = False) -> int:
         print("Resetting vector store collection...")
         vs.reset_collection()
 
-    # Check if already indexed
     collection = vs.get_or_create_collection()
-    if collection.count() >= len(chunks) and not force:
-        print(f"Collection already has {collection.count()} documents. Skipping indexing.")
+
+    # Wave 3-L: Check stored hash & count on collection metadata / state file
+    # Skipping only on count misses same-size chunk text rewrites.
+    cached_hash = None
+    if state_path.exists():
+        try:
+            with open(state_path, "r", encoding="utf-8") as sf:
+                cached_hash = json.load(sf).get("chunks_hash")
+        except Exception:
+            pass
+    if cached_hash is None and collection.metadata:
+        cached_hash = collection.metadata.get("chunks_hash")
+
+    if not force and collection.count() == len(chunks) and cached_hash == chunks_hash:
+        print(f"Collection is up to date ({collection.count()} chunks, matching hash). Skipping indexing.")
         print("Use --force to re-index from scratch.")
         return collection.count()
+
+    if not force and collection.count() > 0:
+        print("Index mismatch detected (chunks hash or count changed). Resetting and rebuilding...")
+        vs.reset_collection()
+        collection = vs.get_or_create_collection()
 
     # Index the chunks
     print("Indexing chunks into vector store...")
     count = vs.add_chunks(chunks)
+
+    # Store index state
+    state = {
+        "chunks_hash": chunks_hash,
+        "count": count,
+        "mtime": chunks_path.stat().st_mtime,
+    }
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(state_path, "w", encoding="utf-8") as sf:
+        json.dump(state, sf, indent=2)
+
+    try:
+        new_meta = dict(collection.metadata or {})
+        new_meta["chunks_hash"] = chunks_hash
+        collection.modify(metadata=new_meta)
+    except Exception:
+        pass
+
     print(f"Indexing complete. {count} chunks indexed.")
     return count
 
@@ -105,18 +144,49 @@ def build_index(force: bool = False) -> int:
 # Query Pipeline
 # ---------------------------------------------------------------------------
 
-def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dict:
+_FOLLOWUP_WORDS = {
+    "it", "this", "that", "these", "those", "he", "she", "they", "them",
+    "penalty", "punishment", "fine", "appeal", "saza", "jurmana", "zamanat",
+    "iska", "uski", "unka", "yeh", "woh",
+    "اسکا", "اسکی", "انکا", "یہ", "وہ", "سزا", "جرمانہ", "ضمانت", "اپیل",
+}
+
+_FOLLOWUP_PHRASES = (
+    "what about", "what if", "and if", "can he", "can she", "is it",
+    "kya hoga", "agar woh", "aur agar", "kya wo", "kya yeh", "iski saza",
+    "zamanat kaise", "اور اگر", "کیا وہ", "کیا یہ", "اس کی سزا", "ضمانت کیسے",
+    "اگر وہ",
+)
+
+
+def _is_followup_query(question: str) -> bool:
+    """
+    Detect if a user query relies on context from previous turns.
+    Wave 3-H: Length-only heuristic removed so standalone short queries
+    (e.g. 'What is murder?') do not concatenate previous context.
+    """
+    q_lower = question.lower().strip()
+    if any(phrase in q_lower for phrase in _FOLLOWUP_PHRASES):
+        return True
+    words = set(re.findall(r"\b[\w]+\b", q_lower))
+    return bool(words & _FOLLOWUP_WORDS)
+
+
+def ask(
+    question: str,
+    conversation_history: list[dict] | None = None,
+    top_k: int = TOP_K_RESULTS,
+    verbose: bool = False,
+) -> dict:
     """
     Main query function. Takes a natural language question and returns
-    a grounded legal answer.
+    a grounded legal answer with statutory citations.
 
-    Pipeline:
-        1. Retrieve relevant chunks from vector store
-        2. Pass chunks + question to generator
-        3. Return structured result
+    Supports session conversation history for context-aware multi-turn follow-ups.
 
     Args:
         question: The user's legal question.
+        conversation_history: Optional list of previous turn dicts: [{"role": "user"|"assistant", "content": "..."}]
         top_k: Number of chunks to retrieve.
         verbose: If True, print intermediate steps.
 
@@ -125,8 +195,13 @@ def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dic
     """
     question = question.strip()
     if not question:
+        loaded_line = registry.format_loaded_laws_for_refusal()
         return {
-            "answer": "Please ask a legal question about Punjab tenancy and rent law.",
+            "answer": (
+                "Please ask a legal question regarding the laws currently covered:\n"
+                f"{loaded_line}\n"
+                "(Supports English, Roman Urdu, and اردو)."
+            ),
             "in_scope": True,
             "detected_topic": None,
             "citations": {"has_citations": False, "citation_count": 0, "citations_found": []},
@@ -149,27 +224,41 @@ def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dic
             "source_sections": [],
         }
 
-    # Step 2: Hybrid retrieval across ALL loaded laws (revised plan 5.4)
+    # Contextualize query for retrieval if this is a follow-up question
+    retrieval_query = question
+    if conversation_history:
+        last_user_q = next(
+            (m["content"] for m in reversed(conversation_history) if m.get("role") == "user"),
+            None,
+        )
+        if last_user_q and _is_followup_query(question):
+            retrieval_query = f"{last_user_q} {question}"
+            if verbose:
+                print(f"  [Contextualizer] Follow-up query expanded for retrieval: '{retrieval_query}'")
+
+    # Step 2: Ensure knowledge base is indexed (setup error if empty, revised plan 2-F)
+    vs = _get_vector_store()
+    _c = vs.get_or_create_collection()
+    if _c.count() == 0:
+        return {
+            "answer": (
+                "The legal knowledge base is empty. Please run the indexing step first:\n"
+                "  1. python -m src.parser\n"
+                "  2. python -m src.bot --index"
+            ),
+            "in_scope": True,
+            "detected_topic": None,
+            "citations": {"has_citations": False, "citation_count": 0, "citations_found": [], "supported": [], "unsupported": []},
+            "source_sections": [],
+            "not_covered": False,
+        }
+
     if verbose:
-        from src import retrieval as retriever, vector_store as vs  # noqa: F401
-        _c = vs.get_or_create_collection()
-        if _c.count() == 0:
-            return {
-                "answer": (
-                    "The legal knowledge base is empty. Please run the indexing step first:\n"
-                    "  1. python -m src.parser\n"
-                    "  2. python -m src.bot --index"
-                ),
-                "in_scope": True,
-                "detected_topic": None,
-                "citations": {"has_citations": False, "citation_count": 0, "citations_found": []},
-                "source_sections": [],
-                "not_covered": False,
-            }
+        from src import retrieval as retriever
         print(f"  [Retrieval] Hybrid search (vector + BM25, pool={retriever.config.CANDIDATE_POOL_SIZE})...")
 
     from src import retrieval as retrieval_module
-    retrieval_result = retrieval_module.search(question, top_k=top_k)
+    retrieval_result = retrieval_module.search(retrieval_query, top_k=top_k)
     retrieved = retrieval_result["results"]
 
     if verbose:
@@ -201,11 +290,11 @@ def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dic
             "not_covered": True,
         }
 
-    # Step 4: Generate answer
+    # Step 4: Generate answer with conversation context
     if verbose:
         print(f"  [Generator] Calling LLM...")
 
-    result = gen.generate_answer(question, retrieved)
+    result = gen.generate_answer(question, retrieved, conversation_history=conversation_history)
     if jnote and not result["answer"].startswith("Error:"):
         result["answer"] = result["answer"] + f"\n\n{jnote}"
 
@@ -221,24 +310,30 @@ def ask(question: str, top_k: int = TOP_K_RESULTS, verbose: bool = False) -> dic
 
 def print_welcome():
     """Print the welcome banner for the interactive CLI."""
+    loaded_laws = registry.get_loaded_laws()
     print()
-    print("=" * 60)
-    print("  PAKISTAN LAW BOT - Punjab Tenancy & Rent Law")
-    print("  The Punjab Rented Premises Act, 2009")
-    print("=" * 60)
-    print()
-    print("  Ask any question about Punjab tenancy and rent law.")
-    print("  Type 'quit' or 'exit' to stop.")
-    print("  Type 'verbose' to toggle detailed output.")
-    print()
-    print("-" * 60)
+    print("=" * 68)
+    print("  PAKISTAN LAW BOT — Multi-Law Legal Information Assistant")
+    print("  Grounded Statutory AI with Exact Section Citations")
+    print("=" * 68)
+    print("  Active Statutory Coverage:")
+    for law_id, meta in loaded_laws.items():
+        print(f"    • [{meta.get('category', 'general').capitalize()}] {meta['title']} ({meta.get('jurisdiction')})")
+    print("=" * 68)
+    print("  Supported Languages: English, Roman Urdu, and اردو")
+    print("  Commands:")
+    print("    • 'clear' or 'reset' : Clear conversation memory")
+    print("    • 'verbose'          : Toggle retrieval & debug details")
+    print("    • 'quit' or 'exit'   : Exit assistant")
+    print("-" * 68)
 
 
 def interactive_cli():
-    """Run the interactive command-line interface."""
+    """Run the interactive command-line interface with session memory."""
     print_welcome()
 
     verbose = False
+    conversation_history: list[dict] = []
 
     # Ensure index exists
     print("Checking knowledge base...")
@@ -251,7 +346,7 @@ def interactive_cli():
             print("Failed to build index. Exiting.")
             return
     else:
-        print(f"Knowledge base ready: {collection.count()} documents indexed.\n")
+        print(f"Knowledge base ready: {collection.count()} statutory chunks indexed across all loaded laws.\n")
 
     while True:
         try:
@@ -267,6 +362,11 @@ def interactive_cli():
             print("\nGoodbye!")
             break
 
+        if question.lower() in ("clear", "reset"):
+            conversation_history.clear()
+            print("  Conversation history cleared. Starting fresh topic.")
+            continue
+
         if question.lower() == "verbose":
             verbose = not verbose
             print(f"  Verbose mode: {'ON' if verbose else 'OFF'}")
@@ -274,13 +374,19 @@ def interactive_cli():
 
         print()
         try:
-            result = ask(question, verbose=verbose)
+            result = ask(question, conversation_history=conversation_history, verbose=verbose)
             print(result["answer"])
+
+            # Store in conversation memory for multi-turn follow-ups
+            if result.get("in_scope") and not result["answer"].startswith("Error:"):
+                conversation_history.append({"role": "user", "content": question})
+                conversation_history.append({"role": "assistant", "content": result["answer"]})
 
             if verbose:
                 print(f"\n  [Meta] In-scope: {result['in_scope']}")
                 print(f"  [Meta] Source sections: {result['source_sections']}")
                 print(f"  [Meta] Citations: {result['citations']}")
+                print(f"  [Meta] History turns: {len(conversation_history) // 2}")
 
         except Exception as e:
             print(f"\nError: {e}")
@@ -309,6 +415,18 @@ if __name__ == "__main__":
             print("\n" + result["answer"])
         else:
             print("Usage: python -m src.bot --ask 'your question here'")
+
+    elif "--web" in args or "web" in args:
+        # Web server mode
+        from src.server import run_server
+        port = 8000
+        for i, a in enumerate(args):
+            if a in ("--port", "-p") and i + 1 < len(args):
+                try:
+                    port = int(args[i + 1])
+                except ValueError:
+                    pass
+        run_server(port=port)
 
     else:
         # Default: interactive CLI

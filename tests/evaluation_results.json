@@ -1,298 +1,4283 @@
-[
-  {
-    "id": 1,
-    "question": "Can my landlord evict me without notice?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "15"
-      ],
-      "found": [
-        "15"
-      ],
-      "missing": []
+{
+  "generated_on": "2026-11-07 22:59:44",
+  "loaded_laws": [
+    "crpc_1898",
+    "dmma_1939",
+    "family_courts_1964",
+    "mflo_1961",
+    "peca_2016",
+    "ppc_1860",
+    "punjab_consumer_2005",
+    "tenancy_punjab_2009"
+  ],
+  "n_verified": 114,
+  "n_unverified": 0,
+  "results": [
+    {
+      "id": "TEN-001",
+      "question": "Can my landlord evict me without notice?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "15"
+        ],
+        "cited": [
+          "7",
+          "13",
+          "15",
+          "19",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 60.17,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, a landlord **cannot** simply evict you without following specific legal procedures and grounds. Eviction is not an immediate right ..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-002",
+      "question": "Can my landlord increase rent whenever he wants?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "6"
+        ],
+        "cited": [
+          "6",
+          "7",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.07,
+      "answer_preview": "Based on the provided provisions of **The Punjab Rented Premises Act, 2009**, here is the information regarding rent increases:\n\n**1. Rent is governed by the Tenancy Agreement**\nThe law does not expli..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-003",
+      "question": "Does my landlord have to return my security deposit?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided from **The Punjab Rented Premises Act, 2009**, there is **no explicit section** that details the specific conditions, timeline, or procedure for the **return..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-004",
+      "question": "Is a verbal tenancy agreement valid in Punjab?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "5"
+        ],
+        "cited": [
+          "2",
+          "5"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.05,
+      "answer_preview": "Based on the statutory provisions provided, a verbal tenancy agreement is **not valid** for letting out premises in Punjab. The law explicitly requires a written agreement.\n\nHere are the specific lega..."
     },
-    "time_seconds": 51.05,
-    "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding eviction procedures:\n\n**1. Eviction Requires a Formal Application to the Rent Tribunal**\nA landlord cannot simply ev..."
-  },
-  {
-    "id": 2,
-    "question": "Can my landlord increase rent whenever he wants?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "6",
-        "10"
-      ],
-      "found": [
-        "6",
-        "10"
-      ],
-      "missing": []
+    {
+      "id": "TEN-005",
+      "question": "What are the grounds for eviction of a tenant?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "15"
+        ],
+        "cited": [
+          "7",
+          "13",
+          "15",
+          "19",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.09,
+      "answer_preview": "Under the **Punjab Rented Premises Act, 2009**, a landlord may seek the eviction of a tenant only on specific legal grounds. These grounds are explicitly listed in **Section 15** of the Act.\n\n### Grou..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-006",
+      "question": "Can the landlord shut off my electricity or water if I delay rent?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "12"
+        ],
+        "cited": [
+          "7",
+          "12",
+          "15"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, here is the legal position regarding a landlord cutting off utilities due to rent delays:\n\n### 1. Prohibition on Cutting Off Utilit..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-007",
+      "question": "How often and how am I supposed to pay rent?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "7"
+        ],
+        "cited": [
+          "2",
+          "7",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, here is how you are required to pay your rent:\n\n### 1. Frequency and Timing\n*   **If specified in your agreement:** You must pay or..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-008",
+      "question": "I moved into this house years ago without a written contract — does old tenancy still count?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "8"
+        ],
+        "cited": [
+          "5",
+          "8",
+          "15",
+          "443"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.2,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n**1. Requirement for a Written Tenancy Agreement**\nUnder the current law, a landlord is prohibited ..."
     },
-    "time_seconds": 44.93,
-    "answer_preview": "No, your landlord cannot increase the rent whenever he wants. The law places specific restrictions on rent enhancement to protect tenants from arbitrary increases.\n\nHere are the specific legal provisi..."
-  },
-  {
-    "id": 3,
-    "question": "Does my landlord have to return my security deposit?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "6"
-      ],
-      "found": [
-        "6"
-      ],
-      "missing": []
+    {
+      "id": "TEN-009",
+      "question": "What happens if my landlord does not register our rental agreement?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "5"
+        ],
+        "cited": [
+          "5"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided from **The Punjab Rented Premises Act, 2009**, here is the legal position regarding the registration of a rental agreement:\n\n**1. Mandatory Requirement for T..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-010",
+      "question": "Can our rental agreement say things different from the printed Act?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "10"
+        ],
+        "cited": [
+          "5",
+          "7",
+          "10",
+          "12"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Refused BUT cited sections (partial hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.12,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding whether a rental agreement can differ from the Act:\n\n**1. Mandatory Requirements for the Agreement**\nThe law requires that..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-011",
+      "question": "Am I allowed to sublet part of my rented shop to someone else?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "11"
+        ],
+        "cited": [
+          "2",
+          "11"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding subletting a rented shop:\n\n**General Rule: Prior Written Consent is Required**\nYou are **not** allowed to sublet the..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-012",
+      "question": "Who pays for the repairs — the landlord's duties?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "12"
+        ],
+        "cited": [
+          "12",
+          "13"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided, the responsibility for repairs and the associated costs is primarily with the landlord, with specific mechanisms for reimbursement if the landlord fails to ..."
     },
-    "time_seconds": 7.49,
-    "answer_preview": "Yes, your landlord is legally required to return your security deposit, subject to specific conditions regarding lawful deductions.\n\nAccording to the Punjab Rented Premises Act, 2009:\n\n*   **Mandatory..."
-  },
-  {
-    "id": 4,
-    "question": "Is a verbal tenancy agreement valid in Punjab?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "5"
-      ],
-      "found": [
-        "5"
-      ],
-      "missing": []
+    {
+      "id": "TEN-013",
+      "question": "What are my duties as a tenant to keep the property usable?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "13"
+        ],
+        "cited": [
+          "13"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, your duties as a tenant regarding the condition and usability of the property are outlined below:\n\n### 1. Maintenance of Condition\n..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-014",
+      "question": "I paid for a water pump and leakage repairs myself. Can I get that money back from the landlord?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "14"
+        ],
+        "cited": [
+          "7",
+          "12",
+          "14",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.33,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n**1. Right to Deduct Expenses from Rent**\nIf the landlord failed to keep the premises in a habitabl..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-015",
+      "question": "The landlord refuses repairs and I want to pay for them myself and deduct from rent — is that allowed?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.667,
+        "recall": 1.0,
+        "expected": [
+          "12",
+          "14"
+        ],
+        "cited": [
+          "12",
+          "14",
+          "20"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Yes, under specific conditions, you are allowed to make the repairs yourself and deduct the cost from your rent, but you must follow a specific legal process through the Rent Tribunal. You cannot simp..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-016",
+      "question": "Where do I apply to have my tenant evicted for subletting without permission?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "15"
+        ],
+        "cited": [
+          "11",
+          "15",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of The Punjab Rented Premises Act, 2009, here is the information regarding eviction for unauthorized subletting:\n\n**1. Legal Ground for Eviction**\nYou may seek eviction if your..."
     },
-    "time_seconds": 8.84,
-    "answer_preview": "Based on the statutory provisions provided, a verbal tenancy agreement is **not valid** under the Punjab Rented Premises Act, 2009. The law explicitly requires that tenancy agreements be in writing an..."
-  },
-  {
-    "id": 5,
-    "question": "What are the grounds for eviction of a tenant?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "15"
-      ],
-      "found": [
-        "15"
-      ],
-      "missing": []
+    {
+      "id": "TEN-017",
+      "question": "I owe rent. Can I deposit it with the Rent Tribunal if the landlord will not accept it?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "20"
+        ],
+        "cited": [
+          "20",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Yes, you can deposit the rent with the Rent Tribunal if your landlord refuses to accept it. The law provides a specific mechanism for this situation to protect your rights as a tenant.\n\nHere are the l..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-018",
+      "question": "What happens if the landlord does not appear in the eviction hearing?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "21"
+        ],
+        "cited": [
+          "21"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provided provisions of **The Punjab Rented Premises Act, 2009**, here is what happens if the landlord (the applicant in an eviction case) does not appear in the hearing:\n\n1.  **Dismissal ..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-019",
+      "question": "I missed the first hearing after an eviction application — can I still defend myself?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "22"
+        ],
+        "cited": [
+          "21",
+          "22"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.17,
+      "answer_preview": "Yes, you can still defend yourself, but you must act quickly and follow specific procedural steps to set aside the order passed in your absence.\n\nHere is how the law addresses your situation based on ..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-020",
+      "question": "Do I get time to file a written reply in a rent case?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "23"
+        ],
+        "cited": [
+          "22",
+          "23"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.05,
+      "answer_preview": "Yes, you are given a specific timeframe to file your defense, which is technically referred to as an \"application for leave to contest\" that serves as your written reply. Here are the specific rules r..."
     },
-    "time_seconds": 14.67,
-    "answer_preview": "Under the Punjab Rented Premises Act, 2009, a landlord must apply to the Rent Tribunal to evict a tenant. The Rent Tribunal may pass an order of eviction on one or more of the following specific groun..."
-  },
-  {
-    "id": 6,
-    "question": "Can the landlord shut off my electricity or water if I delay rent?",
-    "type": "in_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [
-        "13"
-      ],
-      "found": [
-        "13"
-      ],
-      "missing": []
+    {
+      "id": "TEN-021",
+      "question": "Should I keep paying rent while the eviction case is going on?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "24"
+        ],
+        "cited": [
+          "7",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.07,
+      "answer_preview": "Yes, you should continue to pay rent while the eviction case is ongoing. The law explicitly requires tenants to keep depositing rent during the pendency of eviction proceedings.\n\nHere are the specific..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "N/A (in-scope question)"
+    {
+      "id": "TEN-022",
+      "question": "How long should the Rent Tribunal take to decide an eviction application?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "27"
+        ],
+        "cited": [
+          "22",
+          "27"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provided provisions of The Punjab Rented Premises Act, 2009, here is the timeline for the Rent Tribunal to decide an eviction application:\n\n*   **General Time Limit:** The Rent Tribunal m..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-023",
+      "question": "Can I appeal the Rent Tribunal's eviction order?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "28"
+        ],
+        "cited": [
+          "28"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Yes, you can appeal a final eviction order passed by the Rent Tribunal. The specific rules and procedures for doing so are as follows:\n\n*   **Who can appeal:** Any person aggrieved by a final order ma..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-024",
+      "question": "Does the Rent Tribunal have the same powers as a civil court for evidence?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "26"
+        ],
+        "cited": [
+          "25",
+          "26"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.07,
+      "answer_preview": "Yes, the Rent Tribunal possesses specific powers equivalent to a Civil Court regarding the enforcement of attendance, production of evidence, and inspection. However, there are specific procedural rul..."
     },
-    "time_seconds": 42.85,
-    "answer_preview": "Based on the statutory provisions provided, here is the legal position regarding a landlord cutting off essential services like electricity or water due to rent delays:\n\n**1. Prohibition on Cutting Of..."
-  },
-  {
-    "id": 7,
-    "question": "How do I file an FIR for motorcycle theft?",
-    "type": "out_of_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [],
-      "found": [],
-      "missing": []
+    {
+      "id": "TEN-025",
+      "question": "The landlord sold the house in the middle of my tenancy — do I have to vacate for the new owner?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "30"
+        ],
+        "cited": [
+          "10",
+          "30"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, here is the legal information regarding your situation:\n\n**1. You do not have to vacate the premises**\nThe transfer of ownership do..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "Correctly refused without citing sections"
+    {
+      "id": "TEN-026",
+      "question": "How is a Rent Tribunal's decision enforced if the tenant refuses to vacate?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "31"
+        ],
+        "cited": [
+          "24",
+          "31"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided, the enforcement of a Rent Tribunal's decision, including orders for eviction, is governed by the following rules:\n\n1.  **Execution as a Civil Decree:** The ..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-027",
+      "question": "Who sets up the Rent Tribunal and who staffs it?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "16"
+        ],
+        "cited": [
+          "16",
+          "18"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the establishment and staffing of the Rent Tribunal:\n\n**Who sets up the Rent Tribunal?**\n*   The **Government** is respons..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-028",
+      "question": "What is the Rent Registrar and what does he do with my agreement?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "17"
+        ],
+        "cited": [
+          "5",
+          "17"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provisions of **The Punjab Rented Premises Act, 2009**, here is the information regarding the Rent Registrar and the handling of your tenancy agreement:\n\n### Who is the Rent Registrar?\nTh..."
     },
-    "time_seconds": 0.0,
-    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Criminal** falls outside this scope.\n\nPlease consult an app..."
-  },
-  {
-    "id": 8,
-    "question": "What is the procedure for Khula under Pakistani law?",
-    "type": "out_of_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [],
-      "found": [],
-      "missing": []
+    {
+      "id": "TEN-029",
+      "question": "If a law conflicts with this tenancy Act, which wins?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "4"
+        ],
+        "cited": [
+          "4"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.1,
+      "answer_preview": "Based on the statutory provisions provided, the **Punjab Rented Premises Act, 2009** takes precedence over any other law in the event of a conflict.\n\nHere are the specific legal grounds:\n\n*   **Overri..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "Correctly refused without citing sections"
+    {
+      "id": "TEN-030",
+      "question": "Are there any tenancies exempt from the Punjab Rented Premises Act, like government buildings?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "3"
+        ],
+        "cited": [
+          "2",
+          "3"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding exemptions from the Punjab Rented Premises Act, 2009:\n\n**1. General Exemption Power**\nThe Act grants the Government of the..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-031",
+      "question": "Who counts as a 'tenant' and what counts as 'rent' under this Act — what does the Act define?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "2"
+        ],
+        "cited": [
+          "2"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided, here are the definitions for \"tenant\" and \"rent\" under **The Punjab Rented Premises Act, 2009**:\n\n### Definition of \"Tenant\"\nA \"tenant\" is defined as a pers..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-032",
+      "question": "Does the Act apply to commercial shops or only to living space?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "3"
+        ],
+        "cited": [
+          "2",
+          "3",
+          "462E"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.16,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the application of the laws to commercial shops versus living space:\n\n**1. The Punjab Rented Premises Act, 2009**\nThe prov..."
     },
-    "time_seconds": 0.0,
-    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Family Law** falls outside this scope.\n\nPlease consult an a..."
-  },
-  {
-    "id": 9,
-    "question": "How to report harassment on WhatsApp to FIA?",
-    "type": "out_of_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [],
-      "found": [],
-      "missing": []
+    {
+      "id": "TEN-033",
+      "question": "Do strict formal evidence rules apply in rent tribunal hearings?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "26"
+        ],
+        "cited": [
+          "25",
+          "26"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the provided provisions of **The Punjab Rented Premises Act, 2009**, strict formal evidence rules (such as those typically found in formal civil or criminal courts) do **not** apply in the sa..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "Correctly refused without citing sections"
+    {
+      "id": "TEN-034",
+      "question": "Who is authorized to make rules under this Act?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.143,
+        "recall": 1.0,
+        "expected": [
+          "33"
+        ],
+        "cited": [
+          "2",
+          "26",
+          "33",
+          "38",
+          "51",
+          "51A",
+          "554"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.36,
+      "answer_preview": "Based on the statutory provisions provided, the authority to make rules varies depending on the specific Act in question. Here is the breakdown of who is authorized to make rules for each Act:\n\n*   **..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-035",
+      "question": "Are Special Judges protected from legal suits for actions taken in good faith under this Act?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "32"
+        ],
+        "cited": [
+          "32"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Yes, Special Judges (Rent) are protected from legal suits for actions taken in good faith under the Act.\n\nAccording to the statutory provisions provided:\n\n*   **Immunity from Suits:** No suit or other..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-036",
+      "question": "What laws did this Act repeal when it started?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.667,
+        "recall": 1.0,
+        "expected": [
+          "36",
+          "35"
+        ],
+        "cited": [
+          "35",
+          "36",
+          "50"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.19,
+      "answer_preview": "Based on the statutory provisions provided, the **Punjab Rented Premises Act, 2009** explicitly repealed two specific laws upon its commencement:\n\n1.  **The Punjab Urban Rent Restriction Ordinance, 19..."
     },
-    "time_seconds": 0.0,
-    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Cybercrime** falls outside this scope.\n\nPlease consult an a..."
-  },
-  {
-    "id": 10,
-    "question": "Can my landlord kick me out in London?",
-    "type": "out_of_scope",
-    "overall_pass": true,
-    "citation": {
-      "passed": true,
-      "expected": [],
-      "found": [],
-      "missing": []
+    {
+      "id": "TEN-037",
+      "question": "Do I have to pay property tax or who pays — is the tenant responsible for taxes on the house?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "12",
+          "14"
+        ],
+        "cited": [
+          "7",
+          "12",
+          "14",
+          "15"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.13,
+      "answer_preview": "Based on the statutory provisions provided, the responsibility for paying property taxes, fees, or charges lies primarily with the **landlord**, not the tenant. However, there are specific procedures ..."
     },
-    "refusal": {
-      "passed": true,
-      "reason": "Correctly refused without citing sections"
+    {
+      "id": "TEN-038",
+      "question": "Can the landlord demand a year's rent in advance? Is advance rent beyond a month legal?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "6"
+        ],
+        "cited": [
+          "2",
+          "6",
+          "7"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.05,
+      "answer_preview": "Based on the statutory provisions of **The Punjab Rented Premises Act, 2009** provided in the context, here is the legal information regarding advance rent:\n\n### 1. Legal Status of Advance Rent\nThe Ac..."
     },
-    "content": {
-      "passed": true,
-      "missing": [],
-      "forbidden_found": []
+    {
+      "id": "TEN-039",
+      "question": "The landlord locked the gate and threw my stuff out — what do I do right now, same day?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation. Please note that the specific act of \"locking the gate and throwing out stuff\" is a physical act of ..."
     },
-    "disclaimer": {
-      "passed": true,
-      "reason": "Disclaimer present"
+    {
+      "id": "TEN-040",
+      "question": "Do I get tenant insurance for the rented flat?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.05,
+      "answer_preview": "Based on the statutory provisions provided from **The Punjab Rented Premises Act, 2009**, there is **no mention** of \"tenant insurance\" or any requirement for a landlord or tenant to obtain insurance ..."
     },
-    "time_seconds": 0.0,
-    "answer_preview": "This assistant is currently specialized in **Punjab Tenancy and Rent Law** (The Punjab Rented Premises Act, 2009). Your question regarding **Foreign Jurisdiction** falls outside this scope.\n\nPlease co..."
-  }
-]
+    {
+      "id": "TEN-041",
+      "question": "Are WhatsApp chats admissible as evidence in my rent case?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.11,
+      "answer_preview": "Based on the statutory provisions provided, there is **no explicit mention** of \"WhatsApp chats,\" \"electronic records,\" or \"digital evidence\" in the context of the *Punjab Rented Premises Act, 2009* o..."
+    },
+    {
+      "id": "TEN-042",
+      "question": "Can my landlord increase rent because of COVID or because the market rate went up?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions provided from **The Punjab Rented Premises Act, 2009**, here is the information regarding rent increases:\n\n**1. Rent is governed by the Tenancy Agreement**\nThe rate o..."
+    },
+    {
+      "id": "TEN-043",
+      "question": "How much registration fee will the Rent Registrar charge me?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse (no refusal language found)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.09,
+      "answer_preview": "The provided provisions of The Punjab Rented Premises Act, 2009 | The Code of Criminal Procedure, 1898 do not explicitly address this specific issue. Please consult a qualified advocate for guidance.\n..."
+    },
+    {
+      "id": "TEN-044",
+      "question": "My landlord physically assaulted me during a rent dispute — what does the law say?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "452",
+          "20"
+        ],
+        "cited": [
+          "7",
+          "20",
+          "34",
+          "452"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.13,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n**1. Criminal Liability for Assault**\nThe provided provisions of *The Pakistan Penal Code, 1860* do..."
+    },
+    {
+      "id": "TEN-045",
+      "question": "My landlord keeps sending threatening WhatsApp messages to make me leave — is that a crime?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Refused BUT cited sections (partial hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.19,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n**1. Criminal Liability for Threats**\nThe provided provisions of *The Punjab Rented Premises Act, 2..."
+    },
+    {
+      "id": "TEN-046",
+      "question": "Someone stole tools from my rented shop — where do the theft law and my tenancy rights meet?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "378"
+        ],
+        "cited": [
+          "378",
+          "410"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.19,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding the theft of tools from your rented shop.\n\n**Important Note on Scope:** The provided laws cover **criminal theft** a..."
+    },
+    {
+      "id": "PECA-001",
+      "question": "Someone hacked into my email and changed my password — is that an offence under PECA?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "3"
+        ],
+        "cited": [
+          "2",
+          "3",
+          "6",
+          "34"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.2,
+      "answer_preview": "Yes, hacking into your email and changing your password is an offence under the Prevention of Electronic Crimes Act, 2016 (PECA).\n\nHere are the specific legal grounds based on the provided provisions:..."
+    },
+    {
+      "id": "PECA-002",
+      "question": "A fake Facebook account is using my name and photos — what does the law do about impersonation?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "16"
+        ],
+        "cited": [
+          "2C",
+          "16",
+          "26A",
+          "34",
+          "416"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.26,
+      "answer_preview": "Based on the statutory provisions provided, here is how the law addresses the issue of a fake Facebook account using your name and photos:\n\n### 1. Unauthorized Use of Identity Information\nIf the perso..."
+    },
+    {
+      "id": "PECA-003",
+      "question": "Someone is cyber stalking and sending threatening texts to me from an unknown number — what can I do legally?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "24"
+        ],
+        "cited": [
+          "24",
+          "29",
+          "507"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.21,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n### 1. Identification of Offences\nYour situation involves two distinct legal issues: cyber stalking..."
+    },
+    {
+      "id": "PECA-004",
+      "question": "Someone is harassing and abusing me in social media comments — is online harassment punishable?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.143,
+        "recall": 1.0,
+        "expected": [
+          "24A"
+        ],
+        "cited": [
+          "2R",
+          "2S",
+          "2U",
+          "20",
+          "24",
+          "24A",
+          "507"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Yes, online harassment and abuse on social media are punishable under Pakistani law. Based on the statutory provisions provided, here is how the law addresses your situation:\n\n### 1. Cyberbullying\nIf ..."
+    },
+    {
+      "id": "PECA-005",
+      "question": "I clicked a phishing link and lost bank details — is electronic fraud covered?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "14"
+        ],
+        "cited": [
+          "4",
+          "13",
+          "14",
+          "463"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n**1. Definition of Electronic Fraud**\nYes, the act of deceiving a person to cause harm or damage th..."
+    },
+    {
+      "id": "PECA-006",
+      "question": "Someone copies my website content wholesale and republishes without permission — is that illegal?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "4"
+        ],
+        "cited": [
+          "4",
+          "25",
+          "26"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal analysis regarding the unauthorized copying of your website content:\n\n**Yes, this action is illegal under the Prevention of Electronic Cri..."
+    },
+    {
+      "id": "PECA-007",
+      "question": "My employer reads my personal email without asking — is that unauthorized access?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "3"
+        ],
+        "cited": [
+          "2",
+          "3",
+          "41"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.14,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal analysis regarding your employer reading your personal email:\n\n**1. Definition of Unauthorized Access**\nThe law defines “unauthorized acce..."
+    },
+    {
+      "id": "PECA-008",
+      "question": "Someone circulates my private photos on WhatsApp groups — what does the law say?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "21"
+        ],
+        "cited": [
+          "21",
+          "34",
+          "41",
+          "509"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.22,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding the circulation of your private photos on WhatsApp groups:\n\n### 1. Offence Against Modesty and Reputation\nIf the pho..."
+    },
+    {
+      "id": "PECA-009",
+      "question": "Which investigation agency handles cybercrime complaints in Pakistan and how is it established under PECA?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "29"
+        ],
+        "cited": [
+          "2",
+          "29",
+          "30",
+          "43A",
+          "50A"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.09,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the investigation agency for cybercrimes in Pakistan:\n\n**1. Name and Establishment of the Agency**\n*   The Federal Governm..."
+    },
+    {
+      "id": "PECA-010",
+      "question": "What happens to the spam SMS ads flooding my phone — is spamming illegal?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "25"
+        ],
+        "cited": [
+          "2",
+          "25"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.16,
+      "answer_preview": "Yes, spamming is illegal under Pakistani law. Based on the statutory provisions provided, here is what the law says about spam SMS ads:\n\n**1. Definition of the Offence**\nA person commits the offence o..."
+    },
+    {
+      "id": "PECA-011",
+      "question": "After I complained about cyber harassment, what happens next — how is the case investigated?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.167,
+        "recall": 1.0,
+        "expected": [
+          "24"
+        ],
+        "cited": [
+          "2S",
+          "5",
+          "24",
+          "24A",
+          "43A",
+          "507"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.27,
+      "answer_preview": "Based on the statutory provisions provided, here is how the investigation and handling of a cyber harassment case proceed:\n\n**1. Lodging the Complaint**\n*   **General Cybercrimes:** The provided text ..."
+    },
+    {
+      "id": "PECA-012",
+      "question": "A scammer defrauded me through a fake online ad and drained my card — fraud or cybercrime or both?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "415"
+        ],
+        "cited": [
+          "2C",
+          "2R",
+          "26A",
+          "415"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.28,
+      "answer_preview": "Based on the statutory provisions provided, your situation likely involves elements of both **cybercrime** (under The Prevention of Electronic Crimes Act, 2016) and **fraud/cheating** (under The Pakis..."
+    },
+    {
+      "id": "FAM-001",
+      "question": "How do I get my nikah officially registered — whose job is the marriage registrar?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "5"
+        ],
+        "cited": [
+          "5",
+          "24"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the registration of a Nikah and the role of the marriage registrar:\n\n### 1. Mandatory Registration\nEvery marriage solemniz..."
+    },
+    {
+      "id": "FAM-002",
+      "question": "Is a second marriage without the first wife's permission valid?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "6"
+        ],
+        "cited": [
+          "6"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.17,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal position regarding a second marriage without the first wife's permission:\n\n**1. Requirement for Arbitration Council Permission**\nUnder the..."
+    },
+    {
+      "id": "FAM-003",
+      "question": "My husband pronounced talaq — does it take effect immediately or after notice?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "7"
+        ],
+        "cited": [
+          "7"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.38,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding the effectiveness of Talaq:\n\n**1. Talaq Does Not Take Effect Immediately**\nA Talaq pronounced by a husband does not ..."
+    },
+    {
+      "id": "FAM-004",
+      "question": "On what grounds can a wife get a judicial khula or dissolution of marriage?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "2"
+        ],
+        "cited": [
+          "2"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.29,
+      "answer_preview": "Based on the statutory provisions provided, a wife can obtain a judicial decree for the dissolution of her marriage (including *khula*) on the following specific grounds:\n\n**1. Specific Grounds for Di..."
+    },
+    {
+      "id": "FAM-005",
+      "question": "Can cruelty be a ground for divorce, and what counts?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "2"
+        ],
+        "cited": [
+          "2"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.19,
+      "answer_preview": "Yes, cruelty is a valid ground for a woman to obtain a decree for the dissolution of her marriage under Muslim Law.\n\nAccording to the provided statutory provisions, the specific definition and example..."
+    },
+    {
+      "id": "FAM-006",
+      "question": "Am I entitled to maintenance? My husband refuses to give me money.",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "9"
+        ],
+        "cited": [
+          "9",
+          "17A"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.31,
+      "answer_preview": "Based on the statutory provisions provided, you are entitled to seek maintenance if your husband fails to maintain you adequately. Here is how the law addresses your situation:\n\n**1. Right to Apply fo..."
+    },
+    {
+      "id": "FAM-007",
+      "question": "Which court do I go to for a maintenance case and what can they order?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "17A"
+        ],
+        "cited": [
+          "5",
+          "17A"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.32,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding maintenance cases:\n\n### Which Court to Approach\nYou must file your case in the **Family Court**. The Family Courts have **..."
+    },
+    {
+      "id": "FAM-008",
+      "question": "Who gets custody of a minor child after separation?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "5"
+        ],
+        "cited": [
+          "5",
+          "328",
+          "361",
+          "369"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.27,
+      "answer_preview": "Based on the statutory provisions provided, the specific rules determining **who** gets custody of a minor child after separation (e.g., whether the mother or father is preferred) are **not explicitly..."
+    },
+    {
+      "id": "FAM-009",
+      "question": "Is the father bound to maintain the children after divorce?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.32,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the maintenance of children after divorce:\n\n**1. Jurisdiction of Family Courts**\nThe Family Courts have exclusive jurisdic..."
+    },
+    {
+      "id": "FAM-010",
+      "question": "How do I file a family case and what is the procedure before the Family Court?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "7"
+        ],
+        "cited": [
+          "5",
+          "7"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions of **The Family Courts Act, 1964** provided, here is the procedure for filing a family case and the subsequent steps before the Family Court.\n\n### 1. Jurisdiction and..."
+    },
+    {
+      "id": "FAM-011",
+      "question": "Can the Family Court decide dower (haq mehr) payment disputes?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "5"
+        ],
+        "cited": [
+          "5",
+          "7",
+          "10",
+          "13"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.25,
+      "answer_preview": "Yes, the Family Court has the authority to decide disputes regarding dower (haq mehr) payment.\n\nHere are the specific legal provisions that establish this jurisdiction and procedure:\n\n*   **Exclusive ..."
+    },
+    {
+      "id": "FAM-012",
+      "question": "As a widow, what share of my husband's property do I inherit?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.2,
+      "answer_preview": "Based on the statutory provisions provided, there is **no explicit section** that states the specific fractional share (e.g., 1/8th or 1/4th) a widow is entitled to inherit from her husband's property..."
+    },
+    {
+      "id": "FAM-013",
+      "question": "Can I claim divorce by way of Khula by returning the dower?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "10"
+        ],
+        "cited": [
+          "5",
+          "10"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.16,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding claiming divorce by way of Khula and the return of dower:\n\n**1. Jurisdiction for Khula**\nYes, you can claim divorce ..."
+    },
+    {
+      "id": "FAM-014",
+      "question": "My husband's family says I must return everything from my dowry list — what law applies?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.26,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your query about dowry:\n\n**1. Jurisdiction of Family Courts**\nThe Family Courts have exclusive jurisdiction to enter..."
+    },
+    {
+      "id": "FAM-015",
+      "question": "How much meher should a couple set at marriage — is there a legal minimum?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, there is **no specific legal minimum amount** for *mahr* (dower) prescribed by law. The amount is determined by the agreement between the parties in the mar..."
+    },
+    {
+      "id": "CRIM-001",
+      "question": "How do I file an FIR and what must the police write?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "154"
+        ],
+        "cited": [
+          "149",
+          "150",
+          "154",
+          "157",
+          "173"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.1,
+      "answer_preview": "Based on the statutory provisions of **The Code of Criminal Procedure, 1898** provided in the context, here is the information regarding the filing of an FIR (First Information Report) and the police'..."
+    },
+    {
+      "id": "CRIM-002",
+      "question": "The police refuse to register my FIR — what are my options under the law?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "154"
+        ],
+        "cited": [
+          "154",
+          "155"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.1,
+      "answer_preview": "Based on the statutory provisions of **The Code of Criminal Procedure, 1898** provided in the context, here is the information regarding police obligations and your options when an FIR (First Informat..."
+    },
+    {
+      "id": "CRIM-003",
+      "question": "What are my rights when the police arrest me — can they arrest without a warrant?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "54"
+        ],
+        "cited": [
+          "54",
+          "565"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.11,
+      "answer_preview": "Based on the provisions of **The Code of Criminal Procedure, 1898** provided, here is the information regarding your rights and the police's power to arrest you without a warrant.\n\n### 1. Can the poli..."
+    },
+    {
+      "id": "CRIM-004",
+      "question": "What is bailable and non-bailable offence? Can I get bail as a right?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.667,
+        "recall": 1.0,
+        "expected": [
+          "496",
+          "497"
+        ],
+        "cited": [
+          "4",
+          "496",
+          "497"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.1,
+      "answer_preview": "Based on the statutory provisions of **The Code of Criminal Procedure, 1898** provided, here is the information regarding bailable and non-bailable offences and the right to bail.\n\n### 1. Definitions ..."
+    },
+    {
+      "id": "CRIM-005",
+      "question": "What is the punishment if someone breaks into my house and steals?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 1.0,
+        "expected": [
+          "380"
+        ],
+        "cited": [
+          "380",
+          "445",
+          "453",
+          "454",
+          "456"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided from **The Pakistan Penal Code, 1860**, the punishment for breaking into a house and stealing depends on the specific circumstances of the crime (such as the..."
+    },
+    {
+      "id": "CRIM-006",
+      "question": "Someone beat me up in the street — what sections cover causing hurt?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "332"
+        ],
+        "cited": [
+          "332",
+          "336A",
+          "337I",
+          "337J"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding the offense of causing hurt:\n\n**1. Definition of Hurt**\nThe act of causing pain, harm, disease, infirmity, or injury..."
+    },
+    {
+      "id": "CRIM-007",
+      "question": "A contractor took money for construction work and vanished — cheating or breach of trust?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "420"
+        ],
+        "cited": [
+          "405",
+          "409",
+          "420"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions provided, the act of a contractor taking money for construction work and vanishing can potentially constitute both **Cheating** and **Criminal Breach of Trust**, depe..."
+    },
+    {
+      "id": "CRIM-008",
+      "question": "My neighbour spread false statements about me to my employer — is that defamation?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "499"
+        ],
+        "cited": [
+          "499"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.14,
+      "answer_preview": "Based on the statutory provisions provided from **The Pakistan Penal Code, 1860**, here is the legal analysis regarding your situation:\n\n### 1. Definition of Defamation\nYes, spreading false statements..."
+    },
+    {
+      "id": "CRIM-009",
+      "question": "What happens after an FIR is registered — investigation, challan, trial?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "173"
+        ],
+        "cited": [
+          "157",
+          "173"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.11,
+      "answer_preview": "Based on the statutory provisions of **The Code of Criminal Procedure, 1898** provided, here is the procedure following the registration of an FIR (First Information Report) for cognizable offences:\n\n..."
+    },
+    {
+      "id": "CRIM-010",
+      "question": "Can the police enter and search my house without a warrant?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "47"
+        ],
+        "cited": [
+          "47",
+          "48",
+          "51"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions of **The Code of Criminal Procedure, 1898** provided, the police generally require a warrant or specific legal grounds to enter and search a house. However, there are..."
+    },
+    {
+      "id": "CRIM-011",
+      "question": "Is highway robbery punished differently from ordinary theft?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "390",
+          "392"
+        ],
+        "cited": [
+          "379",
+          "390",
+          "392",
+          "397"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.13,
+      "answer_preview": "Yes, highway robbery is punished differently and more severely than ordinary theft. The legal distinctions and penalties are as follows:\n\n**1. Distinction Between Theft and Robbery**\n*   **Theft:** Th..."
+    },
+    {
+      "id": "CRIM-012",
+      "question": "What is the punishment for killing someone intentionally (murder)?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "302"
+        ],
+        "cited": [
+          "300",
+          "302",
+          "304"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions provided, the punishment for intentionally killing someone (defined as **Qatl-e-amd**) is detailed below:\n\n### 1. Definition of the Offence\n**Qatl-e-amd** is committe..."
+    },
+    {
+      "id": "CRIM-013",
+      "question": "Difference between qatl-i-amd and culpable homicide?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "302"
+        ],
+        "cited": [
+          "302",
+          "304",
+          "306",
+          "308"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.16,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding **Qatl-i-Amd** and **Culpable Homicide**:\n\n### 1. Qatl-i-Amd\nThe provided text explicitly defines the punishment for **Qat..."
+    },
+    {
+      "id": "CRIM-014",
+      "question": "A stranger grabbed my bag using a weapon — is that robbery or extortion?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "390"
+        ],
+        "cited": [
+          "390"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, the act of a stranger grabbing your bag using a weapon is classified as **Robbery**, not merely extortion.\n\nHere is the legal breakdown based on the Pakista..."
+    },
+    {
+      "id": "CRIM-015",
+      "question": "My landlord forces me and my family to leave by constant threats — criminal intimidation?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "503"
+        ],
+        "cited": [
+          "5",
+          "503",
+          "507"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.31,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation:\n\n### 1. Definition of Criminal Intimidation\nYes, the act of threatening you and your family with inj..."
+    },
+    {
+      "id": "CRIM-016",
+      "question": "My tenant refuses to pay rent AND damaged my property — eviction and criminal case both?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "15"
+        ],
+        "cited": [
+          "7",
+          "13",
+          "15"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.07,
+      "answer_preview": "Based on the statutory provisions of **The Punjab Rented Premises Act, 2009** provided, here is the legal information regarding your situation:\n\n### 1. Grounds for Eviction\nYou may seek eviction of th..."
+    },
+    {
+      "id": "CRIM-017",
+      "question": "Someone blackmailed me threatening to leak my photos unless I pay — which laws apply?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "21"
+        ],
+        "cited": [
+          "21",
+          "509"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, the act of blackmailing you by threatening to leak your photos involves specific offenses under **The Prevention of Electronic Crimes Act, 2016** and potent..."
+    },
+    {
+      "id": "CRIM-018",
+      "question": "Where do I pay a traffic challan and what is the fine for speeding?",
+      "type": "not_covered_by_text",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse (no refusal language found)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": {
+        "passed": true,
+        "reason": "Calibrated not-covered"
+      },
+      "unsupported_citations": [],
+      "time_seconds": 0.2,
+      "answer_preview": "Based on the statutory provisions provided, I cannot answer your question regarding where to pay a traffic challan or the specific fine amount for speeding.\n\nThe provided provisions of The Code of Cri..."
+    },
+    {
+      "id": "CON-001",
+      "question": "My new phone stopped working in a week and the shop refuses a refund — what does consumer law say?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "31"
+        ],
+        "cited": [
+          "2",
+          "20",
+          "31"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.21,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding your situation with the defective phone and the shop's refusal to refund:\n\n### 1. Definition of Consumer and Product..."
+    },
+    {
+      "id": "CON-002",
+      "question": "The shopkeeper charges more than the printed price — is that prohibited?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "18"
+        ],
+        "cited": [
+          "18",
+          "22",
+          "31",
+          "32"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.21,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal information regarding charging more than the printed price:\n\n**1. Obligation to Display Prices**\nThe law requires manufacturers or traders..."
+    },
+    {
+      "id": "CON-003",
+      "question": "Where do I file a consumer complaint and what is the time limit?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.667,
+        "recall": 1.0,
+        "expected": [
+          "25",
+          "28"
+        ],
+        "cited": [
+          "25",
+          "27",
+          "28"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding where to file a consumer complaint and the applicable time limits under **The Punjab Consumer Protection Act, 2005**.\n\n###..."
+    },
+    {
+      "id": "CON-004",
+      "question": "An advertisement promised free delivery or goods at a discount but refused to provide them — is that illegal?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "22"
+        ],
+        "cited": [
+          "22"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.24,
+      "answer_preview": "Based on the statutory provisions provided, advertising goods or services at a specific price (such as a discount or free delivery) and then refusing to supply them is considered an **unfair practice*..."
+    },
+    {
+      "id": "CON-005",
+      "question": "A contractor provided faulty and defective services — what is their legal liability under consumer law?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.25,
+        "recall": 1.0,
+        "expected": [
+          "13"
+        ],
+        "cited": [
+          "2",
+          "13",
+          "17",
+          "28"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.15,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal liability of a contractor (service provider) for faulty or defective services under **The Punjab Consumer Protection Act, 2005**:\n\n### 1. ..."
+    },
+    {
+      "id": "CON-006",
+      "question": "Does a seller have an obligation to provide a receipt to a purchaser?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "19"
+        ],
+        "cited": [
+          "19"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.24,
+      "answer_preview": "Yes, a seller has a legal obligation to provide a receipt to a purchaser.\n\nAccording to the **Punjab Consumer Protection Act, 2005**, every manufacturer or trader who sells any goods is required to is..."
+    },
+    {
+      "id": "CON-007",
+      "question": "Can a manufacturer exclude their liability for defective products in the sales contract?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "12"
+        ],
+        "cited": [
+          "2",
+          "4",
+          "12"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.1,
+      "answer_preview": "Based on the statutory provisions provided, a manufacturer **cannot** exclude or limit their liability for defective products through the terms of a sales contract or any notice.\n\nHere are the specifi..."
+    },
+    {
+      "id": "CON-008",
+      "question": "What duty does a manufacturer have if a product has dangerous characteristics or requires a warning?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "7"
+        ],
+        "cited": [
+          "7",
+          "11"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.06,
+      "answer_preview": "Based on the statutory provisions of **The Punjab Consumer Protection Act, 2005**, a manufacturer has specific duties regarding warnings and disclosures when a product possesses dangerous characterist..."
+    },
+    {
+      "id": "CON-009",
+      "question": "What notice must be given to the manufacturer or service provider before filing a claim in Consumer Court?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "28"
+        ],
+        "cited": [
+          "28"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.29,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the notice required before filing a claim in Consumer Court:\n\n**1. Requirement of Written Notice**\nBefore a claim can be e..."
+    },
+    {
+      "id": "CON-010",
+      "question": "What orders can the Consumer Court pass if a product is proved defective?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "31"
+        ],
+        "cited": [
+          "31"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.11,
+      "answer_preview": "Based on the statutory provisions provided, if the Consumer Court is satisfied that the products complained against suffer from defects or that allegations regarding services are true, it shall issue ..."
+    },
+    {
+      "id": "CON-011",
+      "question": "What is the penalty for non-compliance with an order of the Consumer Court?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "32"
+        ],
+        "cited": [
+          "32"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.28,
+      "answer_preview": "Based on the statutory provisions provided, the penalty for non-compliance with an order of the Consumer Court is as follows:\n\n*   **Imprisonment:** A term not less than one month, which may extend to..."
+    },
+    {
+      "id": "CON-012",
+      "question": "Where and within what time limit can I file an appeal against an order of the Consumer Court?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "33"
+        ],
+        "cited": [
+          "33",
+          "34"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding appeals against orders of the Consumer Court:\n\n**Where to File the Appeal**\nYou must file the appeal in the **Lahore High ..."
+    },
+    {
+      "id": "CON-013",
+      "question": "What happens if someone files a false, frivolous or vexatious claim in the Consumer Court?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 1.0,
+        "expected": [
+          "35"
+        ],
+        "cited": [
+          "35",
+          "209"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.22,
+      "answer_preview": "Based on the statutory provisions provided, here is what happens if a false, frivolous, or vexatious claim is filed in the Consumer Court:\n\n**1. Dismissal of the Claim and Fine**\nIf the Consumer Court..."
+    },
+    {
+      "id": "CON-014",
+      "question": "Does a business have to declare its return and refund policy to consumers?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "20"
+        ],
+        "cited": [
+          "20"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.13,
+      "answer_preview": "Yes, a business (specifically a seller) is legally required to disclose its return and refund policy to consumers.\n\nAccording to the provided statutory provisions:\n\n*   **Mandatory Disclosure:** The r..."
+    },
+    {
+      "id": "CON-015",
+      "question": "Can parties settle a consumer dispute before trial?",
+      "type": "in_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "expected": [
+          "29"
+        ],
+        "cited": [
+          "29"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.22,
+      "answer_preview": "Yes, parties can settle a consumer dispute before the trial begins. The **Punjab Consumer Protection Act, 2005** explicitly provides for settlement at the pretrial stage.\n\nHere are the key legal provi..."
+    },
+    {
+      "id": "CON-016",
+      "question": "An online seller sent me a defective gadget and blackmailed me with data stolen from it — consumer law and PECA both apply?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "31"
+        ],
+        "cited": [
+          "2",
+          "12",
+          "31"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal analysis regarding your situation involving a defective gadget and blackmail via stolen data.\n\n### 1. Consumer Law: Defective Product and ..."
+    },
+    {
+      "id": "CON-017",
+      "question": "An online seller took my money and disappeared — fraud, cybercrime, or consumer complaint?",
+      "type": "multi_law",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.333,
+        "recall": 1.0,
+        "expected": [
+          "28"
+        ],
+        "cited": [
+          "27",
+          "28",
+          "30"
+        ],
+        "missing": []
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.23,
+      "answer_preview": "Based on the statutory provisions provided, an online seller taking money and disappearing can potentially fall under multiple legal categories depending on the specific facts of the case. Here is how..."
+    },
+    {
+      "id": "OUT-001",
+      "question": "How do I file an FIR for motorcycle theft?",
+      "type": "out_of_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "expected": [
+          "154",
+          "379"
+        ],
+        "cited": [
+          "155",
+          "378",
+          "381A"
+        ],
+        "missing": [
+          "154",
+          "379"
+        ]
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.18,
+      "answer_preview": "Based on the statutory provisions provided, here is the information regarding the legal framework for motorcycle theft and the procedural steps for filing a report.\n\n**1. Legal Classification of the O..."
+    },
+    {
+      "id": "OUT-002",
+      "question": "What is the procedure for Khula under Pakistani law?",
+      "type": "out_of_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.5,
+        "recall": 0.5,
+        "expected": [
+          "2",
+          "10"
+        ],
+        "cited": [
+          "9",
+          "10"
+        ],
+        "missing": [
+          "2"
+        ]
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.32,
+      "answer_preview": "Based on the statutory provisions provided, the specific procedure for **Khula** (dissolution of marriage by the wife) is outlined primarily in the **Family Courts Act, 1964**. The procedure involves ..."
+    },
+    {
+      "id": "OUT-003",
+      "question": "How to report harassment on WhatsApp to FIA?",
+      "type": "out_of_scope",
+      "stage_action": "answer",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": 0.2,
+        "recall": 0.5,
+        "expected": [
+          "24",
+          "29"
+        ],
+        "cited": [
+          "2",
+          "4",
+          "20",
+          "24",
+          "24A"
+        ],
+        "missing": [
+          "29"
+        ]
+      },
+      "refusal": {
+        "passed": false,
+        "reason": "Did not refuse AND cited sections (full hallucination)"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.19,
+      "answer_preview": "Based on the statutory provisions provided, here is the legal framework for reporting harassment on WhatsApp to the FIA (Federal Investigation Agency), which acts as the investigation agency under the..."
+    },
+    {
+      "id": "OUT-004",
+      "question": "Can my landlord kick me out in London?",
+      "type": "out_of_scope",
+      "stage_action": "refuse",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": true,
+        "reason": "Correctly refused without citing sections"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.0,
+      "answer_preview": "This assistant is currently specialized in **the following laws**: The Prevention of Electronic Crimes Act, 2016; The Muslim Family Laws Ordinance, 1961; The Family Courts Act, 1964; The Dissolution o..."
+    },
+    {
+      "id": "OUT-005",
+      "question": "How do I apply for a USA green card?",
+      "type": "out_of_scope",
+      "stage_action": "refuse",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": true,
+        "reason": "Correctly refused without citing sections"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.0,
+      "answer_preview": "This assistant is currently specialized in **the following laws**: The Prevention of Electronic Crimes Act, 2016; The Muslim Family Laws Ordinance, 1961; The Family Courts Act, 1964; The Dissolution o..."
+    },
+    {
+      "id": "OUT-006",
+      "question": "How do I register my company and pay FBR sales tax?",
+      "type": "out_of_scope",
+      "stage_action": "refuse",
+      "verified": true,
+      "overall_pass": true,
+      "citation": {
+        "precision": null,
+        "recall": null,
+        "expected": [],
+        "cited": [],
+        "missing": []
+      },
+      "refusal": {
+        "passed": true,
+        "reason": "Correctly refused without citing sections"
+      },
+      "content": {
+        "passed": true,
+        "missing": [],
+        "forbidden_found": []
+      },
+      "disclaimer": {
+        "passed": true,
+        "reason": "Disclaimer present"
+      },
+      "not_covered": null,
+      "unsupported_citations": [],
+      "time_seconds": 0.0,
+      "answer_preview": "This assistant is currently specialized in **the following laws**: The Prevention of Electronic Crimes Act, 2016; The Muslim Family Laws Ordinance, 1961; The Family Courts Act, 1964; The Dissolution o..."
+    }
+  ]
+}

@@ -28,6 +28,97 @@ def make_section(num, title, text, law=TENANCY_LAW):
 
 
 # ---------------------------------------------------------------------------
+# Table-of-contents skipping (revised plan Section 5.3 point 3)
+# ---------------------------------------------------------------------------
+
+def _fake_law():
+    law = dict(TENANCY_LAW)
+    return law
+
+
+def test_toc_entries_are_skipped_so_each_section_appears_once():
+    """Sections listed in a ToC then repeated in the body parse exactly once."""
+    toc = "".join(f"{n}. Title {n}\n" for n in range(1, 4))
+    body = "".join(
+        f"{n}. Title {n}.– Body text of section {n}, long enough to be a real paragraph.\n"
+        for n in range(1, 4)
+    )
+    law = _fake_law()
+    raw = parser._extract_with_chapters(toc + body, law, [])
+    sections, info = parser.exclude_toc_entries(raw)
+
+    numbers = [s["section_number"] for s in sections]
+    assert numbers == ["1", "2", "3"], "each section must appear exactly once"
+    assert info["toc_entries_dropped"] == 3
+    assert info["kept_count"] == 3
+    assert info["numbers_with_only_toc"] == []
+    assert info["real_duplicate_numbers"] == []
+
+
+def test_single_occurrence_toc_style_number_is_kept_and_flagged():
+    """Defensive: a ToC-style number with no body match is kept, not vanishing."""
+    raw = [
+        parser._extract_with_chapters(
+            "1. Title one\n", _fake_law(), []
+        )[0]
+    ]
+    sections, info = parser.exclude_toc_entries(raw)
+    assert [s["section_number"] for s in sections] == ["1"]
+    assert info["numbers_with_only_toc"] == ["1"]
+
+
+def test_two_body_copies_of_one_number_are_real_duplicates():
+    raw = (
+        parser._extract_with_chapters(
+            "1. Title one.– Body one.\n1. Title one.– Body repeated.\n",
+            _fake_law(), [],
+        )
+    )
+    sections, info = parser.exclude_toc_entries(raw)
+    assert len(sections) == 2
+    assert info["real_duplicate_numbers"] == ["1"]
+
+
+def test_occurrence_kind_dash_marker_split_toc_from_body():
+    assert parser._occurrence_kind({"text": "15. Grounds for eviction"}) == "toc"
+    assert parser._occurrence_kind({"text": "15. Grounds for eviction.– (1) text"}) == "body"
+    # Wrapped body title: dash lands on the next line, still within the window.
+    wrapped = "34. Provisions of X and Code not\nto apply.– Save as otherwise..."
+    assert parser._occurrence_kind({"text": wrapped}) == "body"
+    # ToC line whose span spills past preamble furniture; its dash belongs to
+    # far-later content ("...enacted as follows:–"), far beyond the window.
+    spilled_toc = (
+        "36. Repeal and validation\nSCHEDULE\nTEXT\nPREAMBLE LINE\nAn\nAct\nto regulate\n"
+        + "filler furniture line\n" * 10
+        + "It is hereby enacted as follows:–\n"
+    )
+    assert parser._occurrence_kind({"text": spilled_toc}) == "toc"
+
+
+def test_occurrence_kind_window_is_body_dash_near_start_only():
+    far = "x" * (parser.BODY_DASH_WINDOW + 1) + "–"
+    assert parser._occurrence_kind({"text": far}) == "toc"
+    near = "x" * 10 + "–"
+    assert parser._occurrence_kind({"text": near}) == "body"
+
+
+def test_clean_section_title_strips_dash_and_body():
+    text = "15. Grounds for eviction.– (1) A landlord may seek eviction.\n(1) more"
+    raw_title = ("Grounds for eviction.– (1) A landlord may seek eviction.")
+    assert parser._clean_section_title(raw_title, text, 0) == "Grounds for eviction"
+
+
+def test_clean_section_title_joins_wrapped_title_before_dash():
+    # Body heading like the real sec 34: dash lands on the NEXT line.
+    full = "34. Provisions of Qanun-e-Shahadat Order and Code of Civil Procedure not\nto apply.– Save as otherwise..."
+    match_end = full.index("to apply.–")
+    raw_title = "Provisions of Qanun-e-Shahadat Order and Code of Civil Procedure not"
+    title = parser._clean_section_title(raw_title, full, match_end)
+    assert title.endswith("to apply"), f"wrapped title must join to the dash line: {title!r}"
+    assert "–" not in title and "Save as otherwise" not in title
+
+
+# ---------------------------------------------------------------------------
 # Chapter extraction
 # ---------------------------------------------------------------------------
 
@@ -151,3 +242,17 @@ def test_validate_sections_no_sections_is_hard_fail():
     lines = []
     failures = parser.validate_sections("tenancy_punjab_2009", _law(36), [], lines)
     assert failures == ["tenancy_punjab_2009:no-sections"]
+
+
+def test_finalize_chunk_omits_none_metadata():
+    """Wave 4-M4: Keys whose value is None (e.g. amended_up_to) are omitted from metadata."""
+    sec = make_section("1", "Title", "Text")
+    sec["amended_up_to"] = None
+    finalized = parser._finalize_chunk("test_law", sec)
+    assert "amended_up_to" not in finalized["metadata"]
+    assert finalized["metadata"]["section_number"] == "1"
+
+    sec["amended_up_to"] = "2021"
+    finalized2 = parser._finalize_chunk("test_law", sec)
+    assert finalized2["metadata"]["amended_up_to"] == "2021"
+

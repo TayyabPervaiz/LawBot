@@ -1,0 +1,77 @@
+{
+  "_help": "Paste the DIRECT PDF link into 'url' (or leave null and place the PDF by hand at data/source_pdfs/<category>/<filename>.pdf). 'portal' and 'notes' are for you.",
+  "laws": [
+    {
+      "id": "tenancy_punjab_2009",
+      "category": "tenancy_punjab",
+      "filename": "punjab_rented_premises_act_2009",
+      "portal": "Punjab Law Portal",
+      "url": null,
+      "notes": ""
+    },
+    {
+      "id": "tenancy_punjab_rules_2010",
+      "category": "tenancy_punjab",
+      "filename": "punjab_rented_premises_rules_2010",
+      "portal": "Punjab Law Portal",
+      "url": null,
+      "notes": "optional"
+    },
+    {
+      "id": "peca_2016",
+      "category": "cybercrime",
+      "filename": "peca_2016",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": "check that amendments are included"
+    },
+    {
+      "id": "mflo_1961",
+      "category": "family",
+      "filename": "muslim_family_laws_ordinance_1961",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": ""
+    },
+    {
+      "id": "family_courts_1964",
+      "category": "family",
+      "filename": "family_courts_act_1964",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": ""
+    },
+    {
+      "id": "dmma_1939",
+      "category": "family",
+      "filename": "dissolution_of_muslim_marriages_act_1939",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": ""
+    },
+    {
+      "id": "ppc_1860",
+      "category": "criminal",
+      "filename": "pakistan_penal_code_1860",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": "record amended-up-to date"
+    },
+    {
+      "id": "crpc_1898",
+      "category": "criminal",
+      "filename": "code_of_criminal_procedure_1898",
+      "portal": "Pakistan Code",
+      "url": null,
+      "notes": "check for Punjab amendments"
+    },
+    {
+      "id": "consumer_punjab_2005",
+      "category": "consumer",
+      "filename": "punjab_consumer_protection_act_2005",
+      "portal": "Punjab Law Portal",
+      "url": null,
+      "notes": ""
+    }
+  ]
+}

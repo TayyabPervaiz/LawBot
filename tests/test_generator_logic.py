@@ -4,6 +4,7 @@ disclaimer, registry-driven scope detection, refusals, citation checks,
 and the answer-cache key. No LLM calls are made.
 """
 
+import pytest
 import src.generator as gen
 import src.law_registry as registry
 import src.config as config
@@ -70,17 +71,90 @@ def test_ensure_disclaimer_adds_only_when_missing():
 # ---------------------------------------------------------------------------
 
 def test_out_of_scope_when_category_not_loaded():
-    # Real disk state: only tenancy is loaded -> criminal/family/etc. refuse.
+    # Real disk state: unloaded categories refuse (tax, foreign jurisdiction).
     for q, topic in [
-        ("How do I file an FIR for motorcycle theft?", "criminal"),
-        ("What is the procedure for Khula?", "family"),
-        ("How to report harassment on WhatsApp to FIA?", "cybercrime"),
         ("How do I file my income tax return?", "tax"),
         ("Can my landlord kick me out in London?", "foreign jurisdiction"),
     ]:
         result = gen.detect_scope(q)
         assert result["in_scope"] is False, f"{q!r} should refuse"
         assert result["detected_topic"] == topic
+
+
+def test_criminal_scope_behavior(monkeypatch):
+    # With criminal laws loaded (current disk state), criminal questions are in-scope
+    assert gen.detect_scope("How do I file an FIR for motorcycle theft?")["in_scope"] is True
+
+    # If criminal was not loaded, it would refuse
+    monkeypatch.setattr(registry, "loaded_categories", lambda: {"tenancy", "cybercrime", "family", "consumer"})
+    refused = gen.detect_scope("How do I file an FIR for motorcycle theft?")
+    assert refused["in_scope"] is False
+    assert refused["detected_topic"] == "criminal"
+
+
+def test_family_scope_behavior(monkeypatch):
+    # With family laws loaded (current disk state), family questions are in-scope
+    assert gen.detect_scope("What is the procedure for Khula?")["in_scope"] is True
+
+    # If family was not loaded, it would refuse
+    monkeypatch.setattr(registry, "loaded_categories", lambda: {"tenancy", "cybercrime"})
+    refused = gen.detect_scope("What is the procedure for Khula?")
+    assert refused["in_scope"] is False
+    assert refused["detected_topic"] == "family"
+
+
+def test_cybercrime_scope_behavior(monkeypatch):
+    # With PECA loaded (current disk state), cybercrime is in-scope
+    assert gen.detect_scope("How to report harassment on WhatsApp to FIA?")["in_scope"] is True
+
+    # If cybercrime was not loaded, it would refuse
+    monkeypatch.setattr(registry, "loaded_categories", lambda: {"tenancy"})
+    refused = gen.detect_scope("How to report harassment on WhatsApp to FIA?")
+    assert refused["in_scope"] is False
+    assert refused["detected_topic"] == "cybercrime"
+
+
+def test_scope_mixed_foreign_and_tax_refuses_over_loaded_keywords(monkeypatch):
+    """
+    Plan Wave 1-C: Scanning must refuse foreign jurisdiction and tax even when
+    a loaded category keyword (e.g. FIR, theft, landlord) is present.
+    """
+    # Assume all categories are loaded
+    monkeypatch.setattr(
+        registry,
+        "loaded_categories",
+        lambda: {"tenancy", "cybercrime", "family", "criminal", "consumer"},
+    )
+
+    # 1. Foreign jurisdiction mixed with criminal
+    res_london = gen.detect_scope("How do I file an FIR in London?")
+    assert res_london["in_scope"] is False
+    assert res_london["detected_topic"] == "foreign jurisdiction"
+
+    res_dubai = gen.detect_scope("Landlord in Dubai and also FIR")
+    assert res_dubai["in_scope"] is False
+    assert res_dubai["detected_topic"] == "foreign jurisdiction"
+
+    # 2. Tax mixed with criminal
+    res_tax = gen.detect_scope("How do I pay FBR sales tax after theft?")
+    assert res_tax["in_scope"] is False
+    assert res_tax["detected_topic"] == "tax"
+
+    # 3. Pure criminal with criminal loaded -> in scope
+    res_fir = gen.detect_scope("How do I file an FIR for motorcycle theft?")
+    assert res_fir["in_scope"] is True
+    assert res_fir["detected_topic"] is None
+
+    # 4. Pure criminal with criminal NOT loaded -> refuse
+    monkeypatch.setattr(registry, "loaded_categories", lambda: {"tenancy"})
+    res_fir_refused = gen.detect_scope("How do I file an FIR for motorcycle theft?")
+    assert res_fir_refused["in_scope"] is False
+    assert res_fir_refused["detected_topic"] == "criminal"
+
+    # 5. Pure tenancy -> in scope
+    res_tenancy = gen.detect_scope("Can my landlord evict me?")
+    assert res_tenancy["in_scope"] is True
+    assert res_tenancy["detected_topic"] is None
 
 
 def test_in_scope_topic_with_loaded_law_passes_filter(monkeypatch):
@@ -132,6 +206,69 @@ def test_validate_citations_none_case():
     assert res["citations_found"] == []
 
 
+def test_citation_grounding_supports_matching_act_and_section():
+    """
+    Plan Wave 2-D: [Punjab Rented Premises Act, 2009 - Section 15] supported
+    if retrieved metadata has that law + 15.
+    """
+    retrieved = [chunk("tenancy_punjab_2009", "15", "Grounds for eviction")]
+    answer = "Landlord eviction rules [Punjab Rented Premises Act, 2009 - Section 15]."
+    val = gen.validate_citations(answer, retrieved)
+    assert val["has_citations"] is True
+    assert "15" in val["supported"]
+    assert val["unsupported"] == []
+
+
+def test_citation_grounding_supports_statutory_cross_reference_in_chunk_text():
+    """
+    When a chunk body text explicitly cross-references another section of the same Act
+    (e.g., Section 15 referencing Section 7), citations to that cross-referenced section
+    are grounded and supported.
+    """
+    ch = chunk("tenancy_punjab_2009", "15", "Grounds for eviction")
+    ch["text"] = (
+        "[The Punjab Rented Premises Act, 2009 - Section 15: Grounds for eviction] "
+        "A landlord may apply for eviction within thirty days after the expiry of the period stipulated in section 7."
+    )
+    retrieved = [ch]
+    answer = (
+        "Under [Punjab Rented Premises Act, 2009 - Section 15], eviction can be sought after "
+        "the period in Section 7 expires."
+    )
+    val = gen.validate_citations(answer, retrieved)
+    assert val["has_citations"] is True
+    assert "15" in val["supported"]
+    assert "7" in val["supported"]
+    assert val["unsupported"] == []
+
+
+def test_citation_grounding_strips_unsupported_same_section_different_act(monkeypatch):
+    """
+    Plan Wave 2-D: Same section number from a different Act in the answer,
+    not in retrieval -> unsupported and removed or footnoted in answer.
+    """
+    retrieved = [chunk("tenancy_punjab_2009", "15", "Grounds for eviction")]
+    raw_answer = (
+        "- Landlord must apply to Rent Tribunal [Punjab Rented Premises Act, 2009 - Section 15].\n"
+        "- Any person guilty shall be fined [The Pakistan Penal Code, 1860 - Section 15]."
+    )
+    monkeypatch.setattr(gen, "call_llm", lambda *args, **kwargs: raw_answer)
+
+    res = gen.generate_answer("Eviction notice rules?", retrieved)
+
+    # Supported citation is kept
+    assert "Punjab Rented Premises Act" in res["answer"]
+    assert "Section 15" in res["answer"]
+
+    # Unsupported citation from different Act is removed from the visible answer
+    assert "The Pakistan Penal Code" not in res["answer"]
+
+    # Unsupported citations list tracks the hallucinated cite
+    assert "15" in res["citations"]["unsupported"]
+    assert any(c["law_id"] == "ppc_1860" and c["section"] == "15" for c in res["citations"]["unsupported_cites"])
+
+
+
 # ---------------------------------------------------------------------------
 # LLM answer cache key (pure function)
 # ---------------------------------------------------------------------------
@@ -146,3 +283,11 @@ def test_cache_key_is_deterministic_and_discriminates(monkeypatch):
     # A prompt-version bump must invalidate cached answers (plan Rule 6)
     monkeypatch.setattr(config, "PROMPT_VERSION", "BUMPED")
     assert gen._cache_key("Can my landlord evict me?", "ctx-1") != a1
+
+
+def test_llm_provider_must_be_groq(monkeypatch):
+    """Wave 4-M2: Non-groq LLM_PROVIDER raises ValueError."""
+    monkeypatch.setattr(config, "LLM_PROVIDER", "unsupported_provider")
+    with pytest.raises(ValueError, match="Unsupported LLM_PROVIDER"):
+        gen.call_llm("test question", "test context", [])
+

@@ -25,12 +25,25 @@ New in Phase 2A (revised plan Section 5.3):
    to compare word for word against the official PDF.
 8. If validation of a law fails hard (no sections found), the law is
    skipped and reported — never silently indexed.
+
+Known text-format fact handled here (plan Current project state):
+- Law text files BEGIN WITH A TABLE OF CONTENTS (a list of
+  "15. Grounds for eviction" lines), then the full body, where the same
+  section headings repeat in the body's dash-and-text format
+  ("15. Grounds for eviction.– (1) ..."). A naive pattern match sees every
+  section twice. `exclude_toc_entries()` detects ToC-style occurrences
+  (no en/em-dash body marker, short text) and keeps only body headings so
+  each section exists exactly once.
 """
 
 import re
+import sys
 import json
 import random
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from src.config import PROCESSED_DATA_DIR, VALIDATION_REPORT_PATH
 import src.law_registry as registry
@@ -43,14 +56,14 @@ MAX_CHUNK_CHARS = 1500
 # Regex to detect chapter headings. Matches "CHAPTER I", "CHAPTER VII"
 # optionally followed by a title line.
 CHAPTER_PATTERN = re.compile(
-    r"^(CHAPTER\s+[IVXLCDM]+|CHAPTER\s+\d+)\s*[\n\-—:]?\s*(.*)",
+    r"^((?:CHAPTER|PART)\s+[IVXLCDM]+|(?:CHAPTER|PART)\s+\d+)\s*[\n\-—:]?\s*(.*)",
     re.MULTILINE | re.IGNORECASE
 )
 
 # Regex to detect subsection boundaries for splitting oversized sections.
-# Matches "(1) ...", "(2) ...", "(a) ...", "(b) ..." at the start of a line.
+# Matches "(1) ...", "(2) ...", "(a) ...", "(b) ...", "(iv) ...", "1[(v) ...", etc.
 SUBSECTION_PATTERN = re.compile(
-    r"^(\(\d+\)|\([a-z]\))\s+",
+    r"^(?:\d+\[|\[)?(\(\d+\)|\([a-z0-9]+\))\s+",
     re.MULTILINE
 )
 
@@ -60,6 +73,125 @@ SPOT_CHECK_COUNT = 20
 
 # A parsed section shorter than this is suspicious (possible bad split).
 MIN_SECTION_CHARS = 30
+
+# Statutory body heading markers (e.g. "15. Grounds for eviction.– (1) A landlord..."
+# or "2A. Establishment of the Authority.__ (1) As soon..."). ToC lines do not carry these.
+BODY_MARKERS = (
+    ".–", ". —", " –", ".--", " --", "—", "–",
+    ".__", ".___", ",__", ",–", ",—",
+)
+
+# The dash marker of a body heading sits near the START of the matched span
+# ("15. Grounds for eviction.– ..." possibly with the title wrapping onto a
+# second line). A dash much later in the span belongs to other body content
+# (e.g. a Preamble's "It is hereby enacted as follows:–") and does NOT make
+# a table-of-contents line a body heading.
+BODY_DASH_WINDOW = 250
+
+
+# ---------------------------------------------------------------------------
+# Table-of-contents skipping (revised plan Section 5.3 point 3)
+# ---------------------------------------------------------------------------
+
+def _occurrence_kind(section: dict) -> str:
+    """Classify one pattern match as a ToC entry or a body heading.
+
+    Body headings carry the dash-and-text marker ("...– ...", "...__ ...") near the
+    start of the matched span (possibly on a later line if the title
+    wraps). ToC entries are title-only runs whose first dash, if any,
+    belongs to *later* content — far beyond the heading itself.
+    """
+    if section.get("section_number") == "SCHEDULE":
+        return "body"
+    text = section["text"]
+    lines = [
+        l.strip()
+        for l in text.splitlines()[:4]
+        if l.strip() and not re.match(r"^_{3,}$", l.strip())
+    ]
+    head_text = " ".join(lines[:2])
+    candidates = [head_text.find(m) for m in BODY_MARKERS if m in head_text]
+    first_dash = min(candidates) if candidates else -1
+    if first_dash != -1 and first_dash <= BODY_DASH_WINDOW:
+        return "body"
+    return "toc"
+
+
+def exclude_toc_entries(sections: list[dict]) -> tuple[list[dict], dict]:
+    """
+    Drop table-of-contents copies of section headings so each section
+    number appears exactly once in the parsed output.
+
+    Grouping rule, per section number:
+      - if the number occurs ONCE, that single heading is kept whatever
+        its kind (a ToC entry is never dropped when it is the only
+        occurrence — that likely means the body heading was missed by the
+        pattern, which the validator reports separately).
+      - if the number occurs MORE THAN ONCE: keep the first "body"-kind
+        occurrence and drop the leading ToC-style copies. Two body-kind
+        copies of one number mean a real duplicate: keep both — the
+        validator flags duplicates.
+
+    Returns (kept_sections, info) where info holds:
+        {"toc_entries_dropped": int, "kept_count": int,
+         "numbers_with_only_toc": [..], "real_duplicate_numbers": [..]}
+    """
+    by_number: dict[str, list[tuple[int, dict, str]]] = {}
+    for order, sec in enumerate(sections):
+        by_number.setdefault(sec["section_number"], []).append(
+            (order, sec, _occurrence_kind(sec))
+        )
+
+    kept: list[tuple[int, dict]] = []
+    dropped_toc = 0
+    only_toc_numbers: list[str] = []
+    real_duplicates: list[str] = []
+
+    for number, entries in by_number.items():
+        body_entries = [(o, s) for o, s, kind in entries if kind == "body"]
+
+        if len(entries) == 1:
+            if entries[0][2] == "toc":
+                only_toc_numbers.append(number)
+            kept.append((entries[0][0], entries[0][1]))
+            continue
+
+        if body_entries:
+            # Keep every body copy (a real duplicate is the validator's job,
+            # not silently dropped here); drop only the ToC copies.
+            dropped_toc += len(entries) - len(body_entries)
+            kept.extend(body_entries)
+            if len(body_entries) > 1:
+                real_duplicates.append(number)
+        else:
+            # No body copy found for a repeated number — e.g. a file whose
+            # text does not use the dash-and-text format. Keep all copies
+            # (in file order) so the validator's duplicate check sees them
+            # and reports, rather than silently losing sections.
+            real_duplicates.append(number)
+            kept.extend((o, s) for o, s, kind in entries)
+
+    kept.sort(key=lambda pair: pair[0])
+    kept_sections = [
+        {**sec, "toc_entry_dropped": False} for _, sec in kept
+    ]
+    only_toc_numbers.sort(key=_number_sort_key)
+    real_duplicates.sort(key=_number_sort_key)
+
+    info = {
+        "toc_entries_dropped": dropped_toc,
+        "kept_count": len(kept_sections),
+        "numbers_with_only_toc": only_toc_numbers,
+        "real_duplicate_numbers": real_duplicates,
+    }
+    return kept_sections, info
+
+
+def _number_sort_key(n: str):
+    m = re.match(r"(\d+)([A-Za-z]?)", n or "")
+    if not m:
+        return (10 ** 9, "")
+    return (int(m.group(1)), m.group(2))
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +229,51 @@ def get_chapter_for_position(chapters: list[dict], position: int) -> str:
         else:
             break
     return current_chapter
+
+
+# ---------------------------------------------------------------------------
+# Section title cleaning
+# ---------------------------------------------------------------------------
+
+def _clean_section_title(raw_title: str, full_text: str, match_end: int) -> str:
+    """
+    Get a clean "Grounds for eviction" style title out of a body heading.
+
+    The matched heading text looks like:
+        "15. Grounds for eviction.– (1) A landlord may seek..."
+    or (when the title wraps):
+        "34. Provisions of Qanun-e-Shahadat Order and Code of Civil Procedure not\\nto apply.– ..."
+
+    The title is everything before the first dash marker; if the dash is on a
+    later line, up to three following lines are joined into the title.
+    """
+    for marker in BODY_MARKERS:
+        idx = raw_title.find(marker)
+        if idx != -1:
+            return raw_title[:idx].strip().rstrip(".,;:")
+
+    # Dash not on the heading line: it may wrap to the next line(s).
+    window = full_text[match_end:match_end + 400]
+    pending = raw_title.strip().rstrip(".")
+    for line in window.splitlines()[:4]:
+        line = line.strip()
+        if not line:
+            continue
+        dash_text = _find_dash_word(line)
+        if dash_text is not None:
+            pending = f"{pending} {dash_text}".strip()
+            break
+        pending = f"{pending} {line}".strip()
+    return pending.rstrip(".,;:")
+
+
+def _find_dash_word(line: str) -> str | None:
+    """Return the text before the first dash marker on a line, or None."""
+    for marker in BODY_MARKERS:
+        idx = line.find(marker)
+        if idx != -1:
+            return line[:idx].strip()
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -170,7 +347,7 @@ def _finalize_chunk(law_id: str, chunk: dict) -> dict:
     chunk_id = f"{law_id}_sec_{sec_num}" + (f"_sub_{sub_idx}" if sub_idx is not None else "")
 
     chunk["id"] = chunk_id
-    chunk["metadata"] = {
+    raw_meta = {
         "law_id": law_id,
         "law_title": chunk["law_title"],
         "short_title": chunk["short_title"],
@@ -181,6 +358,7 @@ def _finalize_chunk(law_id: str, chunk: dict) -> dict:
         "chapter": chunk["chapter"],
         "amended_up_to": chunk.get("amended_up_to"),
     }
+    chunk["metadata"] = {k: v for k, v in raw_meta.items() if v is not None}
     return chunk
 
 
@@ -201,12 +379,22 @@ def build_chunks(law_id: str, law: dict, sections: list[dict]) -> list[dict]:
 # Validation Report (revised plan Section 5.3 point 4)
 # ---------------------------------------------------------------------------
 
-def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[str]) -> list[str]:
+def validate_sections(
+    law_id: str,
+    law: dict,
+    sections: list[dict],
+    lines: list[str],
+    toc_info: dict | None = None,
+) -> list[str]:
     """
     Run ordering/count/size checks for one law.
 
     Appends a human-readable report to `lines` and returns the law_ids of
     FAILURES (empty list = pass).
+
+    `toc_info` (optional) carries the table-of-contents skip counters from
+    exclude_toc_entries(): the number of ToC entries dropped must equal the
+    number of sections kept (plan Section 5.3 point 4).
     """
     failures = []
     a = lines.append
@@ -232,8 +420,9 @@ def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[
 
     ordered = sorted(numbers, key=_num_key)
     dupes = sorted({n for n in set(numbers) if numbers.count(n) > 1})
+    num_only = [n for n in ordered if re.match(r"^\d+", n)]
     gaps = [
-        nxt for cur, nxt in zip(ordered, ordered[1:])
+        nxt for cur, nxt in zip(num_only, num_only[1:])
         if _num_key(nxt)[0] - _num_key(cur)[0] > 1
     ]
     out_of_order = numbers != ordered
@@ -249,6 +438,31 @@ def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[
         failures.append(f"{law_id}:count-mismatch")
 
     a(f"Sections found: {len(numbers)}" + (f" (expected {expected})" if expected else ""))
+
+    if toc_info is not None:
+        a(f"Table of contents entries skipped: {toc_info['toc_entries_dropped']}")
+        a(f"Sections kept (each number exactly once): {toc_info['kept_count']}")
+        unmatched_toc = [n for n in toc_info["numbers_with_only_toc"] if n != "SCHEDULE"]
+        if unmatched_toc:
+            a(
+                "WARNING — sections seen only in table-of-contents style "
+                f"(no body heading matched): {unmatched_toc}"
+            )
+            failures.append(f"{law_id}:missing-body-headings")
+        if toc_info["toc_entries_dropped"] != len(numbers) and toc_info["toc_entries_dropped"] > 0:
+            if expected is not None and len(numbers) == expected:
+                a(
+                    "NOTE — chunks "
+                    f"{len(numbers)} exceed ToC entries {toc_info['toc_entries_dropped']} "
+                    "(act contains amendment sections not listed in original ToC)."
+                )
+            else:
+                a(
+                    "RESULT: FAIL — chunks (sections with ToC skipped) "
+                    f"{len(numbers)} do not equal ToC entries {toc_info['toc_entries_dropped']}."
+                )
+                failures.append(f"{law_id}:chunk-count-vs-toc")
+
     a(f"First section: [{numbers[0]}] {sections[0]['section_title'][:60]}")
     a(f"Last section:  [{numbers[-1]}] {sections[-1]['section_title'][:60]}")
     if dupes:
@@ -264,6 +478,15 @@ def validate_sections(law_id: str, law: dict, sections: list[dict], lines: list[
     short = [f"{s['section_number']}" for s in sections if len(s["text"]) < MIN_SECTION_CHARS]
     if short:
         a(f"Suspiciously short sections (possible bad split): {short}")
+
+    empty = [f"{s['section_number']}" for s in sections if not s["text"].strip()]
+    if empty:
+        a(f"EMPTY section texts: {empty}")
+        failures.append(f"{law_id}:empty-chunks")
+
+    oversized = [f"{s['section_number']}" for s in sections if len(s["text"]) > 2 * MAX_CHUNK_CHARS]
+    if oversized:
+        a(f"Unusually long section texts (should already be split): {oversized}")
 
     # Chunk-size statistics
     sizes = [len(s["text"]) for s in sections]
@@ -348,7 +571,19 @@ def parse_all(persist: bool = True) -> tuple[list[dict], str]:
         chapters = extract_chapters(text)
         print(f"  Chapters found: {len(chapters)}")
 
-        sections = _extract_with_chapters(text, law, chapters)
+        raw_sections = _extract_with_chapters(text, law, chapters)
+
+        # `has_toc` (default True) tells the parser whether this law file
+        # begins with a table-of-contents block that duplicates the section
+        # headings found in the body.  Laws like MFLO 1961 and DMMA 1939
+        # that have no ToC duplication should set has_toc=False so the
+        # ToC-exclusion pass is skipped entirely.
+        if law.get("has_toc", True):
+            sections, toc_info = exclude_toc_entries(raw_sections)
+        else:
+            sections = [{**s, "toc_entry_dropped": False} for s in raw_sections]
+            toc_info = None  # suppresses toc-count checks in validator
+
         if not sections:
             print(f"  WARNING: No sections matched {law['section_pattern']!r} — skipping law.")
             report_lines.extend([
@@ -360,11 +595,14 @@ def parse_all(persist: bool = True) -> tuple[list[dict], str]:
             hard_failures += 1
             continue
 
+        print(f"  Raw pattern matches: {len(raw_sections)} | ToC entries skipped: {toc_info['toc_entries_dropped'] if toc_info else 0}")
         chunks = build_chunks(law_id, law, sections)
         print(f"  Sections: {len(sections)} | Chunks: {len(chunks)}")
         all_chunks.extend(chunks)
 
-        law_failures = validate_sections(law_id, law, sections, report_lines)
+        law_failures = validate_sections(
+            law_id, law, sections, report_lines, toc_info=toc_info
+        )
         hard_failures += len(law_failures)
 
     report_text = "\n".join(report_lines)
@@ -384,14 +622,77 @@ def _extract_with_chapters(text: str, law: dict, chapters: list[dict]) -> list[d
     """extract_sections but with chapter state properly wired (helper kept small)."""
     pattern = re.compile(law["section_pattern"], re.MULTILINE)
     matches = list(pattern.finditer(text))
+
+    body_start_idx = text.find(law["body_start_marker"]) if law.get("body_start_marker") else -1
+    if body_start_idx != -1:
+        matches = [m for m in matches if m.start() >= body_start_idx]
+
+    # If the file contains a statutory Schedule block at the end (e.g. Family Courts Act 1964 or CrPC 1898),
+    # sub-items inside that Schedule must NOT match as numbered sections.
+    sched_marker = law.get("sched_marker")
+    if sched_marker:
+        sched_idx = text.find(sched_marker, body_start_idx if body_start_idx != -1 else 0)
+    elif law.get("has_schedule", False):
+        sched_idx = text.rfind("\nSCHEDULE")
+    else:
+        sched_idx = -1
+
+    if sched_idx != -1:
+        matches = [m for m in matches if m.start() < sched_idx]
+
     sections = []
 
     for i, match in enumerate(matches):
+        sec_num = match.group(1).strip()
+        # Normalize OCR typo 4l7 -> 417
+        if sec_num == "4l7":
+            sec_num = "417"
+
+        # Normalize hyphenated section numbers (e.g. "25-A" -> "25A", "25-B" -> "25B")
+        sec_num = re.sub(r"^(\d+)-([A-Za-z])$", r"\1\2", sec_num)
+
+        # Normalize statutory footnote numbers fused to section digits
+        # (e.g. 6366 -> 366, 1500 -> 500, 1501 -> 501, 3125 -> 125, etc.)
+        fn_m = re.match(r"^(\d{1,2})(\d{3}[A-Za-z]?)$", sec_num)
+        if fn_m and int(fn_m.group(1)) in range(1, 12):
+            cand = fn_m.group(2)
+            cand_val = int(re.match(r"\d+", cand).group(0))
+            if cand_val <= 600:
+                sec_num = cand.upper()
+
+        # CrPC special footnote normalizations
+        if sec_num == "655":
+            sec_num = "55"
+        elif sec_num in ("193A", "193B", "193C"):
+            sec_num = sec_num[1:]
+
+        raw_title = match.group(2).strip()
+
+        # Filter out CrPC Section 380 title continuation line (ends with section 562)
+        if sec_num == "562" and "Where proceedings are submitted" in raw_title:
+            continue
+
+        # Filter out CrPC Section 1 provincial notification table rows
+        if re.match(r"^In\s+(?:the\s+)?(?:Punjab|Sind|N\.?W\.?F\.?P|Quetta|Baluch)", raw_title):
+            continue
+
+        full_match = match.group(0).lstrip()
+        if sec_num.isdigit() and re.match(r"^(?:\d+\[|\[)?\(\d+\)", full_match) and not re.search(r"^\(\d+\)\.", full_match):
+            continue
         section_start = match.start()
-        section_end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        if i + 1 < len(matches):
+            section_end = matches[i + 1].start()
+        elif sched_idx != -1:
+            section_end = sched_idx
+        else:
+            section_end = len(text)
+
+        # Title continuation lines (wrapped headings) start right after the
+        # heading line itself, not at the end-of-section boundary.
         sections.append({
-            "section_number": match.group(1).strip(),
-            "section_title": match.group(2).strip().rstrip("."),
+            "section_number": sec_num,
+            "section_title": _clean_section_title(raw_title, text, match.end()),
+            "is_toc_entry": _occurrence_kind({"text": text[section_start:section_end], "section_number": sec_num}) == "toc",
             "chapter": get_chapter_for_position(chapters, section_start),
             "law_title": law["title"],
             "short_title": law["short_title"],
@@ -400,6 +701,21 @@ def _extract_with_chapters(text: str, law: dict, chapters: list[dict]) -> list[d
             "amended_up_to": law.get("amended_up_to"),
             "text": text[section_start:section_end].strip(),
         })
+
+    if law.get("has_schedule", False) and sched_idx != -1:
+        sections.append({
+            "section_number": "SCHEDULE",
+            "section_title": "SCHEDULE (Matters under Section 5)",
+            "is_toc_entry": False,
+            "chapter": get_chapter_for_position(chapters, sched_idx),
+            "law_title": law["title"],
+            "short_title": law["short_title"],
+            "jurisdiction": law["jurisdiction"],
+            "category": law["category"],
+            "amended_up_to": law.get("amended_up_to"),
+            "text": text[sched_idx:].strip(),
+        })
+
     return sections
 
 
@@ -418,9 +734,10 @@ if __name__ == "__main__":
     print("-" * 60)
     for i, chunk in enumerate(chunks):
         meta = chunk["metadata"]
+        safe_title = meta['section_title'][:40].encode('ascii', errors='replace').decode('ascii')
         print(
             f"  [{i + 1:3d}] {meta['law_id'][:24]:<24} | Sec {meta['section_number']:>4} | "
-            f"{meta['section_title'][:40]:<40} | {len(chunk['text']):>5d} chars"
+            f"{safe_title:<40} | {len(chunk['text']):>5d} chars"
         )
 
     print(f"\n[OK] Parser complete. {len(chunks)} chunks ready.")

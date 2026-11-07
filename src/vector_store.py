@@ -78,7 +78,11 @@ def get_or_create_collection() -> chromadb.Collection:
         _collection = client.get_or_create_collection(
             name=COLLECTION_NAME,
             embedding_function=embed_fn,
-            metadata={"description": "Punjab Tenancy & Rent Law embeddings"}
+            # Rule 7: no law name hardcoded outside the registry. Chunk-level
+            # metadata (law_id / law_category / jurisdiction / section_number)
+            # supports the optional `where` filter used by tests and debugging
+            # (revised plan Section 5.4 point 7).
+            metadata={"description": "Pakistan laws (multi-law) chunk embeddings"}
         )
         print(f"Collection '{COLLECTION_NAME}' ready. Current document count: {_collection.count()}")
     return _collection
@@ -198,53 +202,11 @@ def reset_collection() -> None:
     print("Fresh collection created.")
 
 
-# --- CLI entry point for testing ---
+# --- CLI entry point ---
 if __name__ == "__main__":
-    print("=== Vector Store Module Test ===\n")
-
-    # Test 1: Create collection
-    print("1. Creating/loading collection...")
-    collection = get_or_create_collection()
-    print(f"   Document count: {collection.count()}\n")
-
-    # Test 2: Add sample chunks
-    print("2. Adding sample test chunks...")
-    sample_chunks = [
-        {
-            "id": "test_chunk_1",
-            "text": "Section 15. Application for eviction. A landlord may apply to the Rent Tribunal for the eviction of a tenant on one or more of the following grounds.",
-            "metadata": {
-                "law_title": "The Punjab Rented Premises Act, 2009",
-                "section_number": "15",
-                "section_title": "Application for eviction",
-                "chapter": "Chapter V: Eviction"
-            }
-        },
-        {
-            "id": "test_chunk_2",
-            "text": "Section 5. Tenancy agreement. Every tenancy agreement shall be in writing and shall be registered with the Rent Registrar.",
-            "metadata": {
-                "law_title": "The Punjab Rented Premises Act, 2009",
-                "section_number": "5",
-                "section_title": "Tenancy agreement",
-                "chapter": "Chapter II: Creation of Tenancy"
-            }
-        }
-    ]
-    add_chunks(sample_chunks)
-
-    # Test 3: Query
-    print("\n3. Querying: 'Can my landlord evict me?'")
-    results = query("Can my landlord evict me?", top_k=2)
-    for i, r in enumerate(results):
-        print(f"\n   Result {i+1}:")
-        print(f"   Section: {r['metadata'].get('section_number', 'N/A')}")
-        print(f"   Title: {r['metadata'].get('section_title', 'N/A')}")
-        print(f"   Distance: {r['distance']:.4f}")
-        print(f"   Text: {r['text'][:100]}...")
-
-    # Test 4: Reset
-    print("\n4. Resetting collection (cleaning up test data)...")
-    reset_collection()
-
-    print("\n=== All vector store tests passed! ===")
+    col = get_or_create_collection()
+    print("Vector Store Module:")
+    print(f"  Collection: '{COLLECTION_NAME}'")
+    print(f"  Indexed chunks: {col.count()}")
+    print("\nTo build or re-index the collection, run:")
+    print("  python -m src.bot --index [--force]")

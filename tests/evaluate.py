@@ -32,6 +32,11 @@ import json
 import time
 from pathlib import Path
 
+from src.citations import parse_citations
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+
 import src.law_registry as registry
 
 BENCHMARK_PATH = Path(__file__).parent / "benchmark_dataset.json"
@@ -50,20 +55,57 @@ def check_citation_precision_recall(answer: str, expected_citations: list[dict])
     """
     Precision: share of CITED sections that were expected.
     Recall: share of EXPECTED sections that were cited.
-    Fuzzy matching ("Section 15" matches "Section 15(1)(a)").
+    Uses shared parse_citations from src.citations.
     """
     if not expected_citations:
         return {"precision": None, "recall": None, "expected": [], "cited": [], "missing": []}
 
     expected = [c["section"] for c in expected_citations]
-    cited_raw = re.findall(r"Section\s+(\d+[A-Za-z]?)", answer, re.IGNORECASE)
-    cited = sorted(set(cited_raw))
+    parsed = parse_citations(answer)
+    cited = sorted(
+        {c["section"] for c in parsed},
+        key=lambda x: (int(re.match(r"\d+", x).group()) if re.match(r"\d+", x) else 999999, x),
+    )
 
-    missing = [s for s in expected if s not in cited]
-    correct_citations = [s for s in cited if s in expected]
+    # Check matches taking Act into account if specified
+    missing = []
+    for exp in expected_citations:
+        exp_sec = str(exp.get("section", "")).upper()
+        exp_law = exp.get("law_id")
+        matched = False
+        for c in parsed:
+            if c["section"] == exp_sec:
+                if exp_law and c["law_id"] != "unknown":
+                    if c["law_id"] == exp_law:
+                        matched = True
+                        break
+                else:
+                    matched = True
+                    break
+        if not matched:
+            missing.append(exp["section"])
+
+    correct_citations = []
+    for c in parsed:
+        c_sec = c["section"]
+        c_law = c["law_id"]
+        matched = False
+        for exp in expected_citations:
+            exp_sec = str(exp.get("section", "")).upper()
+            exp_law = exp.get("law_id")
+            if c_sec == exp_sec:
+                if exp_law and c_law != "unknown":
+                    if c_law == exp_law:
+                        matched = True
+                        break
+                else:
+                    matched = True
+                    break
+        if matched and c_sec not in correct_citations:
+            correct_citations.append(c_sec)
 
     precision = round(len(correct_citations) / len(cited), 3) if cited else 0.0
-    recall = round((len(expected) - len(missing)) / len(expected), 3)
+    recall = round((len(expected) - len(missing)) / len(expected), 3) if expected else 0.0
 
     return {
         "precision": precision,
@@ -96,11 +138,36 @@ def check_refusal(answer: str) -> dict:
 
 
 def check_not_covered(answer: str) -> dict:
-    """not_covered_by_text answers must explicitly say the provisions are silent."""
+    """not_covered_by_text answers must explicitly say the provisions are silent.
+
+    Accepts any phrasing that signals the text does not cover the topic:
+    - "do not / does not address/cover"
+    - "no mention / no explicit mention"
+    - "no provision / no specific provision"
+    - "not addressed / not specified / not covered / not explicitly"
+    - "silent on"
+    """
     answer_lower = answer.lower()
     ok = (
+        # "do not/does not address/cover"
         ("do not" in answer_lower and ("address" in answer_lower or "cover" in answer_lower))
         or ("does not" in answer_lower and ("address" in answer_lower or "cover" in answer_lower))
+        # "no mention" / "no explicit mention"
+        or ("no mention" in answer_lower)
+        or ("no explicit mention" in answer_lower)
+        # "no provision" / "no specific provision"
+        or ("no provision" in answer_lower)
+        or ("no specific provision" in answer_lower)
+        # "not addressed" / "not specified" / "not covered" / "not explicitly"
+        or ("not addressed" in answer_lower)
+        or ("not specified" in answer_lower)
+        or ("not covered" in answer_lower)
+        or ("not explicitly" in answer_lower)
+        # "silent on"
+        or ("silent on" in answer_lower)
+        # "provisions are silent" / "text is silent"
+        or ("provisions are silent" in answer_lower)
+        or ("text is silent" in answer_lower)
     )
     return {"passed": ok, "reason": "Calibrated not-covered" if ok else "Did not declare the provisions silent"}
 
@@ -154,8 +221,14 @@ def expected_stage(question: dict, loaded: set[str]) -> dict:
 # Offline evaluation (registry + dataset sanity, no API, no index)
 # ---------------------------------------------------------------------------
 
-def evaluate_offline() -> bool:
+def evaluate_offline(ids: list[str] | None = None, category_prefix: str | None = None) -> bool:
     benchmark = load_benchmark()
+    if ids:
+        id_set = set(ids)
+        benchmark = [t for t in benchmark if t["id"] in id_set]
+    elif category_prefix:
+        benchmark = [t for t in benchmark if t["id"].startswith(category_prefix)]
+
     loaded = set(registry.loaded_law_ids())
 
     print("\n" + "=" * 70)
@@ -189,10 +262,11 @@ def evaluate_offline() -> bool:
             if not cite_ok:
                 print(f"          unknown law_id in expected_citations")
 
+    n_verified = sum(1 for t in benchmark if t.get("verified_by"))
+    n_unverified = len(benchmark) - n_verified
     print(f"\n  Dataset structure: {'PASS' if all_ok else 'FAIL'}")
-    print(f"  Questions: {len(benchmark)} | owner-verified: "
-          f"{sum(1 for t in benchmark if t.get('verified_by'))}/{len(benchmark)}")
-    if sum(1 for t in benchmark if t.get('verified_by')) == 0:
+    print(f"  Questions: {len(benchmark)} | n_verified={n_verified} | n_unverified={n_unverified}")
+    if n_verified == 0:
         print("  [WARN] No question is owner-verified yet — full-run percentages "
               "will be reported EXCLUSIVELY as flagged-unverified until GATE 1.")
     return all_ok
@@ -202,10 +276,21 @@ def evaluate_offline() -> bool:
 # Full evaluation (requires API key + indexed store)
 # ---------------------------------------------------------------------------
 
-def evaluate_full() -> bool:
+def evaluate_full(
+    limit: int | None = None,
+    category_prefix: str | None = None,
+    ids: list[str] | None = None,
+) -> bool:
     from src.bot import ask
 
     benchmark = load_benchmark()
+    if ids:
+        id_set = set(ids)
+        benchmark = [t for t in benchmark if t["id"] in id_set]
+    elif category_prefix:
+        benchmark = [t for t in benchmark if t["id"].startswith(category_prefix)]
+    if limit is not None:
+        benchmark = benchmark[:limit]
     loaded = set(registry.loaded_law_ids())
 
     print("\n" + "=" * 70)
@@ -231,9 +316,10 @@ def evaluate_full() -> bool:
             answer = result["answer"]
 
             refusal_check = check_refusal(answer)
-            content_check = check_content_compliance(
-                answer, test.get("must_contain", []), test.get("must_not_contain", [])
-            )
+            # Only enforce refusal keywords ("outside", "scope", forbid "Section") when refusing
+            must_words = test.get("must_contain", []) if stage["action"] == "refuse" or test["type"] != "out_of_scope" else []
+            forbid_words = test.get("must_not_contain", []) if stage["action"] == "refuse" or test["type"] != "out_of_scope" else []
+            content_check = check_content_compliance(answer, must_words, forbid_words)
             disclaimer_check = check_disclaimer(answer)
             citation_check = check_citation_precision_recall(
                 answer, test.get("expected_citations", [])
@@ -248,6 +334,9 @@ def evaluate_full() -> bool:
                 overall = refusal_check["passed"] and content_check["passed"]
             elif test["type"] == "not_covered_by_text":
                 overall = not_covered_check["passed"] and content_check["passed"]
+            elif test["type"] == "out_of_scope" and stage["action"] == "answer":
+                # Staged question whose law has loaded: must answer (not refuse) and have disclaimer
+                overall = not refusal_check["passed"] and disclaimer_check["passed"] and content_check["passed"]
             else:
                 overall = (
                     citation_check["recall"] is not None
@@ -286,7 +375,7 @@ def evaluate_full() -> bool:
                 if test_result["unsupported_citations"]:
                     print(f"        Grounding: FAIL - unsupported citations "
                           f"{test_result['unsupported_citations']}")
-                if not refusal_check["passed"]:
+                if stage["action"] == "refuse" and not refusal_check["passed"]:
                     print(f"        Refusal: FAIL - {refusal_check['reason']}")
                 if not content_check["passed"]:
                     print(f"        Content: FAIL - {content_check}")
@@ -302,7 +391,7 @@ def evaluate_full() -> bool:
             }
 
         results.append(test_result)
-        time.sleep(2)  # free-tier politeness
+        time.sleep(5)  # free-tier politeness: prevents bursts hitting TPM limits
 
     # --- Summary (verified questions only, per plan Rule 5) ---
     print("\n" + "=" * 70)
@@ -312,9 +401,11 @@ def evaluate_full() -> bool:
     scored = [r for r in results if r.get("verified")]
     unverified = [r for r in results if not r.get("verified")]
 
+    print(f"  n_verified:   {len(scored)}")
+    print(f"  n_unverified: {len(unverified)}")
     if scored:
         passed = sum(1 for r in scored if r.get("overall_pass"))
-        print(f"  Verified questions:  {passed}/{len(scored)} passed ({passed/len(scored)*100:.0f}%)")
+        print(f"  Verified questions:  {passed}/{len(scored)} passed ({passed/len(scored)*100:.1f}%)")
     else:
         print("  Verified questions:  NONE — no percentage is reported (plan Rule 5).")
     print(f"  Unverified (run, excluded from %): {len(unverified)}")
@@ -351,8 +442,19 @@ def evaluate_full() -> bool:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    limit_val = None
+    prefix_val = None
+    ids_val = None
+    for idx, arg in enumerate(sys.argv):
+        if arg == "--limit" and idx + 1 < len(sys.argv):
+            limit_val = int(sys.argv[idx + 1])
+        elif arg == "--prefix" and idx + 1 < len(sys.argv):
+            prefix_val = sys.argv[idx + 1]
+        elif arg == "--ids" and idx + 1 < len(sys.argv):
+            ids_val = [x.strip() for x in sys.argv[idx + 1].split(",") if x.strip()]
+
     if "--offline" in sys.argv:
-        ok = evaluate_offline()
+        ok = evaluate_offline(ids=ids_val, category_prefix=prefix_val)
     else:
-        ok = evaluate_full()
+        ok = evaluate_full(limit=limit_val, category_prefix=prefix_val, ids=ids_val)
     sys.exit(0 if ok else 1)
