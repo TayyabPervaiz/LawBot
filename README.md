@@ -1,269 +1,252 @@
 <div align="center">
 
 # 🏛️ Pakistan Law Bot (قانون بوٹ)
-### *Production-Grade, Anti-Hallucination Statutory AI Assistant for Pakistani Citizens*
+### *Production-Grade Statutory AI Legal Assistant for Pakistani Citizens*
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Pytest 100%](https://img.shields.io/badge/Pytest-96%20Passed%20(100%25)-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
-[![Benchmark Verified](https://img.shields.io/badge/Benchmark-100%25%20Verified%20(114%2F114)-2ea44f?style=for-the-badge&logo=githubactions&logoColor=white)](tests/benchmark_dataset.json)
-[![LLM](https://img.shields.io/badge/LLM-Llama%203.3%2070B%20(Groq)-F55036?style=for-the-badge&logo=groq&logoColor=white)](https://groq.com/)
-[![Embeddings](https://img.shields.io/badge/Embeddings-Multilingual%20MiniLM-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
-[![Cost](https://img.shields.io/badge/Operating%20Cost-%240.00%20(Free)-10b981?style=for-the-badge&logo=cashapp&logoColor=white)](#-operating-cost-model)
-[![License: MIT](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
-
-<br/>
-
-**[Live Web App](#-delivery-channels)** • **[Statutory Coverage](#-statutory-corpus--coverage)** • **[Architecture](#-system-architecture)** • **[Evaluation & Benchmarks](#-benchmarking--accuracy-verification)** • **[Quickstart](#-quickstart-guide)**
-
----
+[![Tests Passing](https://img.shields.io/badge/Pytest-96%20Passed%20(100%25)-2ea44f?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Benchmark](https://img.shields.io/badge/Benchmark-100%25%20Verified%20(114%2F114)-success?style=for-the-badge&logo=checkmarx&logoColor=white)](tests/benchmark_dataset.json)
+[![LLM](https://img.shields.io/badge/LLM-Llama%203.3%2070B%20(Groq)-F05A28?style=for-the-badge&logo=groq&logoColor=white)](https://groq.com/)
+[![Embeddings](https://img.shields.io/badge/Embeddings-Multilingual%20MiniLM-007ACC?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2)
+[![Operating Cost](https://img.shields.io/badge/Operating%20Cost-%240.00%20(100%25%20Free)-059669?style=for-the-badge&logo=cashapp&logoColor=white)](#-operating-cost--financial-model)
+[![License: MIT](https://img.shields.io/badge/License-MIT-8B5CF6?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <b>Instant, citation-grounded statutory answers in English, Roman Urdu, and Urdu script (اردو).</b><br>
-  <i>Strictly grounded in official Pakistani gazettes with 0% statutory hallucination.</i>
+  <b>Instant, citation-grounded statutory answers with strict anti-hallucination guardrails.</b><br>
+  Covering <b>8 primary Pakistani Acts</b> (1,635 validated chunks) across Federal and Punjab provincial jurisdictions.<br>
+  Full support for <b>English</b>, <b>Roman Urdu</b>, and <b>Urdu Script (اردو)</b> across Web, Streamlit, and WhatsApp.
 </p>
+
+[Key Features](#-key-features) • [Statutory Coverage](#-statutory-coverage) • [Architecture](#-system-architecture) • [Quickstart](#-quickstart--installation) • [Evaluation](#-benchmark--accuracy-evaluation) • [Delivery Channels](#-delivery-channels) • [Contributing](#-contributing-adding-new-laws)
+
+---
 
 </div>
 
----
-
-## ⚡ Highlights at a Glance
-
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                SYSTEM CAPABILITIES                                     │
-├───────────────────────────────┬────────────────────────────────────────────────────────┤
-│ 🎯 100% Citation Precision    │ Every factual claim cites [Act Name - Section X]       │
-│ 🛡️ Zero Hallucinations        │ Unsupported sections are automatically stripped/flagged│
-│ 📚 8 Primary Statutory Acts   │ 1,308 sections parsed; 1,635 validated chunks indexed  │
-│ 🌐 Native Trilingual RAG      │ English • Roman Urdu • Urdu Script (اردو)              │
-│ 📱 Multi-Channel Delivery     │ Built-in Web UI • Streamlit • WhatsApp (Twilio) • CLI  │
-│ 🔒 Scope Guardrails           │ Pre-LLM refusal for foreign law, tax, or missing Acts  │
-│ 💰 Permanent $0 Cost Model    │ Local MiniLM embeddings + ChromaDB + Groq free tier    │
-└───────────────────────────────┴────────────────────────────────────────────────────────┘
-```
-
-> ⚠️ **Mandatory Legal Disclaimer:** *Pakistan Law Bot is an educational and statutory information tool, not a licensed legal practitioner. It provides statutory information based strictly on verified Pakistani Acts and does not constitute formal legal counsel. For actionable dispute resolution, consult a qualified advocate of the High Court.*
+> ⚖️ **Mandatory Legal Notice**: This tool provides statutory legal **information**, not formal legal **advice**. It does not substitute for a licensed advocate. All answers are derived strictly from official gazette texts of Pakistani law and include exact statutory citations.
 
 ---
 
-## 💬 Interactive Multilingual Examples
+## 🌟 Key Features
 
-<details open>
-<summary><b>1. English Query (Tenancy & Eviction Grounds)</b></summary>
+- **🎯 Exact Section Citations:** Every factual claim cites the exact statute and section number in `[Act Name - Section X]` format.
+- **🛡️ Multi-Layer Anti-Hallucination Guardrails:**
+  - **Pre-LLM Out-of-Scope Filter:** Intercepts foreign laws (US/UK/Canada), tax/FBR matters, and unsupported topics before calling the model.
+  - **Dynamic Context Injection:** Prompts list only the Acts retrieved for the query; unmentioned provisions are explicitly refused.
+  - **Citation Grounding Verifier:** Regex extracts all section citations and cross-checks against retrieved chunk metadata; ungrounded citations are stripped or footnoted automatically.
+- **🌐 Native Trilingual Intelligence:** Cross-lingual dense retrieval matching Urdu script (`اردو`), Roman Urdu (`kya landlord evict kar sakta hai?`), and formal English into statutory sections.
+- **💬 Conversational Memory:** Context-aware query expansion for multi-turn follow-ups (*"aur agar landlord notice na de to?"*, *"اس کی سزا کیا ہے؟"*).
+- **⚡ Deterministic LLM Response Cache:** Disk-persisted, thread-safe LRU cache providing sub-millisecond responses for repeated questions and zero LLM quota consumption.
+- **💸 Permanent $0 Operating Cost:** Local multilingual embeddings on CPU + local ChromaDB on disk + Groq free-tier Llama 3.3 70B.
 
-> **User:** *"Can my landlord evict me without a Rent Tribunal order in Punjab?"*
-> 
-> **🏛️ Pakistan Law Bot:**  
-> A landlord cannot evict a tenant without an order passed by the Rent Tribunal **[The Punjab Rented Premises Act, 2009 - Section 15(1)]**.
-> 
-> Even if the agreed tenancy period has expired or the tenant has defaulted in rent payments, the landlord must file an eviction application before the Rent Tribunal rather than taking forceful possession **[The Punjab Rented Premises Act, 2009 - Section 15(2)]**. Disconnecting essential services (electricity/water) to force eviction is strictly prohibited **[The Punjab Rented Premises Act, 2009 - Section 12]**.
-> 
-> ---
-> *Disclaimer: This is legal information based on: The Punjab Rented Premises Act, 2009. It is not formal legal advice.*
-</details>
+---
 
-<details>
-<summary><b>2. Roman Urdu Query (Cybercrime & Online Harassment)</b></summary>
+## 📜 Statutory Coverage
 
-> **User:** *"Agar koi WhatsApp par private pictures leak karne ki dhamki de to PECA me kya saza hai?"*
-> 
-> **🏛️ Pakistan Law Bot:**  
-> Kisi shakhs ki ijazat ke baghair uski aisi tasweer ya video public karna ya viral karne ki dhamki dena jo uski modesty ya dignity ke khilaf ho, Prevention of Electronic Crimes Act (PECA) ke tehat qabil-e-dastandazi jurm hai **[The Prevention of Electronic Crimes Act, 2016 - Section 21]**.
-> 
-> Is jurm ki saza 5 saal tak qaid, ya 50 lakh rupay tak jurmana, ya dono ho sakti hain **[The Prevention of Electronic Crimes Act, 2016 - Section 21(1)]**. Mazeed bar-aan, cyber stalking aur online blackmailing ke tehat Section 24 ke tehat bhi karwai ki ja sakti hai **[The Prevention of Electronic Crimes Act, 2016 - Section 24]**.
-> 
-> ---
-> *Disclaimer: Yeh qanooni maloomat The Prevention of Electronic Crimes Act, 2016 par mabni hain. Baraye meharbani kanooni rehnumai ke liye kisi advocate se rujoo karein.*
-</details>
+The knowledge base contains **1,308 statutory sections** compiled into **1,635 validated chunks** extracted directly from official gazettes:
 
-<details>
-<summary><b>3. Urdu Script Query (FIR & Criminal Procedure)</b></summary>
-
-> **User:** *"تھانے میں قابل دست اندازی جرم کی ایف آئی آر درج کروانے کا قانونی طریقہ کیا ہے؟"*
-> 
-> **🏛️ Pakistan Law Bot:**  
-> ضابطہ فوجداری (CrPC) کے تحت قابل دست اندازی جرم کی اطلاع متعلقہ تھانے کے انچارج افسر کو دی جائے گی، جسے تحریری شکل میں لایا جائے گا اور اطلاع دہندہ کو پڑھ کر سنایا جائے گا **[The Code of Criminal Procedure, 1898 - Section 154]**۔
-> 
-> اطلاع درج ہونے کے بعد اس پر اطلاع دہندہ کے دستخط یا انگوٹھے کا نشان لیا جائے گا اور اس کا اندراج حکومت کے مقرر کردہ رجسٹر (ایف آئی آر رجسٹر) میں کیا جائے گا **[The Code of Criminal Procedure, 1898 - Section 154]**۔ اس اندراج کی ایک مصدقہ نقل فوری طور پر بلا معاوضہ اطلاع دہندہ کو فراہم کی جائے گی۔
-> 
-> ---
-> *ڈسکلیمر: یہ قانونی معلومات دی کوڈ آف کرمنل پروسیجر، 1898 پر مبنی ہیں۔ یہ باقاعدہ قانونی مشورہ نہیں ہے۔*
-</details>
+| Law ID | Short Title | Official Act Name | Jurisdiction | Year | Sections | Chunks | Official Source |
+|---|---|---|---|---|---|---|---|
+| `tenancy_punjab_2009` | **Punjab Tenancy** | The Punjab Rented Premises Act, 2009 | Punjab | 2009 | 36 | 46 | [Punjab Code](http://punjabcode.punjab.gov.pk) |
+| `peca_2016` | **Cybercrime (PECA)** | Prevention of Electronic Crimes Act, 2016 | Federal | 2016 | 92 | 122 | [Pakistan Code](http://pakistancode.gov.pk) |
+| `mflo_1961` | **MFLO (Family)** | Muslim Family Laws Ordinance, 1961 | Federal | 1961 | 13 | 17 | [Pakistan Code](http://pakistancode.gov.pk) |
+| `family_courts_1964` | **Family Courts** | The Family Courts Act, 1964 | Punjab | 1964 | 34 | 42 | [Punjab Code](http://punjabcode.punjab.gov.pk) |
+| `dmma_1939` | **Dissolution of Marriages** | Dissolution of Muslim Marriages Act, 1939 | Federal | 1939 | 6 | 8 | [Pakistan Code](http://pakistancode.gov.pk) |
+| `ppc_1860` | **Pakistan Penal Code (PPC)** | The Pakistan Penal Code, 1860 | Federal | 1860 | 588 | 742 | [Pakistan Code](http://pakistancode.gov.pk) |
+| `crpc_1898` | **Criminal Procedure (CrPC)**| The Code of Criminal Procedure, 1898 | Federal | 1898 | 499 | 606 | [Pakistan Code](http://pakistancode.gov.pk) |
+| `punjab_consumer_2005` | **Consumer Protection** | Punjab Consumer Protection Act, 2005 | Punjab | 2005 | 40 | 52 | [Punjab Code](http://punjabcode.punjab.gov.pk) |
+| **TOTAL** | **8 Primary Acts** | **Core Civil, Criminal, Family, Consumer & Tenancy** | — | — | **1,308** | **1,635** | **Gazette Audited** |
 
 ---
 
 ## 🏗️ System Architecture
 
-Pakistan Law Bot implements a **7-Stage Defense-in-Depth RAG Pipeline** designed specifically to prevent hallucinated citations and ensure deterministic factual recall:
+Pakistan Law Bot implements a strict 7-stage query orchestration pipeline:
 
 ```mermaid
 flowchart TD
-    classDef startNode fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#fff;
-    classDef checkNode fill:#0f172a,stroke:#f59e0b,stroke-width:2px,color:#fff;
-    classDef actionNode fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
-    classDef refuseNode fill:#450a0a,stroke:#ef4444,stroke-width:2px,color:#fff;
-
-    UserQ["Citizen Query\n(English / Roman Urdu / Urdu)"]:::startNode --> ScopeFilter{"Stage 1: Pre-LLM Scope Filter\n(Foreign Law? Tax? Unloaded?)"}:::checkNode
-
-    ScopeFilter -- "Out of Scope" --> Refusal["Polite Statutory Refusal\n+ Loaded Acts List"]:::refuseNode
-    ScopeFilter -- "In Scope" --> Contextualizer["Stage 2: Follow-Up Contextualizer\n(Conversational Memory Expansion)"]:::actionNode
-
-    Contextualizer --> HybridSearch["Stage 3: Hybrid Cross-Lingual Search\n(MiniLM Vector + BM25 Lexical + Trilingual Synonyms)"]:::actionNode
-
-    HybridSearch --> RRF["Stage 4: Reciprocal Rank Fusion (RRF)\n+ Raw Score Relevance Thresholding"]:::actionNode
-
-    RRF --> ThresholdCheck{"Above Min Score Cutoff?"}:::checkNode
-    ThresholdCheck -- "Below Cutoff" --> NotCovered["Explicit Not-Covered Declaration\n('Statutory text does not address...')"]:::refuseNode
-
-    ThresholdCheck -- "Above Cutoff" --> DefInject["Stage 5: Linked Definition Injection\n(Auto-pull Section 2 / Definitions)"]:::actionNode
-
-    DefInject --> LLMGen["Stage 6: Grounded Generator\n(Llama 3.3 70B via Groq Free Tier)"]:::actionNode
-
-    LLMGen --> CiteVerifier["Stage 7: Citation Grounding Verifier\n(src/citations.py)"]:::checkNode
-
-    CiteVerifier --> StripCheck{"Any Unsupported Sections?"}:::checkNode
-    StripCheck -- "Yes" --> Strip["Strip Unsupported Claims / Add Footnote"]:::refuseNode
-    StripCheck -- "No" --> FinalFormat["Append Dynamic Legal Disclaimer\nSave to Deterministic LRU Cache"]:::actionNode
-    Strip --> FinalFormat
-
-    FinalFormat --> Output["Citizen Response Stream\n(Web / Streamlit / WhatsApp / CLI)"]:::startNode
+    UserQ["Citizen Query\n(English / Roman Urdu / Urdu Script)"] --> ScopeFilter{"Pre-LLM Scope Filter\n(detect_scope)"}
+    
+    ScopeFilter -- "Out of Scope\n(Foreign Law / Tax / Unloaded)" --> RefusalResp["Standard Scope Refusal\n+ Mandatory Legal Disclaimer"]
+    
+    ScopeFilter -- "In Scope" --> Contextualizer["Follow-Up Contextualizer\n(Multi-turn Memory Expansion)"]
+    
+    Contextualizer --> HybridSearch["Hybrid Cross-Lingual Retrieval\nDense (MiniLM) + Lexical (BM25)"]
+    
+    HybridSearch --> RRF["Reciprocal Rank Fusion (RRF)\n+ Trilingual Legal Synonyms"]
+    
+    RRF --> ThresholdCheck{"Raw Score\nCutoff Check"}
+    
+    ThresholdCheck -- "Below Cutoff" --> NotCovered["Explicit Not-Covered Response\n('Provisions do not address...')"]
+    
+    ThresholdCheck -- "Above Cutoff" --> DefInject["Linked Statutory Definition Injection\n(always_include_sections)"]
+    
+    DefInject --> LLMGen["LLM Generator (Llama 3.3 70B via Groq)\nDynamic Context-Restricted Prompt"]
+    
+    LLMGen --> CiteCheck["Citation Grounding Verifier\n(src/citations.py)"]
+    
+    CiteCheck --> FilterCites{"Ungrounded Citations?"}
+    FilterCites -- "Yes" --> StripCites["Strip Unsupported Claims / Footnote Sentences"]
+    FilterCites -- "No" --> FinalFormat["Append Dynamic Disclaimer\nStore in Deterministic LRU Cache"]
+    StripCites --> FinalFormat
+    
+    FinalFormat --> Delivery["Multi-Channel Delivery:\nWeb UI / Streamlit / Twilio WhatsApp / CLI"]
 ```
 
 ---
 
-## 📜 Statutory Corpus & Coverage
+## 🚀 Quickstart & Installation
 
-All legal texts are extracted directly from official gazettes (Pakistan Code and Punjab Laws Portal), verified word-for-word against official PDFs, and broken into 1,635 structured chunks:
+### 1. Clone the Repository
+```bash
+git clone https://github.com/TayyabPervaiz/LawBot.git
+cd LawBot
+```
 
-| Law ID | Act Title | Jurisdiction | Year | Sections | Chunks | Official Source |
-|---|---|---|---|---|---|---|
-| `tenancy_punjab_2009` | **The Punjab Rented Premises Act** | Punjab | 2009 | 36 | 46 | Punjab Code |
-| `peca_2016` | **Prevention of Electronic Crimes Act (PECA)** | Federal | 2016 | 92 | 122 | Pakistan Code |
-| `ppc_1860` | **The Pakistan Penal Code (PPC)** | Federal | 1860 | 588 | 742 | Pakistan Code |
-| `crpc_1898` | **The Code of Criminal Procedure (CrPC)** | Federal | 1898 | 499 | 606 | Pakistan Code |
-| `mflo_1961` | **Muslim Family Laws Ordinance (MFLO)** | Federal | 1961 | 13 | 17 | Pakistan Code |
-| `family_courts_1964` | **The Family Courts Act** | Punjab | 1964 | 34 | 42 | Punjab Code |
-| `dmma_1939` | **Dissolution of Muslim Marriages Act (DMMA)** | Federal | 1939 | 6 | 8 | Pakistan Code |
-| `punjab_consumer_2005` | **The Punjab Consumer Protection Act** | Punjab | 2005 | 40 | 52 | Punjab Code |
-| **TOTALS** | **8 Primary Pakistani Statutes** | — | — | **1,308** | **1,635** | **100% Gazette Verified** |
+### 2. Set Up Virtual Environment
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
+# CPU PyTorch and minimal dependencies
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment (.env)
+```bash
+# Copy example configuration
+cp .env.example .env    # Linux / macOS
+copy .env.example .env  # Windows
+```
+Open `.env` and add your **free Groq API Key** (obtainable at [console.groq.com/keys](https://console.groq.com/keys)):
+```ini
+GROQ_API_KEY=gsk_your_groq_api_key_here
+LLM_PROVIDER=groq
+LLM_MODEL=llama-3.3-70b-versatile
+```
+
+### 5. Launch the Assistant
+
+#### Option A: Modern Built-in Web Application (Recommended)
+Zero external dependencies; powered by Python's standard library `ThreadingHTTPServer`:
+```bash
+python -m src.server
+```
+Navigate to **`http://127.0.0.1:8000`** in your browser.
+
+#### Option B: Streamlit Web UI (Optional)
+```bash
+pip install streamlit
+streamlit run app_streamlit.py
+```
+
+#### Option C: WhatsApp Bot via Twilio Sandbox Webhook
+Point your Twilio WhatsApp Sandbox webhook to:
+```text
+POST http://<your-server-ip>:8000/api/webhook/twilio
+```
+The server will return valid TwiML XML formatting for WhatsApp mobile messages.
+
+#### Option D: Interactive Command-Line Interface (CLI)
+```bash
+# Interactive conversational mode:
+python -m src.bot
+
+# One-shot query mode:
+python -m src.bot --ask "Can my landlord evict me without notice in Punjab?"
+```
 
 ---
 
-## 📱 Delivery Channels
+## 📊 Benchmark & Accuracy Evaluation
+
+Pakistan Law Bot enforces a strict evaluation methodology: **accuracy percentages are computed exclusively on verified ground-truth questions** audited by humans against official gazettes.
+
+### Evaluation Results (114 Verified Benchmark Questions)
+
+```text
+======================================================================
+  PAKISTAN LAW BOT — OFFICIAL BENCHMARK EVALUATION (GATE 2)
+  Loaded Laws: 8 Acts | Indexed Chunks: 1,635 | Verified: 114 / 114
+======================================================================
+  TENANCY (Punjab Rented Premises Act 2009)    : 46 / 46 Passed (100.0%)
+  CYBERCRIME (PECA 2016)                       : 12 / 12 Passed (100.0%)
+  FAMILY (MFLO 1961, FCA 1964, DMMA 1939)      : 15 / 15 Passed (100.0%)
+  CONSUMER (Punjab Consumer Protection 2005)   : 17 / 17 Passed (100.0%)
+  CRIMINAL (PPC 1860, CrPC 1898)               : 18 / 18 Passed (100.0%)
+  OUT OF SCOPE (Tax, Foreign Jurisdiction)     :  6 /  6 Passed (100.0%)
+----------------------------------------------------------------------
+  HEADLINE VERIFIED BENCHMARK ACCURACY         : 114 / 114 (100.0%)
+  UNSUPPORTED / HALLUCINATED CITATIONS         : 0 (Zero Tolerance)
+  DISCLAIMER INCLUSION RATE                    : 100.0%
+======================================================================
+```
+
+### Reproducing Evaluation Locally
+
+```bash
+# 1. Run full unit and regression test suite (96 tests):
+python -m pytest tests/ -q
+
+# 2. Run offline benchmark sanity check (no API key required):
+python -m tests.evaluate --offline
+
+# 3. Run full live benchmark against Groq API:
+python -m tests.evaluate
+
+# 4. Run multilingual test suite (Urdu & Roman Urdu retrieval + WhatsApp webhook):
+python -m pytest tests/test_multilingual.py -v
+```
+
+---
+
+## 🌐 Multilingual Capabilities
+
+The assistant features native cross-lingual retrieval powered by `paraphrase-multilingual-MiniLM-L12-v2` combined with Llama 3.3 70B:
+
+| Language | Query Example | Output Format |
+|---|---|---|
+| **English** | *"Can a tenant be evicted for subletting the premises?"* | Formal statutory English with exact section citations `[Punjab Rented Premises Act, 2009 - Section 15(2)]`. |
+| **Roman Urdu** | *"Agar landlord bina notice k bijli pani band kare to kya karun?"* | Conversational Roman Urdu with statutory grounds `[Punjab Rented Premises Act, 2009 - Section 12]`. |
+| **Urdu Script (اردو)** | *"کیا پولیس قابل دست اندازی جرم کی ایف آئی آر درج کرنے سے انکار کر سکتی ہے؟"* | Fluent Urdu script (نستعلیق / نسخ) citing `[The Code of Criminal Procedure, 1898 - Section 154]`. |
+
+- **Cross-Lingual Retrieval Recall:** **88.9%** on zero-shot Urdu script and Roman Urdu queries.
+- **Multilingual Scope Refusal:** **100%** on out-of-scope tax and foreign jurisdiction queries in Urdu.
+
+---
+
+## 💻 Delivery Channels
 
 <div align="center">
 
-| Channel | Interface | How to Launch | Features |
-|---|---|---|---|
-| 🌐 **Modern Web UI** | Glassmorphic Dark UI | `python -m src.server` | Zero pip dependencies, live stats, citation pill inspector, language toggle |
-| 📊 **Streamlit App** | Data Science Client | `streamlit run app_streamlit.py` | Active law drawers, chunk counters, expandable statutory breakdown |
-| 💬 **WhatsApp Bot** | Twilio Webhook | `POST /api/webhook/twilio` | Instant mobile messaging, TwiML XML formatting, character truncation safety |
-| 💻 **Interactive CLI** | Terminal Shell | `python -m src.bot` | Full multi-turn session history, colorized terminal stream, single-turn `--ask` |
+| Channel | Interface | Primary Use Case |
+|---|---|---|
+| **Web Portal** | Modern responsive glassmorphism UI | Desktop & mobile web browser access |
+| **Streamlit App** | Interactive data-app with citation inspector | Research, legal audits, and demonstration |
+| **Twilio WhatsApp** | Automated webhook returning standard TwiML XML | Low-bandwidth mobile citizen legal aid |
+| **Terminal CLI** | Interactive REPL with session memory | Developers, sysadmins, and offline testing |
 
 </div>
 
 ---
 
-## 📊 Benchmarking & Accuracy Verification
+## 💰 Operating Cost & Financial Model
 
-Accuracy is evaluated using a **stage-aware harness** (`tests/evaluate.py`) that strictly distinguishes between answered, refused, and not-covered categories. 
+Built from inception to be permanently sustainable as a public good:
 
-### Official Gate 2 Benchmark Results (`tests/benchmark_dataset.json`):
-
-```text
-========================================================================================
-  BENCHMARK EVALUATION SUMMARY (114 HUMAN-VERIFIED QUESTIONS)
-========================================================================================
-  Category                     Questions    Verified    Passed    Precision    Recall
-  --------------------------------------------------------------------------------------
-  🏠 Tenancy (Punjab 2009)        46           46         46       100.0%      100.0%
-  📱 Cybercrime (PECA 2016)       12           12         12       100.0%      100.0%
-  ⚖️ Criminal (PPC & CrPC)        18           18         18       100.0%      100.0%
-  👨‍👩‍👧 Family Laws (MFLO/FCA/DMMA) 15           15         15       100.0%      100.0%
-  🛒 Consumer Protection          17           17         17       100.0%      100.0%
-  🚫 Out-of-Scope (Tax/Foreign)    6            6          6       100.0%      100.0%
-  --------------------------------------------------------------------------------------
-  🌟 OVERALL ACCURACY            114          114        114       100.0%      100.0%
-========================================================================================
-  Unsupported / Hallucinated Sections: 0
-  Mandatory Disclaimer Compliance:     100.0% (114/114)
-  Pytest Unit & Regression Suite:      100.0% (96/96 Tests Passing)
-  Multilingual Retrieval Recall:       88.9% (Zero-shot Urdu & Roman Urdu Top-8)
-```
-
----
-
-## 🚀 Quickstart Guide
-
-### 1. Clone & Set Up Virtual Environment
-
-```bash
-# Clone the repository
-git clone https://github.com/TayyabPervaiz/LawBot.git
-cd LawBot
-
-# Create and activate virtual environment
-python -m venv venv
-venv\Scripts\activate      # On Windows
-# source venv/bin/activate # On Linux/macOS
-
-# Install dependencies (CPU PyTorch + Sentence-Transformers + ChromaDB)
-pip install -r requirements.txt
-```
-
-### 2. Configure Free Groq API Key
-
-```bash
-# Copy template
-copy .env.example .env     # Windows
-# cp .env.example .env     # Linux/macOS
-
-# Add your free Groq API key in .env:
-# Get one free in 10 seconds at: https://console.groq.com/keys
-GROQ_API_KEY=gsk_your_free_key_here
-```
-
-### 3. Run the Assistant
-
-```bash
-# Option A: Built-in Zero-Dependency Web Application (Recommended)
-python -m src.server
-# Open http://127.0.0.1:8000 in your browser!
-
-# Option B: Streamlit Web UI
-streamlit run app_streamlit.py
-
-# Option C: Interactive Terminal CLI
-python -m src.bot
-
-# Option D: Single-turn CLI Question
-python -m src.bot --ask "What is the penalty for online harassment under PECA?"
-```
-
-### 4. Run Automated Tests
-
-```bash
-# Run complete unit & regression test suite (96 tests)
-python -m pytest tests/ -v
-
-# Run offline benchmark evaluation (114 verified questions)
-python -m tests.evaluate --offline
-```
-
----
-
-## 💰 Operating Cost Model
-
-Pakistan Law Bot is purposefully architected to operate at **permanent $0.00 infrastructure cost**:
-
-| Component | Technology | Cost | Description |
-|---|---|---|---|
-| **Dense Embeddings** | `paraphrase-multilingual-MiniLM-L12-v2` | **$0.00** | Runs locally on CPU (~80 MB RAM footprint) |
-| **Vector Database** | ChromaDB (`chromadb`) | **$0.00** | Local disk-persisted vector store; zero cloud DB charges |
-| **LLM Generation** | Groq Cloud (`llama-3.3-70b-versatile`) | **$0.00** | Free tier (sub-second inference via LPU architecture) |
-| **Answer Cache** | Thread-Safe Disk LRU Cache | **$0.00** | Repeated questions return in 0 ms with $0 API calls |
-| **Web Server** | Python `ThreadingHTTPServer` | **$0.00** | Zero external pip dependencies for web hosting |
-| **Monthly Total** | — | **$0.00** | **Permanently Free for All Citizens** |
+- **Local Vector Embeddings:** Sentence-Transformers runs 100% locally on CPU ($0).
+- **Local Storage:** ChromaDB embedded on disk ($0).
+- **Generation LLM:** Free-tier Groq API managed via deterministic response caching and retry-with-backoff on rate limits ($0).
+- **Web Server:** Python standard library `http.server` ($0).
+- **Total Monthly Cost:** **$0.00 / month**.
 
 ---
 
@@ -273,7 +256,7 @@ Pakistan Law Bot is purposefully architected to operate at **permanent $0.00 inf
 LawBot/
 ├── data/
 │   ├── source_pdfs/                  # Touched original official PDF downloads (8 Acts)
-│   ├── raw/                          # Clean UTF-8 extracted texts (Parser source)
+│   ├── raw/                          # Clean UTF-8 extracted texts (Parser reads only this)
 │   ├── processed/                    # Generated: chunks.json (1,635 chunks), validation_report.txt
 │   └── chroma_db/                    # Local ChromaDB vector database
 ├── src/
@@ -299,39 +282,32 @@ LawBot/
 │   ├── test_multilingual.py          # Multilingual retrieval and Twilio webhook tests (4 tests)
 │   └── test_*.py                     # Unit tests (parser, retrieval, generator, registry, server)
 ├── app_streamlit.py                  # Standalone Streamlit chat application
-├── LICENSE                           # Open Source MIT License
 ├── requirements.txt                  # Minimal pinned Python dependencies
-└── README.md                         # Main Project Documentation
+├── .env.example                      # Environment variables template
+├── LICENSE                           # MIT License
+└── README.md                         # Project documentation
 ```
 
 ---
 
-## 🗺️ Roadmap & Future Horizons
+## 🤝 Contributing (Adding New Laws)
 
-- [x] **Phase 1:** Proof-of-concept on Punjab Tenancy Law (36 sections).
-- [x] **Phase 2:** Multi-law generalized architecture covering 8 Acts (1,308 sections / 1,635 chunks).
-- [x] **Phase 2 Hardening:** 100% human-verified benchmark accuracy on 114 questions.
-- [x] **Phase 3 UX:** Zero-dependency Web UI, Streamlit app, WhatsApp Twilio webhook, and Roman/Urdu support.
-- [ ] **Phase 4 (Corpus Expansion):**
-  - *The Contract Act, 1872*
-  - *The Specific Relief Act, 1877*
-  - *The Transfer of Property Act, 1882*
-  - *The Anti-Terrorism Act, 1997 (ATA)*
-  - *Control of Narcotic Substances Act, 1997 (CNSA)*
-- [ ] **Phase 5 (Case Law Precedents):** Ingestion of landmark Supreme Court of Pakistan (SCMR / PLD) rulings for case-law-driven principles.
+1. **Register the Act:** Add the law's metadata, section pattern, and keywords to `src/law_registry.py`.
+2. **Download Gazette PDF:** Save the official PDF into `data/source_pdfs/<category>/`.
+3. **Extract Text:** Run `python -m src.extract_pdf` to extract clean text into `data/raw/<category>/`.
+4. **Parse & Audit:** Run `python -m src.parser` and inspect `data/processed/validation_report.txt`.
+5. **Re-Index:** Run `python -m src.bot --index --force`.
+6. **Add Benchmark Questions:** Add ground-truth questions to `tests/benchmark_dataset.json`.
+7. **Verify Accuracy:** Ensure `python -m pytest tests/` and `python -m tests.evaluate --offline` pass 100%.
 
 ---
 
-## 👨‍💻 Author & Connect
+## 📄 License
 
-Developed with dedication to democratizing legal awareness for Pakistani citizens.
-
-* **GitHub:** [@TayyabPervaiz](https://github.com/TayyabPervaiz)
-* **Project:** [https://github.com/TayyabPervaiz/LawBot](https://github.com/TayyabPervaiz/LawBot)
-* **Contributions:** Pull requests, issues, and provincial law additions are warmly welcomed!
+This project is licensed under the [MIT License](LICENSE) — free and open for all Pakistani citizens and the global open-source community.
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ for Pakistan 🇵🇰 • Empowering citizens through accessible statutory legal intelligence.</sub>
+  <b>Built with the goal of making legal information accessible to every Pakistani citizen. 🇵🇰</b>
 </div>
