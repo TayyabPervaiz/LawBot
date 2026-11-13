@@ -19,6 +19,7 @@ The ChromaDB metadata filter stays available for tests/debugging only.
 
 import re
 import math
+import threading
 from collections import Counter
 
 from src import config
@@ -269,29 +270,32 @@ _corpus_cache: dict = {
     "metas": [],
     "bm25": None,
 }
+_corpus_lock = threading.Lock()
 
 
 def _get_corpus(collection) -> tuple[list[str], list[str], list[dict], BM25 | None]:
-    """(chunk_ids, chunk_texts, chunk_metadatas, bm25_index) of the whole collection. Cached."""
+    """(chunk_ids, chunk_texts, chunk_metadatas, bm25_index) of the whole collection. Cached with lock."""
     count = collection.count()
-    if count != _corpus_cache["count"]:
-        got = collection.get(include=["documents", "metadatas"])
-        docs = got["documents"] or []
-        _corpus_cache["ids"] = got["ids"] or []
-        _corpus_cache["docs"] = docs
-        _corpus_cache["metas"] = got["metadatas"] or []
-        _corpus_cache["bm25"] = BM25([tokenize(d) for d in docs] if docs else [])
-        _corpus_cache["count"] = count
-    return (
-        _corpus_cache["ids"],
-        _corpus_cache["docs"],
-        _corpus_cache["metas"],
-        _corpus_cache["bm25"],
-    )
+    with _corpus_lock:
+        if count != _corpus_cache["count"]:
+            got = collection.get(include=["documents", "metadatas"])
+            docs = got["documents"] or []
+            _corpus_cache["ids"] = got["ids"] or []
+            _corpus_cache["docs"] = docs
+            _corpus_cache["metas"] = got["metadatas"] or []
+            _corpus_cache["bm25"] = BM25([tokenize(d) for d in docs] if docs else [])
+            _corpus_cache["count"] = count
+        return (
+            _corpus_cache["ids"],
+            _corpus_cache["docs"],
+            _corpus_cache["metas"],
+            _corpus_cache["bm25"],
+        )
 
 
 def invalidate_corpus_cache() -> None:
-    _corpus_cache.update(count=-1, ids=[], docs=[], metas=[], bm25=None)
+    with _corpus_lock:
+        _corpus_cache.update(count=-1, ids=[], docs=[], metas=[], bm25=None)
 
 
 # ---------------------------------------------------------------------------
@@ -405,13 +409,20 @@ def _apply_threshold_and_normalize(
     return top, below_threshold
 
 
-def linked_section_keys(top_hits: list[dict], reg=None) -> list[tuple[str, str]]:
+def linked_section_keys(top_hits: list[dict], question: str = "", reg=None) -> list[tuple[str, str]]:
     """
     Identify (law_id, section_number) definition chunks required by the laws
     present in top_hits that are not already present in top_hits.
 
     CRITICAL (Plan Wave 1-B): Extras are keyed by (law_id, section_number) of
     chunks already in top_hits, never from a global section number.
+
+    Definition sections are always injected when a law is hit. The
+    `always_include_sections` lists in the registry are deliberately kept
+    small (1–2 sections per law), so the context overhead is minimal and the
+    benefit (the LLM always has the definitions it needs) outweighs the cost.
+    The `question` parameter is accepted for future conditional-injection
+    work and is forwarded by the search() call site.
     """
     if reg is None:
         reg = registry
@@ -520,11 +531,12 @@ def search(question: str, top_k: int = config.TOP_K_RESULTS, where: dict | None 
     # 4) Optional reranker
     candidates = rerank(question, candidates)
 
-    # 5) Soft hint boost (never excludes)
+    # 5) Soft hint boost (never excludes, never modifies raw_fused_score used by threshold)
     for c in candidates:
         boost = hint_boost(question, c["metadata"])
         c["fused_score"] *= boost
-        c["raw_fused_score"] = c["fused_score"]
+        # IMPORTANT: raw_fused_score must NOT be overwritten — the threshold check
+        # in step 6 uses it to decide "covered vs not covered". Hint boost is cosmetic.
 
     # 6) Apply threshold and normalize (threshold uses raw fused score)
     top, below = _apply_threshold_and_normalize(
@@ -532,8 +544,9 @@ def search(question: str, top_k: int = config.TOP_K_RESULTS, where: dict | None 
     )
 
     # 7) Linked definitions from the registry (always_include_sections)
-    # Extras are keyed by (law_id, section_number) of chunks already in top, never global
-    needed_pairs = linked_section_keys(top, registry)
+    # Extras are keyed by (law_id, section_number) of chunks already in top, never global.
+    # Definitions are only injected when the question semantically needs them (see linked_section_keys).
+    needed_pairs = linked_section_keys(top, question=question, reg=registry)
     for law_id, meta_section in needed_pairs:
         extra = vs.query(
             question, top_k=3, where={"$and": [

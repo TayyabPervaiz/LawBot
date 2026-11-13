@@ -54,7 +54,7 @@ LLM_MODEL = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
 
 # Version tag included in the LLM answer-cache key. Bump this whenever the
 # system prompt or generation logic changes so stale cached answers are not reused.
-PROMPT_VERSION = "2E-2"
+PROMPT_VERSION = "2E-3"  # Bumped: MAX_TOKENS 500→1500, TEMPERATURE 0.0→0.1, cache-key now includes MAX_TOKENS
 
 # === ChromaDB Settings ===
 # One collection holds ALL laws; each chunk carries law_id / category / jurisdiction
@@ -63,14 +63,18 @@ COLLECTION_NAME = "pakistan_laws"
 
 # === RAG / Retrieval Settings (revised plan Section 5.4) ===
 # Candidate pool pulled from the vector store before fusion/reranking.
-# Larger than TOP_K because hybrid fusion needs a pool to rank.
-CANDIDATE_POOL_SIZE = int(os.getenv("CANDIDATE_POOL_SIZE", "50"))
+# Raised from 50 → 70: gives BM25 and vector rankers a wider field to compare
+# before RRF fusion, improving recall for obscure sections in a 1,635-chunk corpus.
+CANDIDATE_POOL_SIZE = int(os.getenv("CANDIDATE_POOL_SIZE", "70"))
 
-# How many chunks finally reach the LLM (clamped 1..20; 8 stays comfortably within free-tier ITPM limits).
-TOP_K_RESULTS = int(os.getenv("TOP_K_RESULTS", "8"))
+# How many chunks finally reach the LLM (clamped 1..20).
+# Raised from 8 → 10 to give the LLM broader statutory coverage per query.
+TOP_K_RESULTS = int(os.getenv("TOP_K_RESULTS", "10"))
 
-# Reciprocal Rank Fusion constant (3 balances semantic vectors while elevating top keyword hits).
-RRF_K = int(os.getenv("RRF_K", "3"))
+# Reciprocal Rank Fusion constant. Standard literature uses k=60; k=3 causes
+# extremely steep rank-drop-off that over-weights whichever ranker tops position 1.
+# k=20 gives balanced fusion across both BM25 and vector rankings.
+RRF_K = int(os.getenv("RRF_K", "20"))
 
 # Soft keyword hint boost factor. Registry hint_keywords add up to this much
 # relative boost and NEVER exclude a law from search. Tuned at GATE 1.
@@ -92,6 +96,11 @@ LLM_CACHE_ENABLED = os.getenv("LLM_CACHE", "1") != "0"
 LLM_CACHE_PATH = PROCESSED_DATA_DIR / "llm_cache.json"
 
 # === LLM call settings ===
-# 500 tokens fits comfortably within Groq free-tier OTPM limits (1000 tokens)
-MAX_TOKENS = 500
-TEMPERATURE = 0.0
+# Raised from 500 → 1500: 500 tokens was truncating multi-section legal answers
+# mid-sentence. Groq free-tier limits for llama-3.3-70b-versatile are much higher.
+# Bump PROMPT_VERSION below whenever MAX_TOKENS or TEMPERATURE changes so the
+# LLM cache does not serve old short-answer entries.
+MAX_TOKENS = 1500
+# Small non-zero temperature improves fluency for layperson-readable answers
+# without meaningfully breaking determinism. Keep at 0.0 for pure benchmark runs.
+TEMPERATURE = 0.1

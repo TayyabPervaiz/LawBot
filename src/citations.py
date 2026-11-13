@@ -141,6 +141,9 @@ def parse_citations(text: str) -> list[dict]:
     return citations
 
 
+# Pattern to find explicit "section X" cross-references in chunk body text.
+# Used to support citations to sections that are referenced-but-not-retrieved,
+# within the SAME law only (not cross-law inference).
 _CROSS_REF_PATTERN = re.compile(
     r"\b(?:sections?|sec\.?)\s+(\d+[A-Za-z]?(?:\s*(?:,|and|or)\s*\d+[A-Za-z]?)*)",
     re.IGNORECASE,
@@ -152,15 +155,22 @@ def validate_citations_grounding(
     retrieved_chunks: list[dict],
 ) -> dict:
     """
-    Check parsed citations against retrieved chunk metadata and chunk body text cross-references.
+    Check parsed citations against retrieved chunk metadata.
 
-    A cite is supported if:
-    1. That (law_id, section) appears in retrieved chunk metadata.
-    2. OR that section appears in retrieved metadata of at least one chunk (if law_id unknown).
-    3. OR that section number appears explicitly cross-referenced in the retrieved body text
-       of a chunk belonging to that same law_id (or any chunk if law_id unknown).
-       (Statutory provisions frequently cross-reference other sections within the same Act,
-       e.g., Section 15(b) referring to "the period stipulated in section 7").
+    A citation is SUPPORTED when ANY of these conditions holds:
+
+    1. The (law_id, section) pair appears directly in a retrieved chunk's metadata.
+    2. For bare-section citations (law_id == 'unknown'): the section number appears
+       in any retrieved chunk's metadata.
+    3. The section number is explicitly cross-referenced in the BODY TEXT of a
+       retrieved chunk belonging to the SAME law_id.
+       — Rationale: statutory provisions commonly reference sibling sections
+         (e.g. Section 15 says "within the period in section 7"). When the LLM
+         cites that referenced section, the citation is grounded in the retrieved
+         text even though that sibling section was not itself retrieved.
+       — Cross-LAW inference is intentionally excluded: if chunk A belongs to
+         law X and references "section 7", that does NOT ground a citation to
+         Section 7 of law Y.
 
     Returns:
         {
@@ -180,15 +190,16 @@ def validate_citations_grounding(
             if lid:
                 retrieved_pairs.add((lid, sec))
 
-        # Also extract statutory section cross-references from the chunk body text
+        # Scan body text for explicit same-law cross-references only.
         chunk_text = c.get("text") or c.get("document") or ""
-        if chunk_text:
+        if chunk_text and lid:
             for match in _CROSS_REF_PATTERN.finditer(chunk_text):
                 for ref_num in re.findall(r"\b\d+[A-Za-z]?\b", match.group(1)):
                     ref_sec = ref_num.upper()
+                    # Only add same-law cross-refs (lid is known for this chunk)
+                    retrieved_pairs.add((lid, ref_sec))
+                    # Also add to the bare-section set for 'unknown' law citations
                     retrieved_sections.add(ref_sec)
-                    if lid:
-                        retrieved_pairs.add((lid, ref_sec))
 
     supported: list[dict] = []
     unsupported: list[dict] = []
@@ -202,6 +213,8 @@ def validate_citations_grounding(
             else:
                 unsupported.append(cite)
         else:
+            # Bare section reference — support if section number appears in
+            # any retrieved chunk's metadata OR same-law cross-refs.
             if sec in retrieved_sections:
                 supported.append(cite)
             else:

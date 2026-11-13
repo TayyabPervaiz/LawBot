@@ -145,17 +145,24 @@ def build_index(force: bool = False) -> int:
 # ---------------------------------------------------------------------------
 
 _FOLLOWUP_WORDS = {
+    # Pronouns and deictic words that signal reference to a previous turn
     "it", "this", "that", "these", "those", "he", "she", "they", "them",
-    "penalty", "punishment", "fine", "appeal", "saza", "jurmana", "zamanat",
+    # Urdu deictic pronouns only — do NOT include common legal nouns like
+    # "penalty", "fine", "appeal" here because standalone questions like
+    # "What is the penalty for murder?" are NOT follow-ups.
     "iska", "uski", "unka", "yeh", "woh",
-    "اسکا", "اسکی", "انکا", "یہ", "وہ", "سزا", "جرمانہ", "ضمانت", "اپیل",
+    "اسکا", "اسکی", "انکا", "یہ", "وہ",
 }
 
-_FOLLOWUP_PHRASES = (
+# Urdu script phrases: stored as whitespace-normalised so they match even
+# when the user inserts extra spaces (e.g. "اور  اگر" with a double space).
+_FOLLOWUP_PHRASES_LATIN = (
     "what about", "what if", "and if", "can he", "can she", "is it",
     "kya hoga", "agar woh", "aur agar", "kya wo", "kya yeh", "iski saza",
-    "zamanat kaise", "اور اگر", "کیا وہ", "کیا یہ", "اس کی سزا", "ضمانت کیسے",
-    "اگر وہ",
+    "zamanat kaise",
+)
+_FOLLOWUP_PHRASES_URDU = (
+    "اور اگر", "کیا وہ", "کیا یہ", "اس کی سزا", "ضمانت کیسے", "اگر وہ",
 )
 
 
@@ -164,12 +171,34 @@ def _is_followup_query(question: str) -> bool:
     Detect if a user query relies on context from previous turns.
     Wave 3-H: Length-only heuristic removed so standalone short queries
     (e.g. 'What is murder?') do not concatenate previous context.
+
+    Urdu phrase matching uses whitespace-normalised comparison so extra
+    spaces inside phrases don't prevent a match.
     """
     q_lower = question.lower().strip()
-    if any(phrase in q_lower for phrase in _FOLLOWUP_PHRASES):
+    # Whitespace-normalise for robust phrase matching
+    q_norm = re.sub(r"\s+", " ", q_lower)
+
+    # Latin / Roman Urdu phrases
+    if any(phrase in q_norm for phrase in _FOLLOWUP_PHRASES_LATIN):
         return True
-    words = set(re.findall(r"\b[\w]+\b", q_lower))
-    return bool(words & _FOLLOWUP_WORDS)
+
+    # Urdu script phrases: normalise whitespace in the question before checking
+    q_urdu_norm = re.sub(r"\s+", " ", question.strip())
+    if any(phrase in q_urdu_norm for phrase in _FOLLOWUP_PHRASES_URDU):
+        return True
+
+    # Deictic word check (Latin words via word-boundary regex; Urdu via substring)
+    latin_words = set(re.findall(r"\b[\w]+\b", q_norm))
+    latin_hits = latin_words & {w for w in _FOLLOWUP_WORDS if w.isascii()}
+    if latin_hits:
+        return True
+
+    urdu_words = {w for w in _FOLLOWUP_WORDS if not w.isascii()}
+    if any(w in question for w in urdu_words):
+        return True
+
+    return False
 
 
 def ask(

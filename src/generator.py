@@ -73,11 +73,14 @@ You MUST end EVERY response with a short disclaimer clarifying that this is lega
 - Use bullet points or numbered steps when listing multiple points.
 - Always specify the legal grounds and the relevant section numbers.
 - Be concise but thorough — cover all relevant provisions from the retrieved text.
+- Do NOT stop mid-sentence. Complete every explanation fully before ending.
 
 ### RULE 6 — LANGUAGE OF RESPONSE
-- If the user's question is in Urdu (اردو), answer in fluent, formal Urdu while preserving statutory citations formatted as `[The Pakistan Penal Code, 1860 - Section 302]`.
-- If the user's question is in Roman Urdu, answer in clear Roman Urdu while preserving statutory citations formatted as `[The Pakistan Penal Code, 1860 - Section 302]`.
-- If the user's question is in English, answer in English.
+Detect the dominant language of the user's question and respond in the SAME language:
+- **Urdu script (اردو):** If the question contains mostly Urdu script characters, answer in fluent, formal Urdu while preserving statutory citations formatted as `[The Pakistan Penal Code, 1860 - Section 302]`.
+- **Roman Urdu / Urdu-English mix:** If the question mixes Urdu words written in Roman script with English (e.g., "landlord ne eviction ka notice diya"), answer in the same Roman Urdu register — conversational but clear — while keeping statutory citations in English.
+- **English:** If the question is in English, answer in English.
+- **Ambiguous:** When unsure, prefer English.
 - Always preserve statutory citation precision regardless of the language used.
 
 ## STATUTORY PROVISIONS FOR THIS QUERY:
@@ -136,10 +139,13 @@ OUT_OF_SCOPE_PATTERNS: dict[str, list[str]] = {
         r"\bsocial\s+media\b",
     ],
     # No tax law is planned in the near stages — always refuses (no category).
+    # Patterns are intentionally narrow to avoid false-positive refusals for
+    # questions that happen to mention "tax" in a non-tax-law context.
     "tax": [
         r"\bFBR\b", r"\bincome\s+tax\b", r"\bsales\s+tax\b", r"\btax\s+return\b",
         r"\bNTN\b", r"\bٹیکس\b", r"\bانکم\s*ٹیکس\b", r"\bسیلز\s*ٹیکس\b",
-        r"\bایف\s*بی\s*آر\b", r"\bگوشوارہ\b", r"\btax\b", r"\btax\s*file\b",
+        r"\bایف\s*بی\s*آر\b", r"\bگوشوارہ\b", r"\btax\s+file\b", r"\btax\s+evasion\b",
+        r"\bwithholding\s+tax\b", r"\bcustoms\s+duty\b",
     ],
     "foreign jurisdiction": [
         r"\bLondon\b", r"\bUK\b", r"\bUSA\b", r"\bUS\s+law\b", r"\bCanada\b",
@@ -216,9 +222,19 @@ def build_refusal_response(detected_topic: str, question: str) -> str:
 # ---------------------------------------------------------------------------
 
 def format_context(retrieved_chunks: list[dict], max_chars: int = 14000) -> str:
-    """Format retrieved chunks with clear per-provision headers, capped at max_chars for ITPM safety."""
+    """Format retrieved chunks with clear per-provision headers, capped at max_chars for ITPM safety.
+
+    Guard rails:
+    - Each individual chunk body is capped at max_chars // 2 so a single
+      pathologically large section cannot blow the total limit on its own.
+    - The global cap is checked before appending so the total never exceeds
+      max_chars regardless of chunk count.
+    """
     if not retrieved_chunks:
         return "[NO RELEVANT PROVISIONS FOUND IN THE DATABASE]"
+
+    # Per-chunk body cap: prevents one giant section from consuming the whole window.
+    per_chunk_body_cap = max_chars // 2
 
     context_parts = []
     total_len = 0
@@ -237,8 +253,12 @@ def format_context(retrieved_chunks: list[dict], max_chars: int = 14000) -> str:
             f"---\n"
         )
         chunk_body = chunk.get("text") or ""
+        # Cap individual chunk body so one oversized section can't exceed the window
+        if len(chunk_body) > per_chunk_body_cap:
+            chunk_body = chunk_body[:per_chunk_body_cap] + "\n[... truncated for context limit ...]"
         part = header + chunk_body
-        if context_parts and (total_len + len(part) > max_chars):
+        # Global cap: stop adding chunks once total would exceed limit
+        if total_len + len(part) > max_chars:
             break
         context_parts.append(part)
         total_len += len(part)
@@ -253,10 +273,12 @@ def format_context(retrieved_chunks: list[dict], max_chars: int = 14000) -> str:
 def _cache_key(question: str, context: str, conversation_history: list[dict] | None = None) -> str:
     hist_str = "|".join(f"{m.get('role')}:{m.get('content')}" for m in (conversation_history or []))
     tmpl_hash = hashlib.sha256(SYSTEM_PROMPT_TEMPLATE.encode("utf-8")).hexdigest()[:12]
+    # Include MAX_TOKENS in the key so a change in token limit invalidates old short-answer entries.
     payload = "|".join([
         config.PROMPT_VERSION,
         tmpl_hash,
         config.LLM_MODEL,
+        str(config.MAX_TOKENS),
         question,
         hashlib.sha256(context.encode("utf-8")).hexdigest(),
         hashlib.sha256(hist_str.encode("utf-8")).hexdigest() if hist_str else "",
@@ -266,6 +288,23 @@ def _cache_key(question: str, context: str, conversation_history: list[dict] | N
 
 _cache_lock = threading.Lock()
 MAX_CACHE_SIZE = 500
+
+# In-memory cache: avoids reading the entire JSON file from disk on every lookup.
+# The disk file is still written for persistence across restarts.
+_memory_cache: dict[str, str] = {}
+_memory_cache_loaded: bool = False
+
+
+def _ensure_memory_cache_loaded() -> None:
+    """Load the disk cache into memory once (called under _cache_lock)."""
+    global _memory_cache, _memory_cache_loaded
+    if not _memory_cache_loaded and config.LLM_CACHE_ENABLED:
+        try:
+            with open(config.LLM_CACHE_PATH, "r", encoding="utf-8") as f:
+                _memory_cache = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            _memory_cache = {}
+        _memory_cache_loaded = True
 
 
 def _load_cache() -> dict:
@@ -287,18 +326,18 @@ def _save_cache(cache: dict) -> None:
 
 
 def _get_cached_answer(key: str) -> str | None:
-    """Thread-safe cache lookup (Wave 3-I)."""
+    """Thread-safe in-memory cache lookup (falls back to disk on first access)."""
     if not config.LLM_CACHE_ENABLED:
         return None
     with _cache_lock:
-        cache = _load_cache()
-        return cache.get(key)
+        _ensure_memory_cache_loaded()
+        return _memory_cache.get(key)
 
 
 def _store_cached_answer(key: str, answer: str) -> None:
     """
-    Thread-safe cache store with FIFO size cap (500 items).
-    Wave 3-I: Never caches strings starting with 'Error:'.
+    Thread-safe cache store: writes to memory immediately, persists to disk.
+    Never caches strings starting with 'Error:'.
     """
     if not config.LLM_CACHE_ENABLED:
         return
@@ -306,16 +345,16 @@ def _store_cached_answer(key: str, answer: str) -> None:
         return
 
     with _cache_lock:
-        cache = _load_cache()
-        if len(cache) >= MAX_CACHE_SIZE and key not in cache:
+        _ensure_memory_cache_loaded()
+        if len(_memory_cache) >= MAX_CACHE_SIZE and key not in _memory_cache:
             # Drop oldest entry (FIFO)
             try:
-                oldest_key = next(iter(cache))
-                del cache[oldest_key]
+                oldest_key = next(iter(_memory_cache))
+                del _memory_cache[oldest_key]
             except (StopIteration, KeyError):
                 pass
-        cache[key] = answer
-        _save_cache(cache)
+        _memory_cache[key] = answer
+        _save_cache(_memory_cache)
 
 
 # ---------------------------------------------------------------------------
@@ -472,21 +511,12 @@ def generate_answer(
 
     Returns dict with keys: answer, in_scope, detected_topic, citations,
     source_sections, not_covered.
-    """
-    # Step 1: registry-aware scope check (refusals fire pre-LLM)
-    scope = detect_scope(question)
-    if not scope["in_scope"]:
-        return {
-            "answer": build_refusal_response(scope["detected_topic"], question),
-            "in_scope": False,
-            "detected_topic": scope["detected_topic"],
-            "citations": {"has_citations": False, "citation_count": 0,
-                          "citations_found": [], "supported": [], "unsupported": []},
-            "source_sections": [],
-            "not_covered": False,
-        }
 
-    # Step 2: format context
+    NOTE: Scope detection (detect_scope) is intentionally NOT called here —
+    bot.py:ask() already calls it before this function and returns early.
+    Calling it a second time was redundant and doubled regex scanning.
+    """
+    # Step 1: format context
     context = format_context(retrieved_chunks)
 
     source_sections = []
